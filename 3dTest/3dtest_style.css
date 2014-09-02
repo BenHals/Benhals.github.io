@@ -1,0 +1,76 @@
+.stage {
+  width: 480px;
+  height: 500px;
+  margin: 10px auto;
+  position: relative;
+
+  -webkit-perspective: 1300px;
+  perspective: 1600px;
+}
+
+.cube {
+  -moz-transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -moz-transform-origin: 100px 50%;
+  -ms-transform-origin: 100px 50%;
+  -o-transform-origin: 100px 50%;
+  -webkit-transform-origin: 100px 50%;
+  transform-origin: 100px 50%;
+  position: absolute;
+  top: 120px;
+  left: 140px;
+   	-webkit-transform: rotateY(90deg);
+   transition: all 0.2s ;
+	-webkit-transition: all 0.2s;
+}
+.cube:hover{
+-webkit-transform: rotateY(45deg) rotateX(-15deg);
+
+}
+figure {
+  display: block;
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  font-size: 100px;
+  text-align: center;
+  line-height: 200px;
+  color: white;
+  opacity: 0.5;
+}
+
+.stage .back {
+    -webkit-transform: rotateY(180deg) translateZ(100px);
+    transform: rotateY(180deg) translateZ(100px);
+    background-color: red; }
+  .stage .top {
+
+    -webkit-transform: rotateX(90deg) translateZ(100px);
+    transform: rotateX(90deg) translateZ(100px);
+    background-color: #ff7400; }
+  .stage .bottom {
+
+    -webkit-transform: rotateX(-90deg) translateZ(100px);
+    transform: rotateX(-90deg) translateZ(100px);
+    -webkit-box-shadow: 0 10px 100px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 10px 100px rgba(0, 0, 0, 0.7);
+    
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+    background-color: #aaaaaa;
+    -webkit-box-reflect: none; }
+  .stage .left {
+    -webkit-transform: rotateY(-90deg) translateZ(100px);
+    transform: rotateY(-90deg) translateZ(100px);
+    background-color: #009999; }
+  .stage .right {
+
+    -webkit-transform: rotateY(90deg) translateZ(100px);
+    transform: rotateY(90deg) translateZ(100px);
+    background-color: #00cc00; }
+  .stage .front {
+
+    -webkit-transform: translateZ(100px);
+    transform: translateZ(100px);
+    background-color: yellow; }

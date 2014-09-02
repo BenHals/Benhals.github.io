@@ -1,0 +1,12 @@
+Host:
+email: bloodffox account
+pass: finnface
+
+FTP
+user: bloodfoxx
+pass: FinnFace
+
+Database:
+name: bloodfox_First	
+User: bloodfox_user
+pass: FinnFace

@@ -1,0 +1,115 @@
+@font-face {
+    font-family: 'franchiseregular';
+    src: url('Images/Fonts/franchise-bold-webfont.eot');
+    src: url('Images/Fonts/franchise-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('Images/Fonts/franchise-bold-webfont.woff') format('woff'),
+         url('Images/Fonts/franchise-bold-webfont.ttf') format('truetype'),
+         url('Images/Fonts/franchise-bold-webfont.svg#franchiseregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+	text-align:center;
+	font-family:franchiseregular;
+	background:white;
+	transition: background 11s linear;
+	-webkit-perspective: 1600px;
+	perspective: 1600px;
+	
+}
+h1{
+	font-size:200px;
+}
+
+ul{
+	list-style:none;
+}
+li {
+
+  margin-top:50px;
+  margin-bottom:50px;
+  
+}
+.container {
+	position:relative;
+	display:block;
+	width:600px;
+	height:50px;
+	margin:auto;
+	background:green;
+	-webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-transform-origin: 50%;
+  transition: all 0.5s ease;
+	
+
+}
+li:hover .container{
+	-webkit-transform: rotateY(-30deg) translateZ(50px);
+}
+.front{
+	color:black;
+	display:block;
+	width:100%;
+	height:100%;
+	font-size:50px;
+	transition: background 11s linear;
+	  -webkit-transform:translateZ(25px);
+	!outline: solid 4px black;
+	
+	
+}
+span {
+  display: block;
+  position: absolute;
+  text-align: center;
+	!opacity: 0.5;
+
+}
+
+
+.top {
+  -webkit-transform:  translateY(-50px)  rotateX(90deg) translateZ(-25px);
+	background:black;
+	width:100%;
+	height:50px;
+	transform-origin:bottom left;
+}
+.bottom {
+  -webkit-transform: translateY(50px)  rotateX(-90deg) translateZ(-25px);
+	background:black;
+	width:100%;
+	height:50px;
+	transform-origin:top left;
+}
+.left {
+  -webkit-transform: rotateY(90deg)translateZ(-25px) ;
+	background:black;
+	width:50px;
+	height:100%;
+	transform-origin:top left;
+}
+.right {
+  -webkit-transform: translateX(600px) rotateY(90deg) translateZ(-25px);
+	background:black;
+	width:50px;
+	height:100%;
+	transform-origin:top left;
+}
+
+.box:hover{
+-webkit-animation: spin 5s linear infinite;
+
+}
+
+@-webkit-keyframes spin{
+	0% {
+		-webkit-transform:none;
+	}
+	50%{
+		-webkit-transform: translateY(-20px);
+	}
+	
+}

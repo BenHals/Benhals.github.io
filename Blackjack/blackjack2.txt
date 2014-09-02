@@ -1,0 +1,15 @@
+function card (val, player){
+	this.id = val;
+	this.nosuit = id%13 +1;
+	this.value = nosuit;
+	if(nosuit == 11 || nosuit == 12 || nosuit == 13){
+		this.value = 10;
+	}
+	
+	if(player) this.disc = value;
+	if(nosuit == 1){
+		this.htmldisc = "<li>" + </li>";
+	}else{
+	
+	}
+}
