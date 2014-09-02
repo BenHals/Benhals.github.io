@@ -33,12 +33,14 @@ li {
   
 }
 .container {
+	visibility: hidden;
 	position:relative;
 	display:block;
 	width:600px;
 	height:50px;
 	margin:auto;
 	background:green;
+	opacity: 0.9;
 	-webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   -webkit-transform-origin: 50%;
@@ -56,16 +58,16 @@ li:hover .container{
 	height:100%;
 	font-size:50px;
 	transition: background 11s linear;
-	 -webkit-transform:translateZ(25px);
+	 -webkit-transform:translateZ(0px);
 	!outline: solid 4px black;
 	
 	
 }
 span {
+	visibility: visible;
   display: block;
   position: absolute;
   text-align: center;
-	!opacity: 0.5;
 
 }
 

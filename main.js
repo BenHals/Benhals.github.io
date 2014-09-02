@@ -2,7 +2,9 @@
 function changeColor(){
 
 	$("li").each(function(){
-		$(this).children().css("background", "#" +Math.floor(Math.random()*16777215).toString(16));
+		var randColor = Math.floor(Math.random()*16777215).toString(16);
+		//$(this).children().css("background", "#" + randColor);
+		$(this).children().children().css("background", "#" +randColor)
 	});
 	$("body").css("background", "#" +Math.floor((Math.random()*3618615)+13158600 ).toString(16));
 }
