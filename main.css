@@ -56,7 +56,7 @@ li:hover .container{
 	height:100%;
 	font-size:50px;
 	transition: background 11s linear;
-	  -webkit-transform:translateZ(25px);
+	 -webkit-transform:translateZ(25px);
 	!outline: solid 4px black;
 	
 	
@@ -71,29 +71,32 @@ span {
 
 
 .top {
-  -webkit-transform:  translateY(-70px)  rotateX(90deg) translateZ(-25px);
-	background:black;
+  -webkit-transform:  translateY(-75.5px)  rotateX(90deg) translateZ(-25px);
+  	transition: background 11s linear;
 	width:100%;
 	height:50px;
 	transform-origin:bottom left;
 }
 .bottom {
-  -webkit-transform: translateY(50px)  rotateX(-90deg) translateZ(-25px);
-	background:black;
+  -webkit-transform: translateY(75.5px)  rotateX(-90deg) translateZ(-25px);
+  	transition: background 11s linear;
+	background:#666666;
 	width:100%;
 	height:50px;
 	transform-origin:top left;
 }
 .left {
-  -webkit-transform: rotateY(90deg)translateZ(-25px) ;
-	background:black;
+  -webkit-transform: translateX(25px) rotateY(90deg)translateZ(-25px) ;
+  	transition: background 11s linear;
+	background:#666666;
 	width:50px;
 	height:100%;
 	transform-origin:top left;
 }
 .right {
-  -webkit-transform: translateX(600px) rotateY(90deg) translateZ(-25px);
-	background:black;
+  -webkit-transform: translateX(625px) rotateY(90deg) translateZ(-25px);
+  	transition: background 11s linear;
+	background:#666666;
 	width:50px;
 	height:100%;
 	transform-origin:top left;
