@@ -6,7 +6,7 @@ function changeColor(){
 		//$(this).children().css("background", "#" + randColor);
 		$(this).children().children().css("background", "#" +randColor)
 	});
-	$("body").css("background", "#" +Math.floor((Math.random()*3618615)+13158600 ).toString(16));
+	$("body").css("background", "#" +Math.floor((Math.random()*3618615) ).toString(16));
 }
 
 
@@ -15,7 +15,7 @@ changeColor();
 	$("li").mouseenter(function() {
 		
 	});
-	setInterval(function() {changeColor();}, 10000);
+	setInterval(function() {changeColor();}, 5000);
 
 
 });
