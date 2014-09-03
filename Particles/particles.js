@@ -98,7 +98,6 @@ $(document).mousemove(function(e){
 	function update(){
 	var particle;
 	
-	
 	for(i=0; i <particles.length; i++){
 	
 		//particle = particles[i];
@@ -138,7 +137,8 @@ $(document).mousemove(function(e){
 					
 					var x = mx - particles[i].x;
 					var y = my - particles[i].y;
-					var forcemag = 100 / (x*x + y*y);
+					var distance = Math.sqrt((x*x + y*y));
+					var forcemag = 1 / distance;
 					//if (forcemag > 5){
 						//forcemag = 2;
 					//}
@@ -146,19 +146,35 @@ $(document).mousemove(function(e){
 						//alert("under");
 					//}
 					
-					var theta = Math.atan(y/x);
+					var theta = (Math.atan(y/x));
+						if(x <0 && y <0){
+							theta = theta + Math.PI;
+		//alert("stop");
+						} else if (x <0){
+							theta = theta + Math.PI;
+						}
+
 					//particles[i].vx += Math.cos(theta) * forcemag;
 					//particles[i].vy += Math.sin(theta) * forcemag;
-					if(mx / particles[i].x < 1.05 && mx / particles[i].x > 0.95 && my / particles[i].y < 1.05 && my / particles[i].y > 0.95){
-						x = my - particles[i].y;
-						y = mx - particles[i].x;
+					if(distance > 10){
+						//particles[i].vx += x * forcemag;
+						//particles[i].vy += y* forcemag;
+						if(x>=0){
+						particles[i].vy += Math.sin(theta)*forcemag * 100;
+						particles[i].vx += Math.cos(theta)*forcemag * 100;
+						}else{
+						particles[i].vy += Math.sin(theta)*forcemag * 100;
+						particles[i].vx += Math.cos(theta)*forcemag * 100;
+						}
+						//x = my - particles[i].y;
+						//y = mx - particles[i].x;
 						
-						particles[i].vx += x * 0.1;
-						particles[i].vy += y* 0.1;
+						//particles[i].vx += x * 0.1;
+						//particles[i].vy += y* 0.1;
 						//alert("close");
-					}else{
-						particles[i].vx += x * 100 / (x*x + y*y);
-						particles[i].vy += y* 100 / (x*x + y*y);
+					//}else{
+						//particles[i].vx += x * 100 / (x*x + y*y);
+						//particles[i].vy += y* 100 / (x*x + y*y);
 					}
 				}
 				if(decay){
@@ -192,13 +208,13 @@ function draw(){
 		ctx.lineTo(particle.x, particle.y);
 		ctx.stroke();
 		ctx.closePath();
-		ctx.beginPath();
-		ctx.strokeStyle = '#ff0000';
-		ctx.moveTo((particle.x + particle.vx*10), (particle. y+ particle.vy*10));
-		ctx.lineTo(particle.x, particle.y);
-		ctx.fillRect(particle.x-2.5, particle.y-2.5, 5,5);
-		ctx.closePath();
-		ctx.stroke();
+		//ctx.beginPath();
+		//ctx.strokeStyle = '#ff0000';
+		//ctx.moveTo((particle.x + particle.vx*10), (particle. y+ particle.vy*10));
+		//ctx.lineTo(particle.x, particle.y);
+		//ctx.fillRect(particle.x-2.5, particle.y-2.5, 5,5);
+		//ctx.closePath();
+		//ctx.stroke();
 	}
 }
 
