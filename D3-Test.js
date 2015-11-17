@@ -17,7 +17,7 @@ var currentTotMean = 0;
 
 var totalMean;
 window.onload = function(){
-	var winWidth = window.innerWidth*0.8;
+	/*var winWidth = window.innerWidth*0.8;
 	var winHeight = window.innerHeight - 100;
 	var SIZE = 5;
 	var TOPMARGIN = 1;
@@ -66,7 +66,7 @@ window.onload = function(){
 	svg.append("g").attr("class","axis").attr("transform", "translate(0," + (winHeight/3 * 2 + 20) + ")").call(xAxis);
 
 	svg.append("g").attr("class","axis").attr("transform", "translate(0," + (winHeight/3 * 2.5 + 20) + ")").call(xAxis); */
-	var popMean = findMean(data);
+	/*var popMean = findMean(data);
 	//svg.append("line").attr("x1", x(popMean)).attr("y1", winHeight/3 + 20).attr("x2", x(popMean)).attr("y2", winHeight/3 - 20).style("stroke-width", 2).style("stroke", "black");
 	var sampleMeans = [];
 	var sample = [];
@@ -133,7 +133,7 @@ window.onload = function(){
 			
 		}
 		
-	}
+	} */
 }
 
 function pickRand(numToPick, numFrom){
@@ -264,8 +264,11 @@ function Start(){
 		//samples[k].push(maxY);
 	}
 	samples.push(maxYs);
-	d3.select(".controls").append("input").attr("name", "do10").attr("type", "button").attr("value","do10").attr("onClick", "startAnim(10, false)");
+
+
 	d3.select(".controls").append("input").attr("name", "do1").attr("type", "button").attr("value","do1").attr("onClick", "startAnim(1,true)");
+	d3.select(".controls").append("input").attr("name", "do10").attr("type", "button").attr("value","do10").attr("onClick", "startAnim(10, false)");
+	d3.select(".controls").append("input").attr("name", "do1000").attr("type", "button").attr("value","do1000").attr("onClick", "startAnim(1000, false)");
 	d3.select(".controls").append("input").attr("name", "resetLines").attr("type", "button").attr("value","reset lines ").attr("onClick", "resetLines()");
 	statsDone = true;
 	draw();
@@ -338,7 +341,7 @@ function draw(){
 	
 }
 function startAnim(repititions, goSlow){
-	var start = Math.ceil(Math.random() * (1001-repititions));
+	var start = Math.ceil(Math.random() * (1000-repititions));
 	var end = start + repititions;
 		down(start, end, goSlow);
 
