@@ -1,1 +1,1 @@
-iNZightBIT done in JavaScript (originally R)  
+iNZightVIT done in JavaScript (originally R)  
