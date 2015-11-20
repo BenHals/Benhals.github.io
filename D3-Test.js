@@ -128,7 +128,7 @@ var circle = svg.selectAll("circle")
 svg.append("line").attr("x1", xScale(popMean)).attr("y1", s1Bottom+20).attr("x2", xScale(popMean)).attr("y2", s1Bottom-20).style("stroke-width", 2).style("stroke", "black");
 
 var meanLines = svg.select(".sampleLines").selectAll("line").data(preCalculatedTMeans)
-	.enter().append("line").attr("y1", s1Bottom+20).attr("y2", s1Bottom-20).attr("x1", function(d){return xScale(d.value)}).attr("x2", function(d){return xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
+	.enter().append("line").attr("y1", s1Bottom+20).attr("y2", s1Bottom-20).attr("x1", function(d){return d.value}).attr("x2", function(d){return d.value}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
 
 var meanCircles = svg.select(".meanOfSamples").selectAll("circle").data(preCalculatedTMeans)
 	.enter().append("circle")
