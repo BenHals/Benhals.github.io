@@ -123,12 +123,14 @@ function draw(){
 function startAnim(repititions, goSlow){
 	if(repititions >999) resetLines();
 	if(animationState == 0){
-		transitionSpeed = baseTransitionSpeed;
+		transitionSpeed = baseTransitionSpeed-repititions*20;
 		animationState = 1;
+		if(index > numSamples){
+			index = index % numSamples;
+			resetLines();
+		}
 		var start = index;
 		var end = start + repititions;
-		index = end;
-		index = index % numSamples;
 		if(repititions > 100) transitionSpeed = 0;
 		var jumps = 1;
 		if(repititions > 20) jumps = 10;
@@ -149,29 +151,60 @@ function down(indexUpTo, goUpTo, goSlow, jumps){
 		var sample = samples[indexUpTo];
 		var delay = 1;
 		if(goSlow) delay = 1000;
-		circle.filter(function(d,i){
-			return sample.indexOf(d) >= 0;
-		})
-		.transition().duration(delay).style("fill", "#FF7148").attr("fill-opacity", 1).each('end', function(){
-			d3.select(this).transition().duration(transitionSpeed).delay(delay)
-		  	.attr("cy", function(d, i){
-		    	return d.yPerSample[indexUpTo+1];
-			}).each('start', function(d){d3.select(this).style("fill", "#FF7148")}).each('end', function(d, i){ if(d == sample[0]){up(indexUpTo, goUpTo, goSlow, jumps)}});
-		});
-		var sampMean = preCalculatedTStat.slice(indexUpTo+1, indexUpTo+jumps+1);
-		svg.select(".sampleLines").selectAll("line").filter(function(d, i){
-			return (i>=indexUpTo+1) && (i <indexUpTo+jumps+1);
-		}).transition().duration(delay).style("opacity",(transitionSpeed * 0.001)).each('end', function(d){d3.select(this).transition().delay(delay).duration(transitionSpeed).attr("y1", windowHelper.section2.bottom+10).attr("y2", windowHelper.section2.bottom-10).style("stroke", "steelblue")});
+		circle = circle.filter(function(d,i){return sample.indexOf(d) >= 0;});
+		if(goSlow){
+			circle = circle.transition().duration(delay).style("fill", "#FF7148").attr("fill-opacity", 1)
+							.transition().duration(delay);
+		}else{
+			circle = circle.style("fill", "#FF7148").attr("fill-opacity", 1);
+		}
+		if(transitionSpeed <= 100){
+			circle = circle.attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
+			.transition().duration(delay)
+			.transition().duration(delay).attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
+			.each('end', function(d, i){ if(d == sample[0]){down(indexUpTo+jumps, goUpTo, goSlow, jumps)}});
+		}else{
+			circle = circle.transition().duration(transitionSpeed).attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
+			.transition().duration(delay)
+			.transition().duration(delay).attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
+			.each('end', function(d, i){ if(d == sample[0]){down(indexUpTo+jumps, goUpTo, goSlow, jumps)}});
+		}
 
-		svg.select(".meanOfSamples").selectAll("circle").filter(function(d, i){
+		var sampMean = preCalculatedTStat.slice(indexUpTo+1, indexUpTo+jumps+1);
+
+		var meanLines = svg.select(".sampleLines").selectAll("line").filter(function(d, i){
 			return (i>=indexUpTo+1) && (i <indexUpTo+jumps+1);
-		}).transition().delay(delay*2 + transitionSpeed).attr("fill-opacity",(transitionSpeed * 0.001)).attr("stroke-opacity",(transitionSpeed * 0.001)).each('end' ,function(d){d3.select(this).transition().duration(transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]})});
+		});
+		if(goSlow){
+			meanLines = meanLines.transition().delay(delay).duration(delay).style("opacity",1)
+			.transition().duration(transitionSpeed).attr("y1", windowHelper.section2.bottom+10).attr("y2", windowHelper.section2.bottom-10).style("stroke", "steelblue")
+			.transition().duration(transitionSpeed).style("opacity",0.2).style("stroke", "steelblue");
+		}else{
+			meanLines = meanLines.attr("y1", windowHelper.section2.bottom+10).attr("y2", windowHelper.section2.bottom-10).style("stroke", "steelblue").style("opacity",1).transition().duration(transitionSpeed).style("opacity",0.2);
+		}
+
+		var meanCircles = svg.select(".meanOfSamples").selectAll("circle").filter(function(d, i){
+			return (i>=indexUpTo+1) && (i <indexUpTo+jumps+1);
+		});
+		if(transitionSpeed <= 100){
+			meanCircles =meanCircles.attr("cy", function(d){return d.yPerSample[0]}).style("fill","red").transition().duration(transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").style("fill","#C7D0D5");
+		}else{
+			if(goSlow){
+				meanCircles = meanCircles.transition().delay(delay*2 + transitionSpeed).attr("fill-opacity",(transitionSpeed * 0.001)).attr("stroke-opacity",(transitionSpeed * 0.001))
+				.transition().duration(transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]});
+			}else{
+				meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").transition().delay(transitionSpeed).duration(transitionSpeed).attr("cy", function(d){return d.yPerSample[0]});
+			}
+		}
+		index += jumps;
+
 
 	}else{
 		animationState = 0;
 
 	}
 }
+/*
 function up(indexUpTo, goUpTo, goSlow, jumps){
 	var svg = d3.select(".svg");
 	var newIdex = indexUpTo + jumps;
@@ -196,17 +229,17 @@ function up(indexUpTo, goUpTo, goSlow, jumps){
 		return (i>=indexUpTo+1) && (i <indexUpTo+jumps+1);
 	});
 	meanLines.transition().duration(transitionSpeed).style("opacity",0.2).style("stroke", "steelblue");
-}
+} */
 
 function resetLines(){
 	var svg = d3.select(".svg");
-	var meanLines = svg.select(".sampleLines").selectAll("line").attr("y1", s1Bottom+20).attr("y2", s1Bottom-20).attr("x1", function(d){return xScale(d.value)}).attr("x2", function(d){return xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
+	var meanLines = svg.select(".sampleLines").selectAll("line").attr("y1", windowHelper.section1.bottom+20).attr("y2", windowHelper.section1.bottom-20).attr("x1", function(d){return xScale(d.value)}).attr("x2", function(d){return xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
 
 	var meanCircles = svg.select(".meanOfSamples").selectAll("circle")
 	    .attr("cx", function(d, i) { 
 	    	return d.xPerSample[0]; })
 	    .attr("cy", function(d) {
-	    	return d.yPerSample[0] - (s3Bottom - s2Bottom)
+	    	return d.yPerSample[0] - (windowHelper.section3.bottom- windowHelper.section2.bottom);
 	    })
 	    .attr("fill-opacity", 0)
 	    .attr("stroke-opacity",0); 
@@ -245,13 +278,6 @@ for(var i = 0;i<numbers.length;i++){
 	total += numbers[i].value;
 }
 return total/numbers.length;
-}
-function item(value, id){
-this.value = value;
-this.id = id;
-this.level = 1;
-this.xPerSample = {};
-this.yPerSample = {};
 }
 
 

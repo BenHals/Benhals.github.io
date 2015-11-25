@@ -3,7 +3,7 @@ function setUpWindow(radius){
 	windowHelper.width = window.innerWidth*0.8;
 	windowHelper.height = window.innerHeight*0.99;
 	windowHelper.innerWidth = windowHelper.width - radius*2;
-	windowHelper.margin = winHeight/10;
+	windowHelper.margin = windowHelper.height/10;
 	windowHelper.section1 = new Object();
 	windowHelper.section2 = new Object();
 	windowHelper.section3 = new Object();
@@ -61,4 +61,73 @@ function getStatistic(stat, items){
 		}
 		return mean/items.length;
 	}
+}
+
+function item(value, id){
+this.value = value;
+this.id = id;
+this.level = 1;
+this.xPerSample = {};
+this.yPerSample = {};
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  while (0 !== currentIndex) {
+
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+function pickRand(numToPick, numFrom){
+var indexs = [];
+while(indexs.length < numToPick){
+	var randomNumber = Math.ceil(Math.random()*numFrom) - 1;
+	var found = false;
+	for(var i =0;i<indexs.length;i++){
+		if(indexs[i] == randomNumber){
+			found = true;
+			break;
+		}
+	}
+	if(!found){
+		indexs.push(randomNumber);
+	}
+}
+return indexs;
+}
+
+function findMean(numbers){
+var total = 0;
+for(var i = 0;i<numbers.length;i++){
+	total += numbers[i];
+}
+return total/numbers.length;
+}
+function findMeanItems(numbers){
+var total = 0;
+for(var i = 0;i<numbers.length;i++){
+	total += numbers[i].value;
+}
+return total/numbers.length;
+}
+
+function makeSamples(population, numSamples, sampleSize){
+var samples = [];
+for(var i = 0; i<numSamples;i++){
+	samples.push([]);
+	var indexs = pickRand(sampleSize, population.length);
+	for(var k = 0; k<sampleSize;k++){
+		samples[i].push(population[indexs[k]]);
+	}
+}
+return samples;
 }

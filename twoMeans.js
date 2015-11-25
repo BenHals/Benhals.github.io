@@ -1,6 +1,4 @@
-var yScale;
-var xScale;
-var xScale2;
+/*
 var winHeight;
 var winWidth;
 var pop1Mean;
@@ -9,7 +7,6 @@ var population1 = null;
 var population2 = null;
 var populations = [[],[]];
 var samples = [];
-var sampleSize = 10;
 var means; 
 var sampleMeans = [];
 var baseTransitionSpeed = 1000;
@@ -18,15 +15,17 @@ var preCalculatedTMeans = [];
 var totalMeans = [];
 var currentTotMean = 0;
 var totalMean;
-var numSamples = 1000;
 var s1Bottom = 0;
 var s2Bottom = 0;
 var s3Bottom = 0;
-var index = 0;
-var margin = 0;
+var margin = 0; */
+
 var animationState = 0;
-
-
+var index = 0;
+var numSamples = 1000;
+var yScale;
+var xScale;
+var xScale2;
 var windowHelpers = null;
 var radius = 5;
 var populations = {};
@@ -40,6 +39,7 @@ var animationState = 0;
 var baseTransitionSpeed = 1000;
 var groups = [];
 var groupStats = {};
+var sampleSize = 10;
 
 
 function twoMeans(inputData, headingGroup, headingContinuous, statistic){
@@ -121,20 +121,11 @@ function makeTwoSamples(populations, numSamples, sampleSize, statistic){
 				samples[j][i].push(populations[groups[j]][groupIndexs[j][k]]);
 			}
 			var s = getStatistic(statistic, samples[j][i]);
-			if(isNaN(s)){
-				var lookAt = samples[j][i];
-				var lookAt2 = getStatistic(statistic, samples[j][i]);
-				alert("no");
-			}
 			stats.push(s);
 		}
 		var diff = stats[1] - stats[0];
 		if(largestDiff == null | diff > largestDiff) largestDiff = diff;
 		if(smallestDiff == null | diff < smallestDiff) smallestDiff = diff;
-		if(isNaN(diff)){
-
-		alert("wat");
-	}
 		var newItem = new item(diff, i);
 		newItem.s0 = stats[0];
 		newItem.s1 = stats[1];
@@ -259,7 +250,7 @@ function drawTwoMeans(){
 function startAnim2(repititions, goSlow){
 	if(repititions >999) resetLines2();
 	if(animationState == 0){
-		transitionSpeed = baseTransitionSpeed;
+		transitionSpeed = baseTransitionSpeed-repititions*20;
 		animationState = 1;
 		var start = index;
 		var end = start + repititions;
@@ -281,45 +272,94 @@ function down2(indexUpTo, goUpTo, goSlow, jumps){
 		}
 
 		var delay = 1;
-		if(goSlow) delay = 1000;
+		if(goSlow){
+			delay = 1000;
+		}else{
+			delay = 10;
+		}
+		var allInSample = samples[0][indexUpTo].concat(samples[1][indexUpTo]);
+		shuffle(allInSample);
 		for(var j =0;j<2;j++){
-			var circle = svg.select("#pop"+j).selectAll("circle");
 			var sample = samples[j][indexUpTo];
-			circle.filter(function(d,i){
+			var circle = svg.select("#pop"+j).selectAll("circle").filter(function(d,i){
 				return sample.indexOf(d) >= 0;
-			})
-			.transition().duration(delay).style("fill", "#FF7148").attr("fill-opacity", 1).each('end', function(){
+			});
+			/*circle.transition().duration(delay).style("fill", "#FF7148").attr("fill-opacity", 1).each('end', function(){
 				d3.select(this).transition().duration(transitionSpeed).delay(delay)
 			  	.attr("cy", function(d, i){
 			    	return d.yPerSample[indexUpTo+1];
 				}).each('start', function(d){d3.select(this).style("fill", "#FF7148")}).each('end', function(d, i){ if(d == sample[0]){up2(indexUpTo, goUpTo, goSlow, jumps)}});
-			});
+			}); */
+			if(goSlow){
+				circle = circle.transition().delay(function(d,i){return delay/allInSample.length * allInSample.indexOf(d)}).duration(100).style("fill", "#FF7148").attr("fill-opacity", 1)
+				.transition().duration(function(d,i){return delay/allInSample.length * (allInSample.length - allInSample.indexOf(d))});
+			}else{
+				circle = circle.style("fill", "#FF7148").attr("fill-opacity", 1);
+			}
+			if(transitionSpeed <= 100){
+				circle.attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
+				.transition().duration(delay)
+				.transition().duration(transitionSpeed).attr("cy", function(d, i){return d.yPerSample[0]}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
+				.each('end', function(d, i){ if(d == sample[0]){down2(indexUpTo + jumps, goUpTo, goSlow, jumps)}});
+			}else{
+				circle.transition().duration(transitionSpeed).attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
+				.transition().duration(function(){if(goSlow){ return delay + transitionSpeed * 2} return delay})
+				.transition().duration(transitionSpeed).attr("cy", function(d, i){return d.yPerSample[0]}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
+				.each('end', function(d, i){ if(d == sample[0]){down2(indexUpTo + jumps, goUpTo, goSlow, jumps)}});
+			}
 		}
 		var sampMean = preCalculatedTStat.slice(indexUpTo+1, indexUpTo+jumps+1);
-
-
 		svg.select(".sampleLines").selectAll("line").filter(function(d, i){
 			return i == indexUpTo+1;
-		}).transition().duration(transitionSpeed).delay(delay*2).style("opacity",1);
+		}).transition().duration(transitionSpeed/2).delay(transitionSpeed*0.5+delay).style("opacity",1)
+			.transition().duration(delay)
+			.transition().duration(transitionSpeed).style("opacity",0);
 		svg.select(".sampleLines2").selectAll("line").filter(function(d, i){
 			return i == indexUpTo+1;
-		}).transition().duration(transitionSpeed).delay(delay*2).style("opacity",1);
+		}).transition().duration(transitionSpeed/2).delay(transitionSpeed*0.5+delay).style("opacity",1)
+			.transition().duration(delay)
+			.transition().duration(transitionSpeed).style("opacity",0);
 
-		svg.select(".sampleDiffs").selectAll("line").filter(function(d, i){
+		var diffLine = svg.select(".sampleDiffs").selectAll("line").filter(function(d, i){
 			return i == indexUpTo+1;
-		}).transition().duration(transitionSpeed).delay(delay*2).style("opacity",1);
+		}).transition().duration(transitionSpeed/2).delay(transitionSpeed*0.5+delay).style("opacity",1)
+			.transition().duration(delay);
+		if(!(transitionSpeed <= 100)){
+			diffLine.transition().duration(transitionSpeed).attr("x1",function(d){
+						var goTo = xScale2(d.value);
+						return goTo-d.value/2;
+					}).attr("x2",function(d){
+						var goTo = xScale2(d.value);
+						return goTo+d.value/2;
+					}).attr("y1", windowHelper.section3.bottom).attr("y2", windowHelper.section3.bottom).each('end', function(d){
+						var middle = windowHelper.section2.top +(windowHelper.section2.height/2) + radius * 2;
+						d3.select(this).attr("x1", function(d){
+						var r = xScale(d.s0);
+						return r;
+					}).attr("x2", function(d){
+						var r = xScale(d.s1);
+						return r;
+					})
+					.attr("y1", middle).attr("y2", middle)
+					.style("stroke-width", 2).style("stroke", "red").style("opacity",0);
+				});
+		}else{
+			diffLine.transition().duration(transitionSpeed).style("opacity",0);
+		}
 
 		svg.select(".meanOfSamples").selectAll("circle").filter(function(d, i){
 			return sampMean.indexOf(d) >= 0;
-		}).transition().delay(delay*2 + transitionSpeed).attr("fill-opacity",(transitionSpeed * 0.001)).attr("stroke-opacity",(transitionSpeed * 0.001)).each('end' ,function(d){d3.select(this).transition().duration(transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]})});
+		}).style("fill","red").transition().delay(function(d){ if(goSlow){return delay*3 + transitionSpeed}else{return transitionSpeed*2}}).attr("fill-opacity",1).attr("stroke-opacity",1).style("fill","#C7D0D5");
 	
 	}else{
 		animationState = 0;
 
 	}
-	index += 1;
+	index += jumps;
 	index = index % numSamples;
+	//setTimeout(function(){down2(indexUpTo + jumps, goUpTo, goSlow, jumps)}, transitionSpeed*3+delay);
 }
+/*
 function up2(indexUpTo, goUpTo, goSlow, jumps){
 	var svg = d3.select(".svg");
 	var newIdex = indexUpTo + jumps;
@@ -378,8 +418,8 @@ function up2(indexUpTo, goUpTo, goSlow, jumps){
 	var meanLines = svg.select(".sampleLines").selectAll("line").filter(function(d, i){
 		return sampMean.indexOf(d) >= 0;
 	});
-	meanLines.transition().duration(transitionSpeed).style("opacity",0.2).style("stroke", "steelblue"); */
-}
+	meanLines.transition().duration(transitionSpeed).style("opacity",0.2).style("stroke", "steelblue"); 
+} */
 
 function destroy2(){
 	d3.select(".svg").selectAll("*").remove();
@@ -406,6 +446,7 @@ function resetData2(){
 }
 
 function resetLines2(){
+	index = 1;
 	var svg = d3.select(".svg");
 		svg.select(".sampleLines").selectAll("line").style("opacity",0);
 		svg.select("#pop1").selectAll("circle").attr("cx", function(d, i) { 
