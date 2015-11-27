@@ -33,8 +33,8 @@ function loadData(){
 }
 
 function startOneMean(){
-	oneMean(inputData, "weightactual", "mean");
+	return (new oneMean(inputData, "weightactual", "mean"));
 }
 function startTwoMeans(){
-	twoMeans(inputData, "sex", "weightactual", "mean");
+	return (new twoMeans(inputData, "sex", "weightactual", "mean"));
 }
