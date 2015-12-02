@@ -38,3 +38,6 @@ function startOneMean(){
 function startTwoMeans(){
 	return (new twoMeans(inputData, "sex", "weightactual", "mean"));
 }
+function startOneProportion(){
+	return (new oneProportion(inputData, "ipod_t", "mean"));
+}
