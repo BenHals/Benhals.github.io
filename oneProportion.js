@@ -62,7 +62,7 @@ function oneProportion(inputData, heading, statistic){
 		var indexs = pickRand(sampleSize, population.length);
 		for(var k = 0; k<sampleSize;k++){
 			var value = population[indexs[k]]["group"];
-			if(!(value in groups)) groups[value] = 1;
+			if(!(value in groups)) groups[value] = 0;
 			groups[value] += 1;
 		}
 		var total = 0;
