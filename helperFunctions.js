@@ -132,4 +132,4 @@ for(var i = 0; i<numSamples;i++){
 return samples;
 }
 
-var colorByIndex = ["red","blue"];
+var colorByIndex = ["blue","red"];

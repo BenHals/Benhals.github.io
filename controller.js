@@ -18,6 +18,7 @@ function makeButtons(){
 	d3.select(".controls").append("input").attr("name", "back").attr("type", "button").attr("value","back ").attr("onClick", "dataScreen.destroy()");
 	oneMeanButton.remove();
 	twoMeanButton.remove();
+	oneProportionButton.remove();
 	dataScreen.setUpPopulation();
 	dataScreen.setUpSamples();
 	dataScreen.draw();
