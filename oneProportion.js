@@ -1,5 +1,5 @@
 
-function oneProportion(inputData, heading, statistic){
+function oneProportion(inputData, heading, focus){
 	this.radius = 5;
 	this.population = [];
 	this.populationStatistic = null;
@@ -14,22 +14,29 @@ function oneProportion(inputData, heading, statistic){
 	this.baseTransitionSpeed = 1000;
 	this.windowHelper = setUpWindow(this.radius);
 	this.barHeight = 100;
+	this.focusGroup = focus;
+	this.order = [focus,"Other"];
 
 	this.setUpPopulation = function(){
 		this.samples.push([]);
+		this.secondaryGroup = null;
 		var groups = {};
+		for(var j =0;j<this.order.length;j++){
+			groups[this.order[j]] = 0;
+		}
 		for(var i = 0; i<inputData.length;i++){
 			var value = inputData[i][heading];
-			if(!(value in groups)) groups[value] = 1;
+			if(!(value == this.focusGroup)) value = "Other";
+			if(!(value in groups)) groups[value] = 0;
 			groups[value] += 1;
 			var addItem = new item(0, i);
 			addItem.group = value;
 			this.population.push(addItem);
 		}
 		var total = 0;
-		for(var key in groups){
-			this.samples[0].push([total, groups[key]]);
-			total += groups[key];
+		for(var j =0;j<this.order.length;j++){
+			this.samples[0].push([total, groups[this.order[j]]]);
+			total += groups[this.order[j]];
 		}
 		this.xScale = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth]);
 		this.xScale.domain([0,1]);
@@ -58,6 +65,9 @@ function oneProportion(inputData, heading, statistic){
 	var samples = [];
 	for(var i = 0; i<numSamples;i++){
 		var groups = {};
+		for(var j =0;j<this.order.length;j++){
+			groups[this.order[j]] = 0;
+		}
 		samples.push([]);
 		var indexs = pickRand(sampleSize, population.length);
 		for(var k = 0; k<sampleSize;k++){
@@ -133,6 +143,13 @@ function oneProportion(inputData, heading, statistic){
 			.attr("x", function(d){return self.xScale((d[0] +(d[1]/2))/total)})
 			.attr("y", this.windowHelper.section1.bottom - this.barHeight)
 			.text(function(d){return d[1]})
+			.attr("fill",function(d,i){return colorByIndex[i]})
+			.style("font-size","32px")
+			.attr("text-anchor","middle");
+		groups.append("text")
+			.attr("x", function(d){return self.xScale((d[0] +(d[1]/2))/total)})
+			.attr("y", this.windowHelper.section1.bottom - this.barHeight - 32)
+			.text(function(d, i){return self.order[i]})
 			.attr("fill",function(d,i){return colorByIndex[i]})
 			.style("font-size","32px")
 			.attr("text-anchor","middle");
@@ -212,6 +229,7 @@ function oneProportion(inputData, heading, statistic){
 					}
 				}
 				var allInSample = randSelection[0].concat(randSelection[1]);
+				shuffle(allInSample);
 				var g1Circles = svg.select(".g1Circles").selectAll("circle").data(randSelection[0], function(d){return d});
 				g1Circles.exit().remove();
 				g1Circles.enter().append("circle");
