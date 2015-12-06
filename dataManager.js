@@ -41,3 +41,6 @@ function startTwoMeans(){
 function startOneProportion(){
 	return (new oneProportion(inputData, "ethnicity", "New Zealand European"));
 }
+function startSlope(){
+	return (new slope(inputData, "weightactual","weightideal"));
+}

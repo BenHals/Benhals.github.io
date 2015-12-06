@@ -9,8 +9,8 @@ function setUpWindow(radius){
 	windowHelper.section3 = new Object();
 
 	windowHelper.section1.height = windowHelper.height/3 - radius*2;
-	windowHelper.section2.height = windowHelper.height/6 - radius*2;
-	windowHelper.section3.height = windowHelper.height/2 - radius*4;
+	windowHelper.section2.height = windowHelper.height/3 - radius*2;
+	windowHelper.section3.height = windowHelper.height/3 - radius*2;
 
 	windowHelper.section1.top = 0 + radius;
 	windowHelper.section1.bottom = windowHelper.section1.top + windowHelper.section1.height;
@@ -131,5 +131,15 @@ for(var i = 0; i<numSamples;i++){
 }
 return samples;
 }
-
+function leastSquares(xSeries, ySeries){
+	var sumX = xSeries.reduce(function( prev, cur){return prev+cur});
+	var sumY = ySeries.reduce(function( prev, cur){return prev+cur});
+	var sumXY = xSeries.map(function(d,i){return d*ySeries[i]}).reduce(function( prev, cur){return prev+cur});
+	var sumXX = xSeries.map(function(d,i){return d*d}).reduce(function( prev, cur){return prev+cur});
+	var N = xSeries.length;
+	var slope = (N*sumXY - sumX*sumY)/(N*sumXX - sumX*sumX);
+	var intercept = (sumY - slope*sumX)/N;
+	return [slope, intercept];
+}
 var colorByIndex = ["blue","red"];
+//alert(leastSquares([60,61,62,63,65],[3.1,3.6,3.8,4,4.1]));

@@ -33,11 +33,17 @@ function oneProportionPressed(){
 	makeButtons();
 	
 }
+function slopePressed(){
+	dataScreen = startSlope();
+	makeButtons();
+	
+}
 function loadMain(){
 	dataScreen = null;
 	d3.select(".controls").selectAll("*").remove();
 	oneMeanButton = d3.select(".controls").append("input").attr("name", "oneMean").attr("type", "button").attr("value","Calculate one mean").attr("onClick", "oneMeanPressed()");
 	twoMeanButton = d3.select(".controls").append("input").attr("name", "twoMean").attr("type", "button").attr("value","Calculate two mean").attr("onClick", "twoMeanPressed()");
 	oneProportionButton = d3.select(".controls").append("input").attr("name", "oneProportion").attr("type", "button").attr("value","Calculate one Proportion").attr("onClick", "oneProportionPressed()");
+	slopeButton = d3.select(".controls").append("input").attr("name", "slope").attr("type", "button").attr("value","Calculate slope").attr("onClick", "slopePressed()");
 
 }
