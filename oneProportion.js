@@ -16,6 +16,7 @@ function oneProportion(inputData, heading, focus){
 	this.barHeight = 100;
 	this.focusGroup = focus;
 	this.order = [focus,"Other"];
+	this.samplesLines = [];
 
 	this.setUpPopulation = function(){
 		this.samples.push([]);
@@ -266,6 +267,7 @@ function oneProportion(inputData, heading, focus){
 			var g1Scale = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth*stat]).domain([0,pop[0][1]/this.total]);
 			var g2Scale = d3.scale.linear().range([this.windowHelper.innerWidth*stat,this.windowHelper.innerWidth]).domain([pop[1][0]/this.total,1]);
 			var scales = [g1Scale,g2Scale];
+			this.sampleLines.append(sample);
 			var meanLines = svg.select(".sampleLines").selectAll("line").data(sample);
 			meanLines.exit().remove();
 			meanLines.enter().append("line");

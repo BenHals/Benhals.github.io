@@ -17,6 +17,9 @@ function slope(inputData, headingX, headingY){
 	this.focusGroup = focus;
 	this.order = [focus,"Other"];
 	this.sampleSize = 20;
+	this.sampleLines = [];
+	this.maxHeight = 0;
+	this.maxWidth = 0;
 
 	this.setUpPopulation = function(){
 		this.samples.push([]);
@@ -32,6 +35,7 @@ function slope(inputData, headingX, headingY){
 			xValues.push(valueX);
 			yValues.push(valueY);
 		}
+		this.maxWidth = d3.max(xValues) + 50;
 		this.xScale = d3.scale.linear().range([0,this.windowHelper.innerWidth*0.7]);
 		this.xScale.domain([0,d3.max(xValues) + 50]);
 
@@ -66,12 +70,25 @@ function slope(inputData, headingX, headingY){
 			var xSeries = samples[i][0].map(function(d){return d[0]});
 			var ySeries = samples[i][0].map(function(d){return d[1]});
 			samples[i].push(leastSquares(xSeries,ySeries))
+			var mH = this.maxWidth*samples[i][1][0];
+			if(mH> this.maxHeight) this.maxHeight=mH;
+			this.yScale.domain([0,this.maxHeight]);
+			this.slopeScale.domain([0,(this.maxHeight/this.maxWidth)]);
+			this.preCalculatedTStat.push(new item(samples[i][1][0], i));
 		}
+		heapYValues3(this.preCalculatedTStat, this.slopeScale, this.radius, 0,this.windowHelper.innerWidth *0.02 ,this.windowHelper.innerWidth *0.23);
 		return samples;
 	}	
 
 
 	this.draw = function(){
+		var svg = d3.select(".svg");
+		svg.append("svg").attr("class","sampLines");
+
+		svg.append("svg").attr("class","popCircles");
+		svg.append("svg").attr("class","meanCircles");
+		svg.append("svg").attr("class","sampCircles");
+
 		this.drawPop();
 		this.drawSamples();
 
@@ -80,7 +97,7 @@ function slope(inputData, headingX, headingY){
 		var self = this;
 		var svg = d3.select(".svg");
 		var sample = this.samples[0];
-		var meanCircles = svg.select(".meanOfSamples").selectAll("circle").data(sample[0])
+		var meanCircles = svg.select(".sampCircles").selectAll("circle").data(sample[0])
 			.enter().append("circle")
 		    .attr("cx", function(d, i) { 
 		    	return self.xScale(d[0]) +25})
@@ -91,15 +108,25 @@ function slope(inputData, headingX, headingY){
 		    .attr("fill-opacity", 1)
 		    .attr("stroke","#556270")
 		    .attr("stroke-opacity",0);
-		var dataLine = svg.select(".meanOfSamples").selectAll("line").remove();
+		var dataLine = svg.select(".sampCircles").selectAll("line").remove();
 		var d = sample[1];
-		svg.select(".meanOfSamples").append("line")
+		svg.select(".sampCircles").append("line")
 				.attr("x1",this.xScale(0)+25)
 				.attr("y1",self.yScale(d[1]) + self.windowHelper.section2.top)
 				.attr("x2",this.xScale(this.xScale.domain()[1])+25)
 				.attr("y2",self.slopeScale(d[0]) +self.windowHelper.section2.top)
 				.style("stroke-width", 2).style("stroke", "black");
 
+		svg.select(".meanCircles").selectAll("circle").data(this.preCalculatedTStat).enter().append("circle")
+			    .attr("cx", function(d, i) { 
+			    	return self.windowHelper.innerWidth - d.yPerSample[0]})
+			    .attr("cy", function(d) {
+			    	return d.xPerSample[0] + self.windowHelper.section3.top; ;
+			    })
+			    .attr("r", function(d) { return self.radius; })
+			    .attr("fill-opacity", 0)
+			    .attr("stroke","#556270")
+			    .attr("stroke-opacity",0);
 	}
 	this.drawPop = function(){
 		var self = this;
@@ -120,9 +147,9 @@ function slope(inputData, headingX, headingY){
 		svg.append("g").attr("class","axis").attr("transform", "translate("+(25 +this.windowHelper.innerWidth*0.7)+","+this.windowHelper.section3.top+")").call(slopeAxis);
 
 		var test =this.xScale.domain();
-		svg.append("line").attr("x1",this.xScale(0)+25).attr("y1",this.yScale(this.populationStatistic[1])+this.radius*1).attr("x2",this.xScale(this.xScale.domain()[1])+25).attr("y2",this.slopeScale(this.populationStatistic[0]) +this.radius*1).style("stroke-width", 2).style("stroke", "black");
+		svg.select(".popCircles").append("line").attr("x1",this.xScale(0)+25).attr("y1",this.yScale(this.populationStatistic[1])+this.radius*1).attr("x2",this.xScale(this.xScale.domain()[1])+25).attr("y2",this.slopeScale(this.populationStatistic[0]) +this.radius*1).style("stroke-width", 2).style("stroke", "black");
 
-		svg.selectAll("circle").data(this.population)
+		svg.select(".popCircles").selectAll("circle").data(this.population)
 			.enter().append("circle")
 			.attr("cx",function(d){return self.xScale(d[0]) +25})
 			.attr("cy",function(d){return self.yScale(d[1]) + self.radius*1})
@@ -159,35 +186,90 @@ function slope(inputData, headingX, headingY){
 		var self = this;
 		var svg = d3.select(".svg");
 		var sample = this.samples[indexUpTo];
-		svg.select(".meanOfSamples").selectAll("circle").remove();
-		var meanCircles = svg.select(".meanOfSamples").selectAll("circle").data(sample[0])
+		var delay = 1000;
+		var pauseDelay = 1000;
+		svg.select(".sampCircles").selectAll("circle").remove();
+		var meanCircles = svg.select(".sampCircles").selectAll("circle").data(sample[0])
 			.enter().append("circle");
 		    meanCircles.attr("cx", function(d, i) { 
 		    	return self.xScale(d[0]) +25})
 		    .attr("cy", function(d) {
-		    	return self.yScale(d[1]) + self.radius*1 + self.windowHelper.section2.top;
+		    	if(goSlow){
+		    		return self.yScale(d[1]) - self.radius*1 + self.windowHelper.section1.top;
+		    	}else{
+		    		return self.yScale(d[1])+ self.windowHelper.section2.top;
+		    	}
 		    })
 		    .attr("r", function(d) { return self.radius; })
-		    .attr("fill-opacity", 1)
+		    .style("fill", "#FF7148")
+		    .attr("fill-opacity", 0)
 		    .attr("stroke","#556270")
 		    .attr("stroke-opacity",0);
-		var dataLine = svg.select(".meanOfSamples").selectAll("line").remove();
+		if(goSlow){
+				meanCircles.transition().delay(function(d,i){return delay*2/sample[0].length * sample[0].indexOf(d)}).duration(100).attr("fill-opacity", 1)
+				.transition().duration(function(d,i){return delay*2/sample[0].length * (sample[0].length - sample[0].indexOf(d))})
+				.transition().duration(pauseDelay)
+				.transition().duration(this.transitionSpeed).attr("cy", function(d) {return self.yScale(d[1])+ self.windowHelper.section2.top;});
+		}else{
+				meanCircles.attr("fill-opacity", 1);
+		}
+		var dataLine = svg.select(".sampCircles").selectAll("line").remove();
 		var d = sample[1];
-		svg.select(".meanOfSamples").append("line")
+		var sampLine =svg.select(".sampCircles").append("line")
 				.attr("x1",this.xScale(0)+25)
 				.attr("y1",self.yScale(d[1]) + self.windowHelper.section2.top)
 				.attr("x2",this.xScale(this.xScale.domain()[1])+25)
 				.attr("y2",self.slopeScale(d[0]) +self.windowHelper.section2.top)
-				.style("stroke-width", 2).style("stroke", "black");
+				.style("stroke-width", 2).style("stroke", "black").style("opacity",0);
+		if(goSlow){
+			sampLine.transition().delay(delay*2+pauseDelay+this.transitionSpeed).duration(this.transitionSpeed).style("opacity",1);
+		}else{
+			sampLine.style("opacity",1);
+		}
 
 
 			this.index += jumps;
+		this.sampleLines.push(d);
+		var sLines =svg.select(".sampLines").selectAll("line").data(this.sampleLines).style("opacity",0.2).style("stroke", "black");
+		sLines = sLines.enter().append("line");
+			sLines.attr("x1",this.xScale(0)+25)
+				.attr("y1",self.yScale(d[1]) + self.windowHelper.section2.top)
+				.attr("x2",this.xScale(this.xScale.domain()[1])+25)
+				.attr("y2",self.slopeScale(d[0]) +self.windowHelper.section2.top)
+				.style("stroke-width", 2).style("stroke", "steelblue")
+				.style("opacity",0);
+
+		if(goSlow){
+			sLines.transition().delay(delay*2+pauseDelay+this.transitionSpeed).duration(this.transitionSpeed).style("opacity",1)
+			.transition().duration(pauseDelay)
+			.transition().duration(this.transitionSpeed).attr("y1",self.yScale(0) + self.windowHelper.section3.top).attr("y2",self.slopeScale(d[0]) +self.windowHelper.section3.top);
+		}else{
+			sLines.attr("y1",self.yScale(0) + self.windowHelper.section3.top).attr("y2",self.slopeScale(d[0]) +self.windowHelper.section3.top).style("opacity",1);
+		}
+		var meanCircles = svg.select(".meanCircles").selectAll("circle").filter(function(d, i){
+			return (i>=indexUpTo) && (i <indexUpTo+jumps);
+		});
+		if(this.transitionSpeed <= 100){
+			meanCircles =meanCircles.style("fill","red").transition().duration(this.transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").style("fill","#C7D0D5");
+		}else{
+			if(goSlow){
+				meanCircles = meanCircles.transition().delay(delay*2+pauseDelay*2+this.transitionSpeed*3).attr("fill-opacity",(this.transitionSpeed * 0.001)).attr("stroke-opacity",(this.transitionSpeed * 0.001))
+				.transition().duration(this.transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue");
+			}else{
+				meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").transition().delay(this.transitionSpeed).duration(this.transitionSpeed);
+			}
+		}
+
+
 
 		setTimeout(function(){self.stepAnim(indexUpTo+jumps, goUpTo, goSlow, jumps)},100);
 		}else{
 			this.animationState = 0;
 
 		}
+
+
+
 	}
 
 	this.resetLines =function(){
@@ -195,7 +277,9 @@ function slope(inputData, headingX, headingY){
 		var self = this;
 		var svg = d3.select(".svg");
 		var meanLines = svg.select(".sampleLines").selectAll("line").attr("y1", this.windowHelper.section1.bottom+20).attr("y2", this.windowHelper.section1.bottom-20).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
-
+		this.sampleLines = [];
+		svg.select(".sampLines").selectAll("line").remove();
+		svg.select(".meanCircles").selectAll("circle").attr("fill-opacity",0).attr("stroke-opacity",0);
 		var meanCircles = svg.select(".meanOfSamples").selectAll("circle").remove();
 
 
