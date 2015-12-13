@@ -16,7 +16,6 @@ function oneProportion(inputData, heading, focus){
 	this.barHeight = 100;
 	this.focusGroup = focus;
 	this.order = [focus,"Other"];
-	this.samplesLines = [];
 
 	this.setUpPopulation = function(){
 		this.samples.push([]);
@@ -234,12 +233,12 @@ function oneProportion(inputData, heading, focus){
 				var g1Circles = svg.select(".g1Circles").selectAll("circle").data(randSelection[0], function(d){return d});
 				g1Circles.exit().remove();
 				g1Circles.enter().append("circle");
-				g1Circles.attr("cx",function(d){return self.xScale(d[0]/self.total)}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r",self.radius).style("fill",colorByIndex[0]).attr("fill-opacity",0);
+				g1Circles.attr("cx",function(d){return self.xScale(d[0]/self.total)}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r",self.radius).style("fill",colorByIndex[0]).attr("fill-opacity",0).attr("stroke-opacity",0);
 
 				var g2Circles = svg.select(".g2Circles").selectAll("circle").data(randSelection[1], function(d){return d});
 				g2Circles.exit().remove();
 				g2Circles.enter().append("circle");
-				g2Circles.attr("cx",function(d){return self.xScale(d[0]/self.total)}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r","5").style("fill",colorByIndex[1]).attr("fill-opacity",0);
+				g2Circles.attr("cx",function(d){return self.xScale(d[0]/self.total)}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r","5").style("fill",colorByIndex[1]).attr("fill-opacity",0).attr("stroke-opacity",0);
 
 
 
@@ -267,7 +266,6 @@ function oneProportion(inputData, heading, focus){
 			var g1Scale = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth*stat]).domain([0,pop[0][1]/this.total]);
 			var g2Scale = d3.scale.linear().range([this.windowHelper.innerWidth*stat,this.windowHelper.innerWidth]).domain([pop[1][0]/this.total,1]);
 			var scales = [g1Scale,g2Scale];
-			this.sampleLines.append(sample);
 			var meanLines = svg.select(".sampleLines").selectAll("line").data(sample);
 			meanLines.exit().remove();
 			meanLines.enter().append("line");

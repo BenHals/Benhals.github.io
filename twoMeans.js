@@ -215,7 +215,7 @@ this.stepAnim = function(indexUpTo, goUpTo, goSlow, jumps){
 		shuffle(allInSample);
 		for(var j =0;j<2;j++){
 			var sample = this.samples[j][indexUpTo];
-			var circle = svg.select("#pop"+j).selectAll("circle").filter(function(d,i){
+			var circle = svg.select("#pop"+j).selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0]}).style("fill", "#C7D0D5").attr("fill-opacity",0.1).filter(function(d,i){
 				return sample.indexOf(d) >= 0;
 			});
 			if(goSlow){
@@ -232,21 +232,21 @@ this.stepAnim = function(indexUpTo, goUpTo, goSlow, jumps){
 			}else{
 				circle.transition().duration(this.transitionSpeed).attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
 				.transition().duration(function(){if(goSlow){ return delay + self.transitionSpeed * 2} return delay})
-				.transition().duration(this.transitionSpeed).attr("cy", function(d, i){return d.yPerSample[0]}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
+				//.transition().duration(this.transitionSpeed).attr("cy", function(d, i){return d.yPerSample[0]}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
 				.each('end', function(d, i){ if(d == sample[0]){self.stepAnim(indexUpTo + jumps, goUpTo, goSlow, jumps)}});
 			}
 		}
 		var sampMean = this.preCalculatedTStat.slice(indexUpTo+1, indexUpTo+jumps+1);
-		svg.select(".sampleLines").selectAll("line").filter(function(d, i){
+		svg.select(".sampleLines").selectAll("line").style("opacity",0).filter(function(d, i){
 			return i == indexUpTo+1;
 		}).transition().duration(this.transitionSpeed/2).delay(this.transitionSpeed*0.5+delay).style("opacity",1)
 			.transition().duration(delay)
-			.transition().duration(this.transitionSpeed).style("opacity",0);
-		svg.select(".sampleLines2").selectAll("line").filter(function(d, i){
+			//.transition().duration(this.transitionSpeed).style("opacity",0);
+		svg.select(".sampleLines2").selectAll("line").style("opacity",0).filter(function(d, i){
 			return i == indexUpTo+1;
 		}).transition().duration(this.transitionSpeed/2).delay(this.transitionSpeed*0.5+delay).style("opacity",1)
-			.transition().duration(delay)
-			.transition().duration(this.transitionSpeed).style("opacity",0);
+			.transition().duration(delay);
+			//.transition().duration(this.transitionSpeed).style("opacity",0);
 
 		var diffLine = svg.select(".sampleDiffs").selectAll("line").filter(function(d, i){
 			return i == indexUpTo+1;

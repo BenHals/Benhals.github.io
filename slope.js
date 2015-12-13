@@ -147,12 +147,19 @@ function slope(inputData, headingX, headingY){
 		svg.append("g").attr("class","axis").attr("transform", "translate("+(25 +this.windowHelper.innerWidth*0.7)+","+this.windowHelper.section3.top+")").call(slopeAxis);
 
 		var test =this.xScale.domain();
-		svg.select(".popCircles").append("line").attr("x1",this.xScale(0)+25).attr("y1",this.yScale(this.populationStatistic[1])+this.radius*1).attr("x2",this.xScale(this.xScale.domain()[1])+25).attr("y2",this.slopeScale(this.populationStatistic[0]) +this.radius*1).style("stroke-width", 2).style("stroke", "black");
-
+		svg.select(".popCircles").append("line").attr("x1",this.xScale(0)+25).attr("y1",this.yScale(this.populationStatistic[1])).attr("x2",this.xScale(this.xScale.domain()[1])+25).attr("y2",this.slopeScale(this.populationStatistic[0])).style("stroke-width", 2).style("stroke", "black");
+		svg.select(".popCircles").append("text")
+			.attr("x", this.windowHelper.innerWidth*0.8)
+			.attr("y", this.windowHelper.section1.height * 0.5)
+			.text(this.populationStatistic[0])
+			.attr("fill","red")
+			.style("font-size","32px")
+			.attr("text-anchor","left")
+			.style("opacity",1);
 		svg.select(".popCircles").selectAll("circle").data(this.population)
 			.enter().append("circle")
 			.attr("cx",function(d){return self.xScale(d[0]) +25})
-			.attr("cy",function(d){return self.yScale(d[1]) + self.radius*1})
+			.attr("cy",function(d){return self.yScale(d[1])})
 			.attr("r",this.radius);
 	}
 	this.startAnim = function(repititions, goSlow){
@@ -188,7 +195,15 @@ function slope(inputData, headingX, headingY){
 		var sample = this.samples[indexUpTo];
 		var delay = 1000;
 		var pauseDelay = 1000;
-		svg.select(".sampCircles").selectAll("circle").remove();
+		svg.select(".sampCircles").selectAll("*").remove();
+		svg.select(".sampCircles").append("text")
+			.attr("x", this.windowHelper.innerWidth*0.8)
+			.attr("y", this.windowHelper.section1.height * 0.5 + this.windowHelper.section2.top)
+			.text(sample[1][0])
+			.attr("fill","red")
+			.style("font-size","32px")
+			.attr("text-anchor","left")
+			.style("opacity",1);
 		var meanCircles = svg.select(".sampCircles").selectAll("circle").data(sample[0])
 			.enter().append("circle");
 		    meanCircles.attr("cx", function(d, i) { 

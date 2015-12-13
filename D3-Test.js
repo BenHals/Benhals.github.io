@@ -70,7 +70,8 @@ function oneMean(inputData, heading, statistic){
 		svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section1.bottom + this.radius) + ")").call(xAxis);
 		svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section2.bottom + this.radius) + ")").call(xAxis);
 		svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section3.bottom + this.radius) + ")").call(xAxis);
-		var circle = svg.selectAll("circle").data(this.population);
+		svg.append("svg").attr("class","pop");
+		var circle = svg.select(".pop").selectAll("circle").data(this.population);
 		   circle.enter().append("circle")
 		    .attr("cx", function(d, i) { 
 		    	return d.xPerSample[0]; })
@@ -127,7 +128,7 @@ function oneMean(inputData, heading, statistic){
 				this.animationState = 0;
 				return
 			}
-			var circle = svg.selectAll("circle");
+			var circle = svg.select(".pop").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
 			var sample = this.samples[indexUpTo];
 			var delay = 1;
 			if(goSlow) delay = 1000;
@@ -146,7 +147,7 @@ function oneMean(inputData, heading, statistic){
 			}else{
 				circle = circle.transition().duration(this.transitionSpeed).attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
 				.transition().duration(delay)
-				.transition().duration(delay).attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
+				//.transition().duration(delay).attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
 				.each('end', function(d, i){ if(d == sample[0]){self.stepAnim(indexUpTo+jumps, goUpTo, goSlow, jumps)}});
 			}
 
