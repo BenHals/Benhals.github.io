@@ -25,7 +25,18 @@ input{
   clear: left;
 
 }
-#inputContainer{
+label {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  width:100%;
+  font-size: 1.25em;
+  font-weight: 500;
+    /*#18afe3*/
+  color: #094b85;
+  background-color: white;
+}
+.selectContainer{
   width:100%;
   height:auto;
   float: left;
@@ -33,7 +44,7 @@ input{
   overflow: hidden;
   
 }
-#inputContainer select{
+.selectContainer select{
     width:110%;
    background: transparent;
    padding: 5px;

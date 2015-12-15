@@ -83,11 +83,7 @@ function slope(inputData, headingX, headingY){
 
 	this.draw = function(){
 		var svg = d3.select(".svg");
-		svg.append("svg").attr("class","sampLines");
 
-		svg.append("svg").attr("class","popCircles");
-		svg.append("svg").attr("class","meanCircles");
-		svg.append("svg").attr("class","sampCircles");
 
 		this.drawPop();
 		this.drawSamples();
@@ -131,6 +127,11 @@ function slope(inputData, headingX, headingY){
 	this.drawPop = function(){
 		var self = this;
 		var svg = d3.select(".svg");
+		svg.append("svg").attr("class","sampLines");
+
+		svg.append("svg").attr("class","popCircles");
+		svg.append("svg").attr("class","meanCircles");
+		svg.append("svg").attr("class","sampCircles");
 		var xAxis = d3.svg.axis().scale(this.xScale);
 		var yAxis = d3.svg.axis().scale(this.yScale).orient("left");
 		var slopeAxis = d3.svg.axis().scale(this.slopeScale).orient("right");

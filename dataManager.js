@@ -38,14 +38,14 @@ function loadData(){
 function startOneMean(heading, stat){
 	return (new oneMean(inputData, heading, stat));
 }
-function startTwoMeans(heading, stat){
-	return (new twoMeans(inputData, "sex", "weightactual", "mean"));
+function startTwoMeans(headingN, headingC, stat){
+	return (new twoMeans(inputData, headingC, headingN, stat));
 }
 function startOneProportion(heading, valueBy){
 	return (new oneProportion(inputData, heading, valueBy));
 }
-function startSlope(heading, stat){
-	return (new slope(inputData, "weightactual","weightideal"));
+function startSlope(heading1, heading2){
+	return (new slope(inputData, heading1,heading2));
 }
 function getFile(inputFile){
 	var file = inputFile.target.files[0];
@@ -97,13 +97,28 @@ function varSelected(e){
 	}
 	if(numeretical.length ==1 && categorical.length == 0){
 		display = startOneMean(numeretical[0], "mean");
-		display.setUpPopulation();
-		display.drawPop();
+		visPreveiw(display);
+		//display.setUpPopulation();
+		//display.drawPop();
 	}
 	if(numeretical.length ==0 && categorical.length == 1){
 		var unique = dataSplit[categorical[0]].filter(onlyUnique);
 		display = startOneProportion(categorical[0], unique[0]);
-		display.setUpPopulation();
-		display.drawPop();
+		visPreveiw(display);
+		focusSelector(unique, categorical[0]);
+		//display.setUpPopulation();
+		//display.drawPop();
+	}
+	if(numeretical.length ==1 && categorical.length == 1){
+		display = startTwoMeans(numeretical[0],categorical[0],  "mean");
+		visPreveiw(display);
+		//display.setUpPopulation();
+		//display.drawPop();
+	}
+	if(numeretical.length ==2 && categorical.length == 0){
+		display = startSlope(numeretical[0],numeretical[1]);
+		visPreveiw(display);
+		//display.setUpPopulation();
+		//display.drawPop();
 	}
 }
