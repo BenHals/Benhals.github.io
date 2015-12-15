@@ -312,7 +312,7 @@ function slope(inputData, headingX, headingY){
 		d3.select(".svg").append("svg").attr("class","sampleLines");
 		d3.select(".svg").append("svg").attr("class","meanOfSamples");
 		this.resetData();
-		loadMain();
+		//loadMain();
 	}
 
 	this.resetData = function(){

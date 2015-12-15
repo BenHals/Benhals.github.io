@@ -10,7 +10,7 @@ function setUpWindow(radius){
 
 	windowHelper.section1.height = windowHelper.height/3 - radius*2;
 	windowHelper.section2.height = windowHelper.height/3 - radius*2;
-	windowHelper.section3.height = windowHelper.height/3 - radius*2;
+	windowHelper.section3.height = windowHelper.height/3 - radius*3;
 
 	windowHelper.section1.top = 0 + radius;
 	windowHelper.section1.bottom = windowHelper.section1.top + windowHelper.section1.height;
@@ -143,3 +143,6 @@ function leastSquares(xSeries, ySeries){
 }
 var colorByIndex = ["blue","red"];
 //alert(leastSquares([60,61,62,63,65],[3.1,3.6,3.8,4,4.1]));
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}

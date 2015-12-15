@@ -26,12 +26,14 @@ function oneMean(inputData, heading, statistic){
 
 		this.xScale = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth]);
 		this.xScale.domain([min,max]);
-	}
 
-	this.setUpSamples = function(){
 		this.populationStatistic = 0;
 		this.populationStatistic = getStatistic(statistic, this.population);
 		heapYValues3(this.population, this.xScale, this.radius, 0, this.windowHelper.section1.top, this.windowHelper.section1.bottom);
+	}
+
+	this.setUpSamples = function(){
+
 		this.samples = this.makeSamples(this.population, this.numSamples, 20);
 		for(var k = 0; k < this.numSamples;k++){
 			var stat = getStatistic(statistic, this.samples[k])
@@ -57,11 +59,13 @@ function oneMean(inputData, heading, statistic){
 	}
 	return samples;
 	}
-
-
 	this.draw = function(){
+		this.drawPop();
+		this.drawSamples();
+	}
+	this.drawPop = function(){
 		var self = this;
-		if(!this.statsDone) return;
+		//if(!this.statsDone) return;
 		var TRANSITIONSPEED = this.transitionSpeed;
 		var sampleMeans = [];
 		var svg = d3.select(".svg");
@@ -85,6 +89,13 @@ function oneMean(inputData, heading, statistic){
 
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", this.windowHelper.section1.bottom+20).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.section1.bottom-20).style("stroke-width", 2).style("stroke", "black");
 
+	}
+	this.drawSamples = function(){
+		var self = this;
+		if(!this.statsDone) return;
+		var TRANSITIONSPEED = this.transitionSpeed;
+		var sampleMeans = [];
+		var svg = d3.select(".svg");
 		var meanLines = svg.select(".sampleLines").selectAll("line").data(this.preCalculatedTStat)
 			.enter().append("line").attr("y1", this.windowHelper.section1.bottom+20).attr("y2", this.windowHelper.section1.bottom-20).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
 
@@ -216,7 +227,7 @@ function oneMean(inputData, heading, statistic){
 		d3.select(".svg").append("svg").attr("class","sampleLines");
 		d3.select(".svg").append("svg").attr("class","meanOfSamples");
 		this.resetData();
-		loadMain();
+		//loadMain();
 	}
 
 	this.resetData = function(){

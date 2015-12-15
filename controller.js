@@ -41,9 +41,25 @@ function slopePressed(){
 function loadMain(){
 	dataScreen = null;
 	d3.select(".controls").selectAll("*").remove();
-	oneMeanButton = d3.select(".controls").append("input").attr("name", "oneMean").attr("type", "button").attr("value","Calculate one mean").attr("onClick", "oneMeanPressed()");
-	twoMeanButton = d3.select(".controls").append("input").attr("name", "twoMean").attr("type", "button").attr("value","Calculate two mean").attr("onClick", "twoMeanPressed()");
-	oneProportionButton = d3.select(".controls").append("input").attr("name", "oneProportion").attr("type", "button").attr("value","Calculate one Proportion").attr("onClick", "oneProportionPressed()");
-	slopeButton = d3.select(".controls").append("input").attr("name", "slope").attr("type", "button").attr("value","Calculate slope").attr("onClick", "slopePressed()");
+	var importFileB = d3.select(".controls").append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
+	var label = d3.select(".controls").append("label").attr("for", "importButton").text("Choose a file");
+	var container = d3.select(".controls").append("div").attr("id","inputContainer");
+
+	var IB = document.getElementById("importButton");
+	IB.onchange = function(e){
+		getFile(e);
+	}
+	var selectMenu = d3.select("#inputContainer").append("select").attr("size",dataHeadings.length).attr("multiple","multiple").attr("id","selectMenu");
+		dataHeadings.forEach(function(e){
+		selectMenu.append("option").attr("value",e).text(e);
+	});
+	var SM = document.getElementById("selectMenu");
+	SM.onchange = function(e){
+		varSelected(e.target.selectedOptions);
+	}
+	//oneMeanButton = d3.select(".controls").append("input").attr("name", "oneMean").attr("type", "button").attr("value","Calculate one mean").attr("onClick", "oneMeanPressed()");
+	//twoMeanButton = d3.select(".controls").append("input").attr("name", "twoMean").attr("type", "button").attr("value","Calculate two mean").attr("onClick", "twoMeanPressed()");
+	//oneProportionButton = d3.select(".controls").append("input").attr("name", "oneProportion").attr("type", "button").attr("value","Calculate one Proportion").attr("onClick", "oneProportionPressed()");
+	//slopeButton = d3.select(".controls").append("input").attr("name", "slope").attr("type", "button").attr("value","Calculate slope").attr("onClick", "slopePressed()");
 
 }
