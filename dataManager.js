@@ -4,6 +4,7 @@ var dataType = [["number"],["group"]];
 var inputData = [];
 var dataHeadings = ["test","test","test","test","test"];
 var display = null;
+var stats = [["Mean","Median"],["proportion"],["slope"]];
 function loadData(){
 	dataSplit = [];
 	var lines = testingData.split('\n');
@@ -56,6 +57,8 @@ function getFile(inputFile){
 	dataSplit = {};
 	reader.onload = function(e){
 		var csv = e.target.result;
+		setUpDataVeiw(csv);
+		/*
 		var parsed = d3.csv.parse(csv);
 		inputData = parsed;
 		dataHeadings = [];
@@ -74,12 +77,55 @@ function getFile(inputFile){
 		var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
 		selectMenu.selectAll("*").remove();
 		dataHeadings.forEach(function(e){
-		selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")");
-	});
+			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")"); 
+		}); */
 	}
 
 }
+function setUpDataVeiw(csv){
+	var parsed = d3.csv.parse(csv);
+	inputData = parsed;
+	dataHeadings = [];
+	Object.keys(parsed[0]).forEach(function(d){dataHeadings.push([d,'n']); dataSplit[d] = []});
+	
+	inputData.forEach(function(row){
+		dataHeadings.forEach(function(heading){
+			dataSplit[heading[0]].push(row[heading[0]]);
+			if(isNaN(row[heading[0]])){
+				if(row[heading[0]] != "NA" && row[heading[0]] != "" && row[heading[0]] != " " && row[heading[0]] != "N\\A"){
+					heading[1] = 'c';
+				}
+			}
+		})
+	})
+	var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
+	selectMenu.selectAll("*").remove();
+	dataHeadings.forEach(function(e){
+		selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")");
+	});
+
+	d3.select(".controls").append("label").text("Sample Size");
+	d3.select(".controls").append("input").attr("type","text").attr("value","20").attr("id","sampsize");
+
+	d3.select(".controls").append("label").text("Statistic");
+	d3.select(".controls").append("select").attr("id","statSelect").append("option").text("Select variable");
+	var SSize = document.getElementById("sampsize");
+	SSize.onchange = function(e){
+		visPreveiw(display);
+	}
+	var SS = document.getElementById("statSelect");
+	SS.onchange = function(e){
+		display.changeStat(e.target.value);
+		visPreveiw(display);
+	}
+
+	d3.select(".controls").append("input").attr("type","button").attr("value","startVis").attr("class","bluebutton").attr("id","startButton").attr("disabled","true").attr("onClick","finishSetUp()");
+}
+function loadPresetData(){
+	setUpDataVeiw(testingData);
+}
 function varSelected(e){
+	d3.select("#startButton").attr("disabled", null);
 	if(display){
 		display.destroy();
 	}
@@ -98,8 +144,9 @@ function varSelected(e){
 		}
 	}
 	if(numeretical.length ==1 && categorical.length == 0){
-		display = startOneMean(numeretical[0], "mean");
+		display = startOneMean(numeretical[0], stats[0][0]);
 		visPreveiw(display);
+		setUpStatSelection(stats[0]);
 		//display.setUpPopulation();
 		//display.drawPop();
 	}
@@ -108,19 +155,34 @@ function varSelected(e){
 		display = startOneProportion(categorical[0], unique[0]);
 		visPreveiw(display);
 		focusSelector(unique, categorical[0]);
+		setUpStatSelection(stats[1]);
 		//display.setUpPopulation();
 		//display.drawPop();
 	}
 	if(numeretical.length ==1 && categorical.length == 1){
-		display = startTwoMeans(numeretical[0],categorical[0],  "mean");
+		display = startTwoMeans(numeretical[0],categorical[0],  stats[0][0]);
 		visPreveiw(display);
+		setUpStatSelection(stats[0]);
 		//display.setUpPopulation();
 		//display.drawPop();
 	}
 	if(numeretical.length ==2 && categorical.length == 0){
 		display = startSlope(numeretical[0],numeretical[1]);
 		visPreveiw(display);
+		setUpStatSelection(stats[2]);
 		//display.setUpPopulation();
 		//display.drawPop();
 	}
+}
+function setUpStatSelection(category){
+	var statSelection = d3.select("#statSelect");
+	statSelection.selectAll("*").remove();
+	var selectFirst = true;
+	category.forEach(function(c){
+		var nO = statSelection.append("option").attr("value",c).text(c);
+		if(selectFirst){
+			nO.attr("selected","selected");
+			selectFirst=false;
+		}
+	});
 }

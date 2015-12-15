@@ -19,7 +19,14 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 	this.sampleSize = 10;
 	this.windowHelper = setUpWindow(this.radius);
 	this.populations = {};
+	this.statistic = statistic;
+		this.popSetup = false;
+	this.sampSetup = false;
 
+	this.changeStat = function(newStatistic){
+		this.statistic = newStatistic;
+		this.destroy();
+	}
 	this.setUpPopulation = function(){
 		var max = null;
 		var min = null;
@@ -39,6 +46,7 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 			thisItem.yPerSample = {};
 			thisItem.id = i;
 			this.populations[thisItem.group].push(thisItem)
+
 		}
 		this.xScale = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth]);
 		this.xScale.domain([min,max]);
@@ -47,7 +55,7 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 			var top = (this.windowHelper.section1.top +(this.windowHelper.section1.height/this.groups.length) * j);
 			var bottom = (this.windowHelper.section1.top +(this.windowHelper.section1.height/this.groups.length) * (j + 1));
 			heapYValues3(this.populations[this.groups[j]], this.xScale, this.radius, 0, top,bottom);
-			var stat = getStatistic(statistic,this.populations[this.groups[j]]);
+			var stat = getStatistic(this.statistic,this.populations[this.groups[j]]);
 			this.groupStats[this.groups[j]] = stat;
 			s.push(stat);
 		}
@@ -56,11 +64,16 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 			newItem.s0 = s[0];
 			newItem.s1 = s[1];
 			this.preCalculatedTStat.push(newItem);
+			this.popSetup = true;
 
 	}
-	this.setUpSamples = function(){
+	this.setUpSamples = function(sSize){
+		if(sSize >= this.populations[this.groups[0]].length){
+			alert("Sample size is too large for the poplation");
+			return;
+		}
 		if(this.groups.length == 2){
-			var range = this.makeSample(this.populations, this.numSamples, this.sampleSize,statistic);
+			var range = this.makeSample(this.populations, this.numSamples, sSize,this.statistic);
 			this.xScale2 = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth]);
 			this.xScale2.domain(range);
 			for(var j =0;j<2;j++){
@@ -73,6 +86,7 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 			heapYValues3(this.preCalculatedTStat,this.xScale2,this.radius,0,this.windowHelper.section3.top,this.windowHelper.section3.bottom);
 		}
 		this.statsDone = true;
+		this.sampSetup = true;
 	}
 
 
@@ -114,6 +128,7 @@ this.draw = function(){
 	this.drawSample();
 }
 this.drawPop = function(){
+	if(!this.popSetup) return;
 	var self = this;
 	var TRANSITIONSPEED = 1000;
 	var sampleMeans = [];
@@ -141,6 +156,7 @@ this.drawPop = function(){
 	} 
 }
 this.drawSample = function(){
+	if(!this.sampSetup) return;
 	var self = this;
 	var svg = d3.select(".svg");
 	if(this.groups.length > 2) return;

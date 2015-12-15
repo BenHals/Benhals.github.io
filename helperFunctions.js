@@ -51,7 +51,7 @@ function heapYValues3(itemsToHeap, xScale, radius, sampleIndex, areaTopY, areaBo
 }
 
 function getStatistic(stat, items){
-	if(stat =="mean"){
+	if(stat =="Mean"){
 		var mean = 0;
 		for(var i =0;i<items.length;i++){
 			mean += items[i].value;
@@ -60,6 +60,16 @@ function getStatistic(stat, items){
 			alert("wat");
 		}
 		return mean/items.length;
+	}
+	if(stat =="Median"){
+		if(items.length == 1) return items[0].value;
+		items.sort(function(a,b){return a.value - b.value});
+		var item = items[Math.round(items.length/2)];
+		if(!item){
+			alert("wat");
+		}
+		var med = item.value;
+		return med;
 	}
 }
 

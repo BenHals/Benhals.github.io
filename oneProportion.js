@@ -16,6 +16,9 @@ function oneProportion(inputData, heading, focus){
 	this.barHeight = 100;
 	this.focusGroup = focus;
 	this.order = [focus,"Other"];
+		this.popSetup = false;
+	this.sampSetup = false;
+
 
 	this.setUpPopulation = function(){
 		this.samples.push([]);
@@ -40,14 +43,19 @@ function oneProportion(inputData, heading, focus){
 		}
 		this.xScale = d3.scale.linear().range([this.radius,this.windowHelper.innerWidth]);
 		this.xScale.domain([0,1]);
+		this.popSetup = true;
 	}
 
-	this.setUpSamples = function(){
+	this.setUpSamples = function(sSize){
+		if(sSize >= this.population.length){
+			alert("Sample size is too large for the poplation");
+			return;
+		}
 		var lastElement = this.samples[0][this.samples[0].length -1];
 		this.total = lastElement[0] + lastElement[1];
 		this.populationStatistic = 0;
 		this.populationStatistic =	this.xScale(lastElement[0]/ (lastElement[1]+lastElement[0]));
-		this.samples = this.samples.concat(this.makeSamples(this.population, this.numSamples, 20));
+		this.samples = this.samples.concat(this.makeSamples(this.population, this.numSamples, sSize));
 		for(var k = 0; k < this.numSamples;k++){
 			lastElement = this.samples[k+1][this.samples[0].length -1];
 			var stat = lastElement[0]/ (lastElement[1]+lastElement[0]);
@@ -56,6 +64,7 @@ function oneProportion(inputData, heading, focus){
 		heapYValues3(this.preCalculatedTStat, this.xScale, this.radius, 0, this.windowHelper.section3.top,this.windowHelper.section3.bottom);
 
 		this.statsDone = true;
+		this.sampSetup = true;
 	}
 
 
@@ -94,6 +103,7 @@ function oneProportion(inputData, heading, focus){
 
 	}
 	this.drawSamples = function(){
+		if(!this.sampSetup) return;
 				var self = this;
 		var svg = d3.select(".svg");
 		/*var meanLines = svg.select(".sampleLines").selectAll("line").data(this.preCalculatedTStat)
@@ -112,7 +122,7 @@ function oneProportion(inputData, heading, focus){
 			    .attr("stroke-opacity",0);
 	}
 	this.drawPop = function(){
-
+		if(!this.popSetup) return;
 		var self = this;
 		//if(!this.statsDone) return;
 		var svg = d3.select(".svg");
@@ -358,7 +368,7 @@ function oneProportion(inputData, heading, focus){
 		this.radius = 5;
 		this.population = [];
 		this.populationStatistic = null;
-		this.samples = null;
+		this.samples = [];
 		this.preCalculatedTStat = [];		
 		this.transitionSpeed = 1000;
 		this.index = 0;

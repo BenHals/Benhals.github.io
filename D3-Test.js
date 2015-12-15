@@ -13,7 +13,15 @@ function oneMean(inputData, heading, statistic){
 	this.animationState = 0;
 	this.baseTransitionSpeed = 1000;
 	this.windowHelper = setUpWindow(this.radius);
+	this.statistic = statistic;
+		this.popSetup = false;
+	this.sampSetup = false;
 
+
+	this.changeStat = function(newStatistic){
+		this.statistic = newStatistic;
+		this.destroy();
+	}
 	this.setUpPopulation = function(){
 		var max = null;
 		var min = null;
@@ -29,21 +37,26 @@ function oneMean(inputData, heading, statistic){
 		this.xScale.domain([min,max]);
 
 		this.populationStatistic = 0;
-		this.populationStatistic = getStatistic(statistic, this.population);
+		this.populationStatistic = getStatistic(this.statistic, this.population);
 		heapYValues3(this.population, this.xScale, this.radius, 0, this.windowHelper.section1.top, this.windowHelper.section1.bottom);
+		this.popSetup = true;
 	}
 
-	this.setUpSamples = function(){
-
-		this.samples = this.makeSamples(this.population, this.numSamples, 20);
+	this.setUpSamples = function(sSize){
+		if(sSize >= this.population.length){
+			alert("Sample size is too large for the poplation");
+			return;
+		}
+		this.samples = this.makeSamples(this.population, this.numSamples, sSize);
 		for(var k = 0; k < this.numSamples;k++){
-			var stat = getStatistic(statistic, this.samples[k])
+			var stat = getStatistic(this.statistic, this.samples[k])
 			heapYValues3(this.samples[k], this.xScale,this.radius, k+1, this.windowHelper.section2.top, this.windowHelper.section2.bottom);
 			this.preCalculatedTStat.push(new item(stat, k));
 		}
 		heapYValues3(this.preCalculatedTStat, this.xScale, this.radius, 0, this.windowHelper.section3.top,this.windowHelper.section3.bottom);
 
 		this.statsDone = true;
+		this.sampSetup = true;
 	}
 
 
@@ -65,6 +78,7 @@ function oneMean(inputData, heading, statistic){
 		this.drawSamples();
 	}
 	this.drawPop = function(){
+		if(!this.popSetup) return;
 		var self = this;
 		//if(!this.statsDone) return;
 		var TRANSITIONSPEED = this.transitionSpeed;
@@ -92,6 +106,7 @@ function oneMean(inputData, heading, statistic){
 
 	}
 	this.drawSamples = function(){
+		if(!this.sampSetup) return;
 		var self = this;
 		if(!this.statsDone) return;
 		var TRANSITIONSPEED = this.transitionSpeed;

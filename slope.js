@@ -20,6 +20,8 @@ function slope(inputData, headingX, headingY){
 	this.sampleLines = [];
 	this.maxHeight = 0;
 	this.maxWidth = 0;
+	this.popSetup = false;
+	this.sampSetup = false;
 
 	this.setUpPopulation = function(){
 		this.samples.push([]);
@@ -51,10 +53,16 @@ function slope(inputData, headingX, headingY){
 		var xSeries = this.population.map(function(d){return d[0]});
 		var ySeries = this.population.map(function(d){return d[1]});
 		this.populationStatistic =	leastSquares(xSeries,ySeries);
-	}
+		this.popSetup = true;
+	}	
 
-	this.setUpSamples = function(){
-		this.samples = this.makeSamples(this.population, this.numSamples, this.sampleSize);
+	this.setUpSamples = function(sSize){
+		if(sSize >= this.population.length){
+			alert("Sample size is too large for the poplation");
+			return;
+		}
+		this.samples = this.makeSamples(this.population, this.numSamples, sSize);
+		this.sampSetup = true;
 	}
 
 
@@ -85,13 +93,12 @@ function slope(inputData, headingX, headingY){
 
 	this.draw = function(){
 		var svg = d3.select(".svg");
-
-
 		this.drawPop();
 		this.drawSamples();
 
 	}
 	this.drawSamples = function(){
+		if(!this.sampSetup) return;
 		var self = this;
 		var svg = d3.select(".svg");
 		var sample = this.samples[0];
@@ -127,6 +134,7 @@ function slope(inputData, headingX, headingY){
 			    .attr("stroke-opacity",0);
 	}
 	this.drawPop = function(){
+		if(!this.popSetup) return;
 		var self = this;
 		var svg = d3.select(".svg");
 		svg.append("svg").attr("class","sampLines");
@@ -324,7 +332,7 @@ function slope(inputData, headingX, headingY){
 		this.radius = 5;
 		this.population = [];
 		this.populationStatistic = null;
-		this.samples = null;
+		this.samples = [];
 		this.preCalculatedTStat = [];		
 		this.transitionSpeed = 1000;
 		this.index = 0;
