@@ -19,6 +19,7 @@ function oneMean(inputData, heading, statistic){
 		var min = null;
 		for(var i = 0; i<inputData.length;i++){
 			var value = +inputData[i][heading];
+			if(isNaN(value)) continue;
 			if(max == null | value > max) max = value;
 			if(min == null | value < min) min = value;
 			this.population.push(new item(value, i));

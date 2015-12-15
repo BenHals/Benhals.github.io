@@ -65,7 +65,9 @@ function getFile(inputFile){
 			dataHeadings.forEach(function(heading){
 				dataSplit[heading[0]].push(row[heading[0]]);
 				if(isNaN(row[heading[0]])){
-					heading[1] = 'c';
+					if(row[heading[0]] != "NA" && row[heading[0]] != "" && row[heading[0]] != " " && row[heading[0]] != "N\\A"){
+						heading[1] = 'c';
+					}
 				}
 			})
 		})

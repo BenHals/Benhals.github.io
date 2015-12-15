@@ -32,6 +32,7 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 			}
 			thisItem.group = inputItem[headingGroup];
 			thisItem.value = +inputItem[headingContinuous];
+			if(isNaN(thisItem.value)) continue;
 			if(max == null | thisItem.value > max) max = thisItem.value;
 			if(min == null | thisItem.value < min) min = thisItem.value;
 			thisItem.xPerSample = {};

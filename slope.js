@@ -28,6 +28,8 @@ function slope(inputData, headingX, headingY){
 		for(var i = 0; i<inputData.length;i++){
 			var valueX = +inputData[i][headingX];
 			var valueY = +inputData[i][headingY];
+			if(isNaN(valueX)) continue;
+			if(isNaN(valueY)) continue;
 			var addItem = new item(0, i);
 			addItem.valueX = valueX;
 			addItem.valueY = valueY;
