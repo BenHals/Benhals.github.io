@@ -1,3 +1,9 @@
+function buttonController(buttonString){
+	var fn = buttonString.split("(")[0];
+	var params = buttonString.split("(")[1].split(")")[0];
+	mainControl.fn(params);
+}
+
 function setUpWindow(radius){
 	var windowHelper = new Object();
 	windowHelper.width = window.innerWidth*0.8;

@@ -18,6 +18,7 @@ function oneProportion(inputData, heading, focus){
 	this.order = [focus,"Other"];
 		this.popSetup = false;
 	this.sampSetup = false;
+	this.category = heading;
 
 
 	this.setUpPopulation = function(){
