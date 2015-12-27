@@ -10,14 +10,38 @@ function view(controller){
 	this.leaveVis = function(){
 		d3.select("#visControls").remove();
 	}
+	this.setUpTab2 = function(){
+		var tab2Top = d3.select("#tab2Top");
+		tab2Top.selectAll("*").remove();
+		tab2Top.append("input").attr("type","button").attr("value","< Back").attr("class","bluebutton").attr("id","backTab2").attr("disabled",null).attr("onClick","mainControl.switchTab1()")
+			.style("height","15%");
+		tab2Top.append("label").text("Sample Size");
+		tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
+
+		tab2Top.append("label").text("Statistic");
+		tab2Top.append("select").attr("id","statSelect").append("option").text("Select variable");
+		var SSize = document.getElementById("sampsize");
+		SSize.onchange = function(e){
+			controller.startVisPreveiw();
+		}
+		var SS = document.getElementById("statSelect");
+		SS.onchange = function(e){
+			controller.statChanged(e);
+		}
+		tab2Top.append("input").attr("type","button").attr("value","Calculate").attr("class","bluebutton").attr("id","Calculate").attr("disabled",null).attr("onClick","mainControl.startVisPressed()")
+			.style("height","15%");
+	}
 	this.makeButtons = function(){
-		var vs = d3.select(".controls").append("div").attr("id","visControls");
-		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "controller.startAnimation(1,true)");
-		vs.append("input").attr("name", "do10").attr("type", "button").attr("value","10 samples").attr("onClick", "controller.startAnimation(10, false)");
-		vs.append("input").attr("name", "do1000").attr("type", "button").attr("value","1000 samples").attr("onClick", "controller.startAnimation(1000, false)");
-		vs.append("input").attr("name", "resetLines").attr("type", "button").attr("value","reset lines ").attr("onClick", "controller.resetScreen()");
-		vs.append("input").attr("name", "stop").attr("type", "button").attr("value","stop ").attr("onClick", "controller.stopPressed()");
-		vs.append("input").attr("name", "back").attr("type", "button").attr("value","back ").attr("onClick", "controller.backPressed()");
+
+
+		var tab2 = d3.select("#tab2");
+		var vs = tab2.select("#tab2Mid").append("div").attr("id","visControls");
+		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "mainControl.startAnimation(1,true)");
+		vs.append("input").attr("name", "do10").attr("type", "button").attr("value","10 samples").attr("onClick", "mainControl.startAnimation(10, false)");
+		vs.append("input").attr("name", "do1000").attr("type", "button").attr("value","1000 samples").attr("onClick", "mainControl.startAnimation(1000, false)");
+		vs.append("input").attr("name", "resetLines").attr("type", "button").attr("value","reset lines ").attr("onClick", "mainControl.resetScreen()");
+		vs.append("input").attr("name", "stop").attr("type", "button").attr("value","stop ").attr("onClick", "mainControl.stopPressed()");
+		//vs.append("input").attr("name", "back").attr("type", "button").attr("value","back ").attr("onClick", "mainControl.backPressed()");
 	}
 	/*this.twoMeanPressed = function(){
 		this.dataScreen = startTwoMeans();
@@ -40,11 +64,17 @@ function view(controller){
 	}*/
 	this.loadMain = function(dataHeadings){
 		d3.select(".controls").selectAll("*").remove();
-		var importFileB = d3.select(".controls").append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
-		var label = d3.select(".controls").append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
-		var usePreset = d3.select(".controls").append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
-		var container = d3.select(".controls").append("div").attr("id","inputContainer").attr("class","selectContainer");
-		var focusContainer = d3.select(".controls").append("div").attr("id","focusContainer").attr("class","selectContainer");
+		var tab1 = d3.select(".controls").append("div").attr("id","tab1").attr("class","tab");
+		var tab2 = d3.select(".controls").append("div").attr("id","tab2").attr("class","tab");
+		tab1.style("display","block");
+		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Top");
+		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Mid");
+		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Bot");
+		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
+		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
+		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
+		var container = tab1.append("div").attr("id","inputContainer").attr("class","selectContainer");
+		var focusContainer = tab1.append("div").attr("id","focusContainer").attr("class","selectContainer");
 
 		var IB = document.getElementById("importButton");
 		IB.onchange = function(e){
@@ -77,31 +107,21 @@ function view(controller){
 	}
 
 	this.finishSetUp = function(){
-		d3.select("#startButton").style("background-color","green");
+		//d3.select("#startButton").style("background-color","green");
 		this.makeButtons();
+		//var tab1 = d3.select("#tab1");
+		//tab1.style("display","none");
 	}
 	this.setUpDataVeiw = function(dataHeadings){
+
 		var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
 		selectMenu.selectAll("*").remove();
 		dataHeadings.forEach(function(e){
 			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")");
 		});
 
-		d3.select(".controls").append("label").text("Sample Size");
-		d3.select(".controls").append("input").attr("type","text").attr("value","20").attr("id","sampsize");
 
-		d3.select(".controls").append("label").text("Statistic");
-		d3.select(".controls").append("select").attr("id","statSelect").append("option").text("Select variable");
-		var SSize = document.getElementById("sampsize");
-		SSize.onchange = function(e){
-			controller.startVisPreveiw();
-		}
-		var SS = document.getElementById("statSelect");
-		SS.onchange = function(e){
-			controller.statChanged(e);
-		}
-
-		d3.select(".controls").append("input").attr("type","button").attr("value","startVis").attr("class","bluebutton").attr("id","startButton").attr("disabled","true").attr("onClick","controller.startVisPressed");
+		d3.select("#tab1").append("input").attr("type","button").attr("value","Analyse").attr("class","bluebutton").attr("id","startButton").attr("disabled","true").attr("onClick","mainControl.switchTab2()");
 	}
 	this.setUpStatSelection = function(category){
 		var statSelection = d3.select("#statSelect");

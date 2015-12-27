@@ -8,6 +8,7 @@ function model(controller){
 	this.display = null;
 	this.stats = [["Mean","Median"],["proportion"],["slope"]];
 	this.controller = controller;
+	this.currentCategory = null;
 
 	this.visualisations = [{name:"oneMean", numeretical:1,categorical:0,stats:0,setupParams:function(num, cat, modelObj){return new oneMean(modelObj.inputData, num[0], modelObj.stats[0][0])}},
 	{name:"twoMeans", numeretical:1,categorical:1,stats:0,setupParams:function(num, cat, modelObj){return new twoMeans(modelObj.inputData, cat[0], num[0], modelObj.stats[0][0])}},
@@ -102,7 +103,8 @@ function model(controller){
 			if(vis.numeretical == numeretical.length && vis.categorical == categorical.length){
 				this.display = vis.setupParams(numeretical,categorical,this);
 				controller.startVisPreveiw();
-				controller.setUpStatSelection(this.stats[vis.stats]);
+				this.currentCategory = vis.stats;
+				//controller.setUpStatSelection(this.stats[vis.stats]);
 			}
 		}
 		/*

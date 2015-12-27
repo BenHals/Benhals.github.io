@@ -17,9 +17,10 @@ function controller(){
 		this.model.display.setUpPopulation();
 		this.model.display.setUpSamples(sampleSize);
 		this.model.display.draw();
-		this.view.makeButtons();
+		this.view.finishSetUp();
 	}
 	this.startVisPreveiw = function(){
+		d3.select("#Calculate").attr("disabled", null);
 		this.view.visPreveiw();
 		this.model.display.setUpPopulation();
 		this.model.display.drawPop();
@@ -53,7 +54,9 @@ function controller(){
 		this.startVisPreveiw();
 	}
 	this.startVisPressed = function(){
-		this.view.finishSetUp();
+		//this.view.finishSetUp();
+		this.startVisFull();
+		d3.select("#Calculate").attr("disabled", true);
 	}
 	this.setUpDataVeiw = function(csv){
 		var self = this;
@@ -65,6 +68,18 @@ function controller(){
 	}
 	this.makeFocusSelector = function(unique, cat){
 		this.view.focusSelector(unique, cat);
+	}
+	this.switchTab2 = function(){
+		d3.select("#tab1").style("display","none");
+		d3.select("#tab2").style("display","block");
+		this.view.setUpTab2();
+		this.setUpStatSelection(this.model.stats[this.model.currentCategory])
+	}
+	this.switchTab1 = function(){
+		d3.select("#tab1").style("display","block");
+		d3.select("#tab2").style("display","none");
+		//this.view.makeButtons();
+		//this.setUpStatSelection(this.model.stats[this.model.currentCategory])
 	}
 }
 
