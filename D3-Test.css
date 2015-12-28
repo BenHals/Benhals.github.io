@@ -157,3 +157,19 @@ select {
   display:block;
   height:100%;
 }
+.repSelect{
+  display: inline-block;
+  width:auto;
+  float:left;
+  margin-right: 5%;
+  margin-top: 5%;
+}
+.repLabel {
+  display: inline-block;
+  width: auto;
+  float:left;
+  font-size: 0.75em;
+  font-weight: 500;
+  color:black;
+  margin-top: 5%;
+}

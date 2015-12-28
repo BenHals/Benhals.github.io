@@ -35,12 +35,37 @@ function view(controller){
 
 
 		var tab2 = d3.select("#tab2");
-		var vs = tab2.select("#tab2Mid").append("div").attr("id","visControls");
+		var vs = tab2.select("#tab2Mid").append("div").attr("id","visControls1");
+		vs.append("label").text("Sampling");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1").attr("id","sampOne").attr("class","repSelect").attr("checked",true).text("1");
+		vs.append("label").attr("for","sampOne").attr("class","repLabel").text("1");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","5").attr("id","sampFive").attr("class","repSelect").text("5");
+		vs.append("label").attr("for","sampFive").attr("class","repLabel").text("5");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","20").attr("id","sampTwenty").attr("class","repSelect").text("20");
+		vs.append("label").attr("for","sampTwenty").attr("class","repLabel").text("20");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1000").attr("id","sampThousand").attr("class","repSelect").text("1000");
+		vs.append("label").attr("for","sampThousand").attr("class","repLabel").text("1000");
+		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").attr("id","startSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(false)")
+			.style("height","15%");
+
+		vs = tab2.select("#tab2Bot").append("div").attr("id","visControls2");
+		vs.append("label").text("Sampling Distribution");
+		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","1").attr("id","distOne").attr("class","repSelect").attr("checked",true).text("1");
+		vs.append("label").attr("for","distOne").attr("class","repLabel").text("1");
+		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","5").attr("id","distFive").attr("class","repSelect").text("5");
+		vs.append("label").attr("for","distFive").attr("class","repLabel").text("5");
+		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","20").attr("id","distTwenty").attr("class","repSelect").text("20");
+		vs.append("label").attr("for","distTwenty").attr("class","repLabel").text("20");
+		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","1000").attr("id","distThousand").attr("class","repSelect").text("1000");
+		vs.append("label").attr("for","distThousand").attr("class","repLabel").text("1000");
+		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").attr("id","distSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(true)")
+			.style("height","15%");
+		/*
 		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "mainControl.startAnimation(1,true)");
 		vs.append("input").attr("name", "do10").attr("type", "button").attr("value","10 samples").attr("onClick", "mainControl.startAnimation(10, false)");
 		vs.append("input").attr("name", "do1000").attr("type", "button").attr("value","1000 samples").attr("onClick", "mainControl.startAnimation(1000, false)");
 		vs.append("input").attr("name", "resetLines").attr("type", "button").attr("value","reset lines ").attr("onClick", "mainControl.resetScreen()");
-		vs.append("input").attr("name", "stop").attr("type", "button").attr("value","stop ").attr("onClick", "mainControl.stopPressed()");
+		vs.append("input").attr("name", "stop").attr("type", "button").attr("value","stop ").attr("onClick", "mainControl.stopPressed()"); */
 		//vs.append("input").attr("name", "back").attr("type", "button").attr("value","back ").attr("onClick", "mainControl.backPressed()");
 	}
 	/*this.twoMeanPressed = function(){

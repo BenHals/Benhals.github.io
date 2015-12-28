@@ -20,13 +20,17 @@ function setUpWindow(radius){
 
 	windowHelper.section1.top = 0 + radius;
 	windowHelper.section1.bottom = windowHelper.section1.top + windowHelper.section1.height;
+	windowHelper.section1.twoThird = windowHelper.section1.top + windowHelper.section1.height/3 *2;
 
 	windowHelper.section2.top = windowHelper.section1.bottom + radius;
 	windowHelper.section2.bottom = windowHelper.section2.top + windowHelper.section2.height;
+	windowHelper.section2.twoThird = windowHelper.section2.top + windowHelper.section2.height/3 *2;
 
 	windowHelper.section3.top = windowHelper.section2.bottom + radius;
 	windowHelper.section3.bottom = windowHelper.section3.top + windowHelper.section3.height;
+	windowHelper.section3.twoThird = windowHelper.section3.top + windowHelper.section3.height/3 *2;
 
+	windowHelper.lineHeight = windowHelper.section1.height /5;
 	return windowHelper;
 }
 

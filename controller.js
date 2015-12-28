@@ -5,8 +5,8 @@ function controller(){
 	this.model = new model(this);
 	this.model.loadData();
 	this.view.loadMain(this.model.dataHeadings);
-	this.startAnimation = function(numReps, goSlow){
-		this.model.display.startAnim(numReps, goSlow);
+	this.startAnimation = function(numReps, goSlow, incDist){
+		this.model.display.startAnim(numReps, goSlow, incDist);
 	}
 	this.resetScreen = function(){
 		this.model.display.resetLines();
@@ -21,6 +21,8 @@ function controller(){
 	}
 	this.startVisPreveiw = function(){
 		d3.select("#Calculate").attr("disabled", null);
+		d3.select("#tab2Mid").selectAll("*").remove();
+		d3.select("#tab2Bot").selectAll("*").remove();
 		this.view.visPreveiw();
 		this.model.display.setUpPopulation();
 		this.model.display.drawPop();
@@ -80,6 +82,23 @@ function controller(){
 		d3.select("#tab2").style("display","none");
 		//this.view.makeButtons();
 		//this.setUpStatSelection(this.model.stats[this.model.currentCategory])
+	}
+	this.startSampling = function(incDist){
+		var name = "Sampling";
+		if(incDist) name = "Dist";
+		var radios = document.getElementsByName(name);
+		var numRepitions = 0;
+		for(var i =0; i<radios.length;i++){
+			if(radios[i].checked){
+				numRepitions = parseInt(radios[i].value,10);
+				break;
+			}
+		}
+		var goSlow = false;
+		if(numRepitions < 10 && !(incDist && numRepitions == 5)){
+			goSlow = true;
+		}
+		this.startAnimation(numRepitions, goSlow, incDist);
 	}
 }
 
