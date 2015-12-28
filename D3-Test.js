@@ -81,6 +81,7 @@ function oneMean(inputData, heading, statistic){
 		this.drawSamples();
 	}
 	this.drawPop = function(){
+		this.resetLines();
 		if(!this.popSetup) return;
 		var self = this;
 		//if(!this.statsDone) return;
@@ -168,6 +169,7 @@ function oneMean(inputData, heading, statistic){
 			var sample = this.samples[indexUpTo];
 			var delay = 1;
 			var circleOverlay = svg.select("#circleOverlay").selectAll("circle").data(sample, function(d){return d.id});
+			circleOverlay.attr("fill-opacity",0);
 			circleOverlay.exit().remove();
 			circleOverlay.enter().append("circle")
 		    .attr("cx", function(d, i) { 
@@ -193,7 +195,7 @@ function oneMean(inputData, heading, statistic){
 				circleOverlay = circleOverlay.transition().delay(function(d,i){
 					//return delay*2/sample.length * sample.indexOf(d)
 					var test1 =sample.indexOf(d);
-					var test = powScale.invert(test1+1) * fillInTime;
+					var test = (powScale.invert(test1 +2 )- powScale.invert(1 )) * fillInTime;
 					return test;
 				}).duration(100).style("fill", "#FF7148").attr("fill-opacity", 1)
 				.transition().duration(function(d,i){return delay*2/sample.length * (sample.length - sample.indexOf(d))});
@@ -216,7 +218,7 @@ function oneMean(inputData, heading, statistic){
 				//.transition().duration(delay).attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.5)
 				.each('end', function(d, i){ if(d == sample[0]){self.stepAnim(indexUpTo+jumps, goUpTo, goSlow, jumps, incDist)}});
 			}else{
-				circle = circle.transition().delay(powScale.invert(this.sampleSize) *fillInTime).duration(50).style("fill", "#FF7148").attr("fill-opacity", 1)
+				circle = circle.transition().delay((powScale.invert(this.sampleSize)- powScale.invert(2)) *fillInTime).duration(50).style("fill", "#FF7148").attr("fill-opacity", 1)
 				.transition().duration(delay + pauseDelay)
 				.transition().duration(this.transitionSpeed).attr("cy", function(d, i){return d.yPerSample[indexUpTo+1]})
 				.transition().duration(delay + pauseDelay * 2)
@@ -240,7 +242,7 @@ function oneMean(inputData, heading, statistic){
 			//	return (i>=indexUpTo+1) && (i <indexUpTo+jumps+1);
 			//});
 			if(goSlow){
-				meanLines = meanLines.transition().delay(powScale.invert(this.sampleSize) * fillInTime).duration(delay).style("opacity",1)
+				meanLines = meanLines.transition().delay((powScale.invert(this.sampleSize)- powScale.invert(2 )) * fillInTime).duration(delay).style("opacity",1)
 				.transition().duration(pauseDelay)
 				.transition().duration(this.transitionSpeed).attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird -this.windowHelper.lineHeight)
 				.transition().duration(delay);
@@ -252,7 +254,7 @@ function oneMean(inputData, heading, statistic){
 			if(incDist){
 				if(this.transitionSpeed > 200){
 					if(goSlow){
-						var waitTime = powScale.invert(this.sampleSize) * fillInTime + delay + pauseDelay * 2 + this.transitionSpeed;
+						var waitTime = (powScale.invert(this.sampleSize)- powScale.invert(2 )) * fillInTime + delay + pauseDelay * 2 + this.transitionSpeed;
 					}else{
 						var waitTime = 10;
 					}
@@ -268,7 +270,7 @@ function oneMean(inputData, heading, statistic){
 					meanCircles =meanCircles.attr("cy", function(d){return d.yPerSample[0]}).style("fill","red").transition().duration(this.transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").style("fill","#C7D0D5");
 				}else{
 					if(goSlow){
-						meanCircles = meanCircles.transition().delay(powScale.invert(this.sampleSize) * fillInTime + delay + pauseDelay * 2 + this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]});
+						meanCircles = meanCircles.transition().delay(powScale.invert(this.sampleSize)- powScale.invert(2 ) * fillInTime + delay + pauseDelay * 2 + this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]});
 					}else{
 						meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").transition().delay(this.transitionSpeed).duration(this.transitionSpeed).attr("cy", function(d){return d.yPerSample[0]});
 					}
