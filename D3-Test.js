@@ -272,7 +272,7 @@ function oneMean(inputData, heading, statistic){
 					if(goSlow){
 						meanCircles = meanCircles.transition().delay(powScale.invert(this.sampleSize)- powScale.invert(2 ) * fillInTime + delay + pauseDelay * 2 + this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]});
 					}else{
-						meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").transition().delay(this.transitionSpeed).duration(this.transitionSpeed).attr("cy", function(d){return d.yPerSample[0]});
+						meanCircles = meanCircles.transition().delay(this.transitionSpeed).duration(30).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]});
 					}
 				}
 			}
