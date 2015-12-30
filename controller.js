@@ -5,6 +5,7 @@ function controller(){
 	this.model = new model(this);
 	this.model.loadData();
 	this.view.loadMain(this.model.dataHeadings);
+	this.paused = false;
 	this.startAnimation = function(numReps, goSlow, incDist){
 		this.model.display.startAnim(numReps, goSlow, incDist);
 	}
@@ -59,6 +60,7 @@ function controller(){
 		//this.view.finishSetUp();
 		this.startVisFull();
 		d3.select("#Calculate").attr("disabled", true);
+		d3.select("#Pause").attr("disabled", null);
 	}
 	this.setUpDataVeiw = function(csv){
 		var self = this;
@@ -99,6 +101,17 @@ function controller(){
 			goSlow = true;
 		}
 		this.startAnimation(numRepitions, goSlow, incDist);
+	}
+	this.pause = function(){
+		if(!this.paused){
+			this.model.display.pause();
+			d3.select("#Pause").attr("value","Restart");
+			this.paused = true;
+		}else{
+			this.model.display.unPause();
+			d3.select("#Pause").attr("value","Pause");
+			this.paused = false;
+		}
 	}
 }
 

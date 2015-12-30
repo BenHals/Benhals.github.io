@@ -18,6 +18,7 @@ function oneMean(inputData, heading, statistic){
 	this.sampSetup = false;
 	this.drawnMeans = [];
 	this.sampleSize = 20;
+	this.pauseState = 0;
 
 
 	this.changeStat = function(newStatistic){
@@ -300,6 +301,9 @@ function oneMean(inputData, heading, statistic){
 		    })
 		    .attr("fill-opacity", 0)
 		    .attr("stroke-opacity",0); 
+		d3.select("#circleOverlay").selectAll("*").remove();
+		d3.select(".pop").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
+		svg.select(".meanOfSamples").selectAll("line").remove();
 
 
 	}
@@ -332,5 +336,18 @@ function oneMean(inputData, heading, statistic){
 		this.statsDone = false;
 
 		this.baseTransitionSpeed = 1000;
+	}
+	this.pause = function(){
+		d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
+		this.pauseState = this.animationState;
+		this.animationState = 0;
+		d3.selectAll(".goButton").attr("disabled",true);
+	}
+	this.unPause = function(){
+		this.resetLines();
+		//d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
+		this.animationState = this.pauseState;
+				this.animationState = 0;
+		d3.selectAll(".goButton").attr("disabled",null);
 	}
 }
