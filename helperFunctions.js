@@ -161,7 +161,7 @@ function leastSquares(xSeries, ySeries){
 	var intercept = (sumY - slope*sumX)/N;
 	return [slope, intercept];
 }
-var colorByIndex = ["blue","red"];
+var colorByIndex = [d3.rgb("blue"),d3.rgb("red")];
 //alert(leastSquares([60,61,62,63,65],[3.1,3.6,3.8,4,4.1]));
 function onlyUnique(value, index, self) { 
     return self.indexOf(value) === index;
