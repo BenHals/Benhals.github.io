@@ -206,7 +206,7 @@ function oneProportion(inputData, heading, focus){
 			settings.jumps = jumps;
 			settings.delay = 1000;
 			settings.pauseDelay = 1000;
-			settings.fadeIn = 1000;
+			settings.fadeIn = 200;
 			this.fadeIn(settings);
 			//self.stepAnim(start, end, goSlow, jumps);
 		}

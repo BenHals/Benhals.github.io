@@ -160,7 +160,7 @@ function oneMean(inputData, heading, statistic){
 			settings.jumps = jumps;
 			settings.delay = 1000;
 			settings.pauseDelay = 1000;
-			settings.fadeIn = 1000;
+			settings.fadeIn = 200;
 			this.fadeIn(settings);
 		} 
 	}
@@ -176,7 +176,7 @@ function oneMean(inputData, heading, statistic){
 			settings.svg = d3.select(".svg");
 			this.settings = settings;
 			var circle = settings.svg.select(".pop").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
-			settings.svg.select(".sampleLines").selectAll("line").style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
+			settings.svg.select(".sampleLines").selectAll("line").style("opacity",0.2).style("stroke", "steelblue");
 			var powScale = d3.scale.pow();
 			powScale.exponent(4);
 			powScale.domain([0,settings.delay*2]);
@@ -250,7 +250,7 @@ function oneMean(inputData, heading, statistic){
 				this.drawnMeans = this.drawnMeans.concat(sampMean);
 			}
 			var mLines = settings.svg.select(".sampleLines").selectAll("line").data(this.drawnMeans);
-			mLines.style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
+			mLines.style("opacity",0.2).style("stroke", "steelblue");
 			var meanLines = mLines.enter().append("line").attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
 
 			this.settings.circle = circle;
