@@ -79,6 +79,9 @@ function controller(){
 		d3.select("#tab1").style("display","none");
 		d3.select("#tab2").style("display","block");
 		this.view.setUpTab2();
+		if(this.model.display.sampleSize != 20){
+			d3.select("#sampsize").attr("value",String(this.model.display.sampleSize));
+		}
 		this.setUpStatSelection(this.model.stats[this.model.currentCategory])
 	}
 	this.switchTab1 = function(){

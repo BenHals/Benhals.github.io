@@ -22,6 +22,7 @@ function oneProportion(inputData, heading, focus){
 
 
 	this.setUpPopulation = function(){
+		this.sampleSize = 20;
 		this.samples.push([]);
 		this.secondaryGroup = null;
 		var groups = {};

@@ -74,7 +74,7 @@ function getStatistic(stat, items){
 	if(stat =="Median"){
 		if(items.length == 1) return items[0].value;
 		items.sort(function(a,b){return a.value - b.value});
-		var item = items[Math.round(items.length/2)];
+		var item = items[Math.floor(items.length/2)];
 		if(!item){
 			alert("wat");
 		}

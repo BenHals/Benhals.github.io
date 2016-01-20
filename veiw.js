@@ -34,7 +34,7 @@ function view(controller){
 		//	.style("height","15%");
 	}
 	this.makeButtons = function(){
-
+		d3.select("#stopButton").remove();
 		d3.select("#tab2Top").append("input").attr("type","button").attr("value","Stop").classed("bluebutton", true).attr("id","stopButton").attr("disabled",null).attr("onClick","mainControl.stopPressed()")
 			.style("height","15%");
 		var tab2 = d3.select("#tab2");

@@ -26,6 +26,7 @@ function oneMean(inputData, heading, statistic){
 		this.destroy();
 	}
 	this.setUpPopulation = function(){
+		this.sampleSize = 20;
 		var max = null;
 		var min = null;
 		for(var i = 0; i<inputData.length;i++){
