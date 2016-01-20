@@ -13,7 +13,7 @@ function view(controller){
 	this.setUpTab2 = function(){
 		var tab2Top = d3.select("#tab2Top");
 		tab2Top.selectAll("*").remove();
-		tab2Top.append("input").attr("type","button").attr("value","< Back").attr("class","bluebutton").attr("id","backTab2").attr("disabled",null).attr("onClick","mainControl.switchTab1()")
+		tab2Top.append("input").attr("type","button").attr("value","< Back to Data Input").attr("class","bluebutton").attr("id","backTab2").attr("disabled",null).attr("onClick","mainControl.switchTab1()")
 			.style("height","15%");
 		tab2Top.append("label").text("Sample Size");
 		tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
@@ -28,14 +28,15 @@ function view(controller){
 		SS.onchange = function(e){
 			controller.statChanged(e);
 		}
-		tab2Top.append("input").attr("type","button").attr("value","Calculate").classed("bluebutton", true).attr("id","Calculate").attr("disabled",null).attr("onClick","mainControl.startVisPressed()")
+		tab2Top.append("input").attr("type","button").attr("value","Precalculate Display").classed("bluebutton", true).attr("id","Calculate").attr("disabled",null).attr("onClick","mainControl.startVisPressed()")
 			.style("height","15%");
-		tab2Top.append("input").attr("type","button").attr("value","Pause").classed("bluebutton", true).attr("id","Pause").attr("disabled",true).attr("onClick","mainControl.pause()")
-			.style("height","15%");
+		//tab2Top.append("input").attr("type","button").attr("value","Pause").classed("bluebutton", true).attr("id","Pause").attr("disabled",true).attr("onClick","mainControl.pause()")
+		//	.style("height","15%");
 	}
 	this.makeButtons = function(){
 
-
+		d3.select("#tab2Top").append("input").attr("type","button").attr("value","Stop").classed("bluebutton", true).attr("id","stopButton").attr("disabled",null).attr("onClick","mainControl.stopPressed()")
+			.style("height","15%");
 		var tab2 = d3.select("#tab2");
 		var vs = tab2.select("#tab2Mid").append("div").attr("id","visControls1");
 		vs.append("label").text("Sampling");
@@ -147,7 +148,7 @@ function view(controller){
 			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")");
 		});
 
-
+		d3.select("#startButton").remove();
 		d3.select("#tab1").append("input").attr("type","button").attr("value","Analyse").attr("class","bluebutton").attr("id","startButton").attr("disabled","true").attr("onClick","mainControl.switchTab2()");
 	}
 	this.setUpStatSelection = function(category){
@@ -161,5 +162,20 @@ function view(controller){
 				selectFirst=false;
 			}
 		});
+	}
+	this.startedVis = function(incDist){
+		d3.selectAll(".goButton").attr("disabled","true");
+		d3.select("#pauseButton").remove();
+		if(incDist){
+			var tab = d3.select("#visControls2");
+		}else{
+			var tab = d3.select("#visControls1");
+		}
+		tab.select(".goButton").style("display","none");
+		tab.append("input").attr("type","button").attr("value","Pause").classed("bluebutton", true).attr("id","pauseButton").attr("disabled",null).attr("onClick","mainControl.pause()").style("height","15%");
+	}
+	this.doneVis = function(){
+		d3.select("#pauseButton").remove();
+		d3.selectAll(".goButton").attr("disabled",null).style("display","block");
 	}
 }

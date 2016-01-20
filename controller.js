@@ -6,6 +6,7 @@ function controller(){
 	this.model.loadData();
 	this.view.loadMain(this.model.dataHeadings);
 	this.paused = false;
+	this.going = false;
 	this.startAnimation = function(numReps, goSlow, incDist){
 		this.model.display.startAnim(numReps, goSlow, incDist);
 	}
@@ -51,6 +52,7 @@ function controller(){
 	}
 	this.stopPressed = function(){
 		this.model.display.stop();
+		this.view.doneVis();
 	}
 	this.statChanged = function(e){
 		this.model.display.changeStat(e.target.value);
@@ -100,18 +102,23 @@ function controller(){
 		if(numRepitions < 10 && !(incDist && numRepitions == 5)){
 			goSlow = true;
 		}
+		this.going = true;
+		this.view.startedVis(incDist);
 		this.startAnimation(numRepitions, goSlow, incDist);
 	}
 	this.pause = function(){
 		if(!this.paused){
 			this.model.display.pause();
-			d3.select("#Pause").attr("value","Restart");
+			d3.select("#pauseButton").attr("value","Restart");
 			this.paused = true;
 		}else{
 			this.model.display.unPause();
-			d3.select("#Pause").attr("value","Pause");
+			d3.select("#pauseButton").attr("value","Pause");
 			this.paused = false;
 		}
+	}
+	this.doneVis = function(){
+		this.view.doneVis();
 	}
 }
 

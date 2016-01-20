@@ -161,12 +161,14 @@ function oneMean(inputData, heading, statistic){
 			settings.delay = 1000;
 			settings.pauseDelay = 1000;
 			settings.fadeIn = 200;
+			settings.repititions = repititions;
 			this.fadeIn(settings);
 		} 
 	}
 	this.fadeIn = function(settings){
-					if(this.animationState == 1) return;
-			this.animationState = 1;
+		if(this.animationState == -1) return;
+		if(this.animationState == 1) return;
+		this.animationState = 1;
 		this.settings = settings;
 		if(!this.settings.restarting){
 			var sentFinish = false;
@@ -176,9 +178,11 @@ function oneMean(inputData, heading, statistic){
 			settings.svg = d3.select(".svg");
 			this.settings = settings;
 			var mLines = settings.svg.select(".sampleLines").selectAll("line").data(this.drawnMeans);
-			mLines.style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
+			var opacity = 1;
+			if(settings.repititions == 1000) opacity = 0.2;
+			mLines.style("opacity",opacity).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
 			var circle = settings.svg.select(".pop").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
-			settings.svg.select(".sampleLines").selectAll("line").style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
+			//settings.svg.select(".sampleLines").selectAll("line").style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
 			var powScale = d3.scale.pow();
 			powScale.exponent(4);
 			powScale.domain([0,settings.delay*2]);
@@ -231,6 +235,7 @@ function oneMean(inputData, heading, statistic){
 	}
 
 	this.dropDown = function(settings){
+		if(this.animationState == -1 || this.animationState == 0) return;
 					if(this.animationState == 2) return;
 			this.animationState = 2;
 		if(!this.settings.restarting){
@@ -246,14 +251,17 @@ function oneMean(inputData, heading, statistic){
 				this.drawnMeans = this.drawnMeans.concat(sampMean.slice(0,-1));
 				mLines = settings.svg.select(".sampleLines").selectAll("line").data(this.drawnMeans);
 				mLines.enter().append("line").attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird -this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 1);
-				mLines.style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
+				
+				//mLines.style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
 				this.drawnMeans.push(sampMean[sampMean.length-1]);
 			}else{
 				this.drawnMeans = this.drawnMeans.concat(sampMean);
 			}
 			var mLines = settings.svg.select(".sampleLines").selectAll("line").data(this.drawnMeans);
-			mLines.style("opacity",0.2).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
-			var meanLines = mLines.enter().append("line").attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
+			var opacity = 1;
+			if(settings.repititions == 1000) opacity = 0.2;
+			mLines.style("opacity",opacity).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
+			var meanLines = mLines.enter().append("line").attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird-this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
 
 			this.settings.circle = circle;
 			this.settings.sampMean = sampMean;
@@ -286,9 +294,9 @@ function oneMean(inputData, heading, statistic){
 						}
 					});
 
-				meanLines = meanLines.transition().duration(settings.fadeIn).style("opacity",1)
-					.transition().duration(settings.pauseDelay)
-					.transition().duration(this.transitionSpeed).attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird -this.windowHelper.lineHeight)
+				meanLines = meanLines.transition().duration(settings.fadeIn)
+					.transition().duration(settings.pauseDelay * 2)
+					.transition().duration(this.transitionSpeed).style("opacity",1).attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird -this.windowHelper.lineHeight)
 
 
 		}else{
@@ -311,6 +319,7 @@ function oneMean(inputData, heading, statistic){
 	}
 
 	this.distDrop = function(settings){
+		if(this.animationState == -1 || this.animationState == 0) return;
 					if(this.animationState == 3) return;
 			this.animationState = 3;
 		if(!this.settings.restarting){
@@ -365,12 +374,14 @@ function oneMean(inputData, heading, statistic){
 		//}
 	}
 	this.animStepper = function(settings){
+		if(this.animationState == -1 || this.animationState == 0) return;
 		if(this.animationState == 4) return;
 		this.animationState = 4;
 		settings.indexUpTo += settings.jumps;
 		this.index += settings.jumps;
 		if(settings.indexUpTo >= settings.end){
 			this.animationState = 0;
+			mainControl.doneVis();
 			return;
 		}
 		this.fadeIn(settings);
@@ -404,6 +415,8 @@ function oneMean(inputData, heading, statistic){
 
 
 	this.stop = function(){
+	this.animationState = -1;
+	this.resetLines();
 	this.animationState = 0;
 	}
 
@@ -451,9 +464,11 @@ function oneMean(inputData, heading, statistic){
 			this.fadeIn(this.settings);
 		}
 		if(this.pauseState == 2){
+			this.animationState = 1;
 			this.dropDown(this.settings);
 		}
 		if(this.pauseState == 3){
+			this.animationState = 2;
 			this.distDrop(this.settings);
 		}
 
