@@ -458,7 +458,7 @@ this.drawSample = function(){
 				var middle = this.windowHelper.section2.top +(this.windowHelper.section2.height/2) + this.radius * 2;
 			var sampMean = this.preCalculatedTStat.slice(settings.indexUpTo+1, settings.indexUpTo+settings.jumps+1);
 			if(this.transitionSpeed > 200){
-				var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0];
+				var downTo = this.preCalculatedTStat[settings.indexUpTo+1].yPerSample[0];
 				var redLine = settings.svg.select(".meanOfSamples").selectAll("g").data(sampMean).enter().append("g");
 	
 				var to = this.xScale(sampMean[0].s1);
