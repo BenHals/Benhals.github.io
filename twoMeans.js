@@ -389,14 +389,14 @@ this.drawSample = function(){
 			this.settings.circle = circle;
 			this.settings.sampMean = sampMean;
 			this.settings.mLines = mLines;
-			this.settings.meanLines = meanLines;
+			this.settings.meanLineG = meanLineG;
 
 		}else{
 			var self = this;
 			var circle = this.settings.circle;
 			var sampMean = this.settings.sampMean;
 			var mLines = this.settings.mLines;
-			var meanLines = this.settings.meanLines;
+			var meanLineG = this.settings.meanLineG;
 					    this.settings.restarting = false;
 		}
 
@@ -478,11 +478,18 @@ this.drawSample = function(){
 
 			this.settings.sampMean = sampMean;
 			this.settings.meanCircles = meanCircles;
+			this.settings.diff = diff;
 		}else{
 			var downTo = this.preCalculatedTStat[settings.indexUpTo+1].yPerSample[0];
 			var rL = this.settings.redLine;
 			d3.select("#redLine").remove();
-			if(rL) var redLine =  settings.svg.select(".meanOfSamples").append("line").attr("id","redLine").attr("y1", rL[0]).attr("y2", rL[1]).attr("x1",rL[2]).attr("x2",rL[2]).style("stroke-width", 2).style("stroke", "red").style("opacity", 0);
+			var redLine = settings.svg.select(".meanOfSamples").append("g");
+			if(rL){
+				var test = rL[0] + this.settings.diff ;
+				redLine.append("line").attr("x1", rL[1]).attr("x2", rL[2]).attr("y1", rL[0]).attr("y2", rL[0]).style("stroke", "red").style("opacity", 1).attr("id","redlineMain");
+				redLine.append("line").attr("x1", rL[2]).attr("x2", rL[2] - settings.diff).attr("y1", rL[0]).attr("y2", rL[0]-0 + settings.diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
+				redLine.append("line").attr("x1", rL[2]).attr("x2", rL[2] - settings.diff).attr("y1", rL[0]).attr("y2", rL[0] - settings.diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
+			} //var redLine =  settings.svg.select(".meanOfSamples").append("line").attr("id","redLine").attr("y1", rL[0]).attr("y2", rL[1]).attr("x1",rL[2]).attr("x2",rL[2]).style("stroke-width", 2).style("stroke", "red").style("opacity", 0);
 			var self = this;
 			var sampMean = this.settings.sampMean;
 			var meanCircles = this.settings.meanCircles;
@@ -495,7 +502,7 @@ this.drawSample = function(){
 			if(this.transitionSpeed > 200){
 				var acrossTo = this.preCalculatedTStat[settings.indexUpTo+1].xPerSample[0];
 				d3.select("#redlineMain").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).attr("x1", this.xScale2(0)).attr("x2", acrossTo);
-				d3.selectAll(".arrowHead").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", function(d,i){return downTo + Math.pow(-1, i)*diff }).attr("x1", acrossTo).attr("x2", acrossTo - diff);
+				d3.selectAll(".arrowHead").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", function(d,i){return downTo + Math.pow(-1, i)*self.settings.diff }).attr("x1", acrossTo).attr("x2", acrossTo - self.settings.diff);
 
 			}
 			if(settings.goSlow || this.transitionSpeed == 500){
@@ -527,7 +534,7 @@ this.drawSample = function(){
 
 	}
 
-this.stepAnim = function(indexUpTo, goUpTo, goSlow, jumps){
+/*this.stepAnim = function(indexUpTo, goUpTo, goSlow, jumps){
 		var self = this;
 	var svg = d3.select(".svg");
 	if(this.animationState != 1){
@@ -617,7 +624,7 @@ this.stepAnim = function(indexUpTo, goUpTo, goSlow, jumps){
 	this.index += jumps;
 	this.index = this.index % this.numSamples;
 
-}
+} */
 
 this.destroy = function(){
 	d3.select(".svg").selectAll("*").remove();
@@ -649,6 +656,7 @@ this.resetData = function(){
 
 this.resetLines = function(){
 			this.drawnMeans = [];
+				d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
 	var self = this;
 	this.index = 1;
 	var svg = d3.select(".svg");
@@ -669,5 +677,37 @@ this.resetLines = function(){
 
 		svg.select(".meanOfSamples").selectAll("circle").attr("fill-opacity", 0).attr("stroke-opacity", 0);
 		this.animationState = 0;
+}
+this.pause = function(){
+
+	var rL = d3.select("#redlineMain");
+	if(rL[0][0] != null) {this.settings.redLine = [rL.attr("y1"), rL.attr("x1"), rL.attr("x2")]; 
+	//rL.remove();
+}
+	d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
+	this.pauseState = this.animationState;
+	this.animationState = 0;
+	d3.selectAll(".goButton").attr("disabled",true);
+	this.settings.restarting = false;
+}
+this.unPause = function(){
+	//this.resetLines();
+	//d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
+	//this.animationState = this.pauseState;
+	this.settings.restarting = true;
+	if(this.pauseState == 1){
+		this.fadeIn(this.settings);
+	}
+	if(this.pauseState == 2){
+		this.animationState = 1;
+		this.dropDown(this.settings);
+	}
+	if(this.pauseState == 3){
+		this.animationState = 2;
+		this.distDrop(this.settings);
+	}
+
+			//this.animationState = 0;
+	d3.selectAll(".goButton").attr("disabled",null);
 }
 }
