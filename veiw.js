@@ -2,6 +2,7 @@ function view(controller){
 
 	this.dataScreen = null;
 	this.controller = controller;
+	this.windowHelper = setUpWindow(5);
 
 	this.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
@@ -114,6 +115,17 @@ function view(controller){
 			controller.varSelected(e);
 		}
 
+	}
+	this.noVisAvail = function(){
+		var svg = d3.select(".svg");
+
+		svg.append("text")
+			.attr("x", this.windowHelper.width/2)
+			.attr("y", this.windowHelper.height/2)
+			.text("No Visualisation Availiable")
+			.attr("fill","grey")
+			.style("font-size", this.windowHelper.height/20+"px")
+			.attr("text-anchor","middle").style("opacity",0.6);
 	}
 	this.varSelected = function(){
 		d3.select("#startButton").attr("disabled", null);

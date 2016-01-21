@@ -107,6 +107,10 @@ function model(controller){
 				//controller.setUpStatSelection(this.stats[vis.stats]);
 			}
 		}
+			if(!this.display){
+				controller.noVisAvail();
+			}
+		
 		/*
 		if(numeretical.length ==1 && categorical.length == 0){
 			this.display = this.startOneMean(numeretical[0], this.stats[0][0]);

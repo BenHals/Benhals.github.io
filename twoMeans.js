@@ -23,6 +23,7 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 		this.popSetup = false;
 	this.sampSetup = false;
 		this.drawnMeans = [];
+		this.implemented = true;
 
 	this.changeStat = function(newStatistic){
 		this.statistic = newStatistic;
@@ -69,6 +70,10 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 			this.preCalculatedTStat.push(newItem);
 			this.popSetup = true;
 
+			if(this.groups.length != 2){
+				this.implemented = false;
+			}
+
 	}
 	this.setUpSamples = function(sSize){
 		if(sSize >= this.populations[this.groups[0]].length){
@@ -89,6 +94,8 @@ function twoMeans(inputData, headingGroup, headingContinuous, statistic){
 				}
 			}
 			heapYValues3(this.preCalculatedTStat,this.xScale2,this.radius,0,this.windowHelper.section3.top,this.windowHelper.section3.bottom);
+		}else{
+			mainControl.notImplemented();
 		}
 		this.statsDone = true;
 		this.sampSetup = true;

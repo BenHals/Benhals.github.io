@@ -20,6 +20,10 @@ function controller(){
 		this.model.display.setUpSamples(sampleSize);
 		this.model.display.draw();
 		this.view.finishSetUp();
+
+	}
+	this.notImplemented = function(){
+
 	}
 	this.startVisPreveiw = function(){
 		d3.select("#Calculate").attr("disabled", null);
@@ -28,6 +32,10 @@ function controller(){
 		this.view.visPreveiw();
 		this.model.display.setUpPopulation();
 		this.model.display.drawPop();
+
+		if(this.model.display.implemented == false){
+			d3.select("#Calculate").attr("value","Visualisation not implemented").attr("disabled",true);
+		}
 	}
 	this.impButPressed = function(e){
 		this.model.getFile(e);
@@ -36,9 +44,13 @@ function controller(){
 		this.model.loadPresetData();
 	}
 	this.varSelected = function(e){
+		d3.select(".svg").selectAll("text").remove();
 		this.view.destroyFocus();
 		this.model.varSelected(e.target.selectedOptions);
 		this.view.varSelected();
+	}
+	this.noVisAvail = function(){
+		this.view.noVisAvail();
 	}
 	this.focusSelected = function(e){
 		var changeTo = e.target.value;
@@ -83,6 +95,9 @@ function controller(){
 			d3.select("#sampsize").attr("value",String(this.model.display.sampleSize));
 		}
 		this.setUpStatSelection(this.model.stats[this.model.currentCategory])
+		if(this.model.display.implemented == false){
+			d3.select("#Calculate").attr("value","Visualisation not implemented").attr("disabled",true);
+		}
 	}
 	this.switchTab1 = function(){
 		d3.select("#tab1").style("display","block");

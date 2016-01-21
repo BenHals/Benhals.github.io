@@ -19,6 +19,7 @@ function oneMean(inputData, heading, statistic){
 	this.drawnMeans = [];
 	this.sampleSize = 20;
 	this.pauseState = 0;
+			this.implemented = true;
 
 
 	this.changeStat = function(newStatistic){
@@ -391,6 +392,7 @@ function oneMean(inputData, heading, statistic){
 
 
 	this.resetLines =function(){
+						d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
 		this.index = 1;
 		var self = this;
 		var svg = d3.select(".svg");
