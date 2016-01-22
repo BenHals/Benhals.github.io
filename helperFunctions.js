@@ -34,6 +34,23 @@ function setUpWindow(radius){
 	return windowHelper;
 }
 
+function drawArrow(to, from, yValue, placement, id, op, color){
+	var group = placement.append("svg").attr("id",id);
+	group.append("line").attr("x1", from).attr("x2", to).attr("y1", yValue).attr("y2", yValue).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	var diff = to - from;
+	if(isNaN(diff)){
+		var data = placement.data();
+		data = data[data.length-1];
+		var to= to(data);
+		var from = from(data);
+		var diff = to - from;
+	}
+	if(diff != 0) {var arrowHead = diff / Math.abs(diff);} else { var arrowHead = 0;}
+	group.append("line").attr("x1", to).attr("x2", to - arrowHead*20).attr("y1", yValue).attr("y2", yValue + arrowHead*10).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	group.append("line").attr("x1", to).attr("x2", to - arrowHead*20).attr("y1", yValue).attr("y2", yValue - arrowHead*10).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+
+}
+
 function heapYValues3(itemsToHeap, xScale, radius, sampleIndex, areaTopY, areaBottomY){
 	var section = radius * 0.8;
 	var buckets = {};

@@ -46,6 +46,7 @@ function controller(){
 	this.varSelected = function(e){
 		d3.select(".svg").selectAll("text").remove();
 		this.view.destroyFocus();
+		this.view.destroyVSelect();
 		this.model.varSelected(e.target.selectedOptions);
 		this.view.varSelected();
 	}
@@ -54,7 +55,7 @@ function controller(){
 	}
 	this.focusSelected = function(e){
 		var changeTo = e.target.value;
-		this.model.destroy();
+		//this.model.destroy();
 		this.model.switchFocus(changeTo);
 		this.startVisPreveiw();
 	}
@@ -86,6 +87,15 @@ function controller(){
 	}
 	this.makeFocusSelector = function(unique, cat){
 		this.view.focusSelector(unique, cat);
+	}
+	this.makeVarSelector = function(cat1,cat2){
+		this.view.makeVarSelector(cat1,cat2);
+	}
+	this.varChanged = function(e){
+		var changeTo = e.target.value;
+		this.view.destroyFocus();
+		this.model.switchVar(changeTo);
+		this.startVisPreveiw();
 	}
 	this.switchTab2 = function(){
 		d3.select("#tab1").style("display","none");

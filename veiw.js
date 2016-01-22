@@ -104,7 +104,7 @@ function view(controller){
 		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
 		var container = tab1.append("div").attr("id","inputContainer").attr("class","selectContainer");
 		var focusContainer = tab1.append("div").attr("id","focusContainer").attr("class","selectContainer");
-
+		var vSelectContainer = tab1.append("div").attr("id","vSelectContainer").attr("class","selectContainer");
 		var IB = document.getElementById("importButton");
 		IB.onchange = function(e){
 			controller.impButPressed(e);
@@ -142,8 +142,23 @@ function view(controller){
 			controller.focusSelected(e);
 		}
 	}
+	this.makeVarSelector = function(cat1,cat2){
+		var vSelectContainer = d3.select("#vSelectContainer");
+		vSelectContainer.append("label").attr("for","vSelectContainer").text("Choose variable to split on.")
+		var vSelectController = vSelectContainer.append("select").attr("size",2).attr("id","vSelectController");
+		vSelectController.append("option").attr("value",cat1).text(cat1);
+		vSelectController.append("option").attr("value",cat2).text(cat2);
+
+		var SM = document.getElementById("vSelectController");
+		SM.onchange = function(e){
+			controller.varChanged(e);
+		}
+	}
 	this.destroyFocus = function(){
 		d3.select("#focusContainer").selectAll("*").remove();
+	}
+	this.destroyVSelect = function(){
+		d3.select("#vSelectContainer").selectAll("*").remove();
 	}
 
 	this.finishSetUp = function(){

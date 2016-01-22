@@ -9,10 +9,12 @@ function model(controller){
 	this.stats = [["Mean","Median"],["proportion"],["slope"]];
 	this.controller = controller;
 	this.currentCategory = null;
+	this.currentDisplayType =0;
 
 	this.visualisations = [{name:"oneMean", numeretical:1,categorical:0,stats:0,setupParams:function(num, cat, modelObj){return new oneMean(modelObj.inputData, num[0], modelObj.stats[0][0])}},
 	{name:"twoMeans", numeretical:1,categorical:1,stats:0,setupParams:function(num, cat, modelObj){return new twoMeans(modelObj.inputData, cat[0], num[0], modelObj.stats[0][0])}},
 	{name:"oneProportion", numeretical:0,categorical:1,stats:1,setupParams:function(num, cat, modelObj){var unique = modelObj.dataSplit[cat[0]].filter(onlyUnique); modelObj.controller.makeFocusSelector(unique, cat[0]);return new oneProportion(modelObj.inputData, cat[0], unique[0])}},
+	{name:"twoProportion", numeretical:0,categorical:2,stats:1,setupParams:function(num, cat, modelObj){var unique1 = modelObj.dataSplit[cat[0]].filter(onlyUnique); modelObj.controller.makeFocusSelector(unique1, cat[0]); modelObj.controller.makeVarSelector(cat[0],cat[1]);return new twoProportion(modelObj.inputData, cat[0], cat[1], unique1[0])}},
 	{name:"slope", numeretical:2,categorical:0,stats:2,setupParams:function(num, cat, modelObj){return new slope(modelObj.inputData, num[0], num[1])}}];
 
 	this.loadData = function(){
@@ -101,6 +103,7 @@ function model(controller){
 		for(var n =0; n<this.visualisations.length;n++){
 			var vis = this.visualisations[n];
 			if(vis.numeretical == numeretical.length && vis.categorical == categorical.length){
+				this.currentDisplayType = n;
 				this.display = vis.setupParams(numeretical,categorical,this);
 				controller.startVisPreveiw();
 				this.currentCategory = vis.stats;
@@ -148,7 +151,29 @@ function model(controller){
 	}
 	this.switchFocus = function(newFocus){
 		var curCategory = this.display.category;
-		this.display = new oneProportion(this.inputData, curCategory, newFocus)
+		var curCategory2 = this.display.category2;
+		this.display.destroy();
+		if(this.currentDisplayType == 2){
+			this.display = new oneProportion(this.inputData, curCategory, newFocus)
+		}
+		if(this.currentDisplayType == 3){
+			this.display = new twoProportion(this.inputData, curCategory, curCategory2, newFocus)
+		}
+	}
+	this.switchVar = function(changeTo){
+		this.destroy();
+		var curCategory = this.display.category;
+		var curCategory2 = this.display.category2;
+		if(changeTo == curCategory2){
+			curCategory2 = curCategory;
+		}
+		var unique = this.dataSplit[curCategory2].filter(onlyUnique);
+		var newFocus = unique[0];
+		this.controller.makeFocusSelector(unique, curCategory2);
+		if(this.currentDisplayType == 3){
+			this.display = new twoProportion(this.inputData, curCategory2, changeTo, newFocus);
+		}
+
 	}
 
 }
