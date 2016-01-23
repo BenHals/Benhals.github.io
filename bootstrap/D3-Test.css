@@ -236,3 +236,6 @@ p.t2 {
 .buttontext {
   margin-top: 2%;
 }
+#popText {
+  background: grey;
+}

@@ -14,6 +14,10 @@ function setUpWindow(radius){
 	windowHelper.section2 = new Object();
 	windowHelper.section3 = new Object();
 
+	windowHelper.sampleSection = windowHelper.width/3;
+	windowHelper.marginSample = windowHelper.sampleSection/50;
+	windowHelper.sampleSectionDiv = (windowHelper.sampleSection - windowHelper.marginSample*3)/6;
+
 	windowHelper.section1.height = windowHelper.height/3 - radius*2;
 	windowHelper.section2.height = windowHelper.height/3 - radius*2;
 	windowHelper.section3.height = windowHelper.height/3 - radius*3;
