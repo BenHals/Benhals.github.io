@@ -20,7 +20,7 @@ function setUpWindow(radius){
 
 	windowHelper.section1.height = windowHelper.height/3 - radius*2;
 	windowHelper.section2.height = windowHelper.height/3 - radius*2;
-	windowHelper.section3.height = windowHelper.height/3 - radius*3;
+	windowHelper.section3.height = windowHelper.height/3 - radius*10;
 
 	windowHelper.section1.top = 0 + radius;
 	windowHelper.section1.bottom = windowHelper.section1.top + windowHelper.section1.height;

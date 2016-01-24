@@ -140,13 +140,18 @@ function controller(){
 			d3.select("#pauseButton").attr("value","Restart");
 			this.paused = true;
 		}else{
+			if(this.model.display.pauseCalled) return;
 			this.model.display.unPause();
+			this.view.unPause(this.model.display.incDist);
 			d3.select("#pauseButton").attr("value","Pause");
 			this.paused = false;
 		}
 	}
 	this.doneVis = function(){
 		this.view.doneVis();
+	}
+	this.showCI = function(){
+		this.model.display.showCI();
 	}
 }
 

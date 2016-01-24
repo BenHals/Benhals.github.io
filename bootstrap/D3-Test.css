@@ -44,6 +44,10 @@ label {
   color: #094b85;
   background-color: #EEFFFF;
 }
+
+.disabled {
+  color:grey;
+}
 .selectContainer{
   width:100%;
   height:auto;
@@ -136,6 +140,11 @@ select {
   fill: white;
   font: 10px sans-serif;
   text-anchor: middle;
+}
+line {
+  opacity: 1;
+  stroke: black;
+  stroke-width:2;
 }
 
 .axis path,
