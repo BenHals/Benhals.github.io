@@ -77,7 +77,8 @@ function heapYValues3(itemsToHeap, xScale, radius, sampleIndex, areaTopY, areaBo
 	yScale = d3.scale.linear().range([areaBottomY,Math.max(areaBottomY - maxY,areaTopY+radius*2)]);
 	yScale.domain([0,maxY]);
 	for(var l = 0; l<itemsToHeap.length;l++){
-		itemsToHeap[l].yPerSample[sampleIndex] = yScale(itemsToHeap[l].yPerSample[sampleIndex]);
+		var curValue = itemsToHeap[l].yPerSample[sampleIndex];
+		itemsToHeap[l].yPerSample[sampleIndex] = yScale(curValue);
 	}
 }
 
