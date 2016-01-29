@@ -43,6 +43,7 @@ function oneMean(inputData, heading, statistic){
 
 		this.populationStatistic = 0;
 		this.populationStatistic = getStatistic(this.statistic, this.population);
+		makeBoxplot(this.radius,this.windowHelper.section1.twoThird + this.radius *2,this.windowHelper.innerWidth-this.radius,this.windowHelper.section1.bottom - this.windowHelper.section1.twoThird - this.radius*4,this.population,this.xScale);
 		heapYValues3(this.population, this.xScale, this.radius, 0, this.windowHelper.section1.top, this.windowHelper.section1.twoThird);
 		this.popSetup = true;
 	}
@@ -303,7 +304,7 @@ function oneMean(inputData, heading, statistic){
 
 		}else{
 				circle = circle.attr("cy", function(d, i){return d.yPerSample[settings.indexUpTo+1]}).style("fill", "#FF7148").attr("fill-opacity", 1)
-				.transition().duration(1)
+				.transition().duration(this.transitionSpeed * 2)
 				.each('end', function(d, i){
 						if(d == settings.sample[0]){
 							if(settings.incDist){
@@ -341,11 +342,12 @@ function oneMean(inputData, heading, statistic){
 			this.settings.sampMean = sampMean;
 			this.settings.meanCircles = meanCircles;
 		}else{
-			var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0];
+			var self = this;
+			var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0] -(this.windowHelper.section3.bottom-this.preCalculatedTStat[settings.indexUpTo].yPerSample[0])*2;
 			var rL = this.settings.redLine;
 			d3.select("#redLine").remove();
 			if(rL) var redLine =  settings.svg.select(".meanOfSamples").append("line").attr("id","redLine").attr("y1", rL[0]).attr("y2", rL[1]).attr("x1",rL[2]).attr("x2",rL[2]).style("stroke-width", 2).style("stroke", "red").style("opacity", 0);
-			var self = this;
+
 			var sampMean = this.settings.sampMean;
 			var meanCircles = this.settings.meanCircles;
 
@@ -355,17 +357,17 @@ function oneMean(inputData, heading, statistic){
 		//	meanCircles =meanCircles.attr("cy", function(d){return d.yPerSample[0]}).style("fill","red").transition().duration(this.transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").style("fill","#C7D0D5");
 		//}else{
 			if(this.transitionSpeed > 200){
-				redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).each("end",function(){d3.select(this).remove()});
+				redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo+this.radius/2).attr("y2", downTo-this.radius/2).each("end",function(){d3.select(this).remove()});
 			}
 			if(settings.goSlow){
-				meanCircles = meanCircles.transition().delay(this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]}).each('end', function(d, i){
+				meanCircles = meanCircles.transition().delay(this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0] -(self.windowHelper.section3.bottom-d.yPerSample[0])*2}).each('end', function(d, i){
 					if(!sentFinish){
 						self.animStepper(settings);
 						sentFinsih = true;
 					}
 				});
 			}else{
-				meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]})
+				meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){if(self.settings.repititions != 1000){return d.yPerSample[0] -(self.windowHelper.section3.bottom-d.yPerSample[0])*2}else{return d.yPerSample[0]}})
 					.transition().duration(this.transitionSpeed*2).each('end', function(d, i){
 					if(d == self.preCalculatedTStat[settings.indexUpTo]){
 						self.animStepper(settings);
@@ -381,7 +383,7 @@ function oneMean(inputData, heading, statistic){
 		this.animationState = 4;
 		settings.indexUpTo += settings.jumps;
 		this.index += settings.jumps;
-		if(settings.indexUpTo >= settings.end){
+		if(settings.indexUpTo >= settings.end  || settings.indexUpTo>= this.numSamples){
 			this.animationState = 0;
 			mainControl.doneVis();
 			return;

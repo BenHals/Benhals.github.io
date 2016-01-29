@@ -44,6 +44,10 @@ label {
   color: #094b85;
   background-color: #EEFFFF;
 }
+
+.disabled {
+  color:grey;
+}
 .selectContainer{
   width:100%;
   height:auto;
@@ -137,6 +141,11 @@ select {
   font: 10px sans-serif;
   text-anchor: middle;
 }
+line {
+  opacity: 1;
+  stroke: black;
+  stroke-width:2;
+}
 
 .axis path,
 .axis line {
@@ -147,7 +156,7 @@ select {
 
 .axis text {
     font-family: sans-serif;
-    font-size: 8px;
+    font-size: 14px;
 }
 .tab2Divider {
   display:block;
@@ -236,9 +245,25 @@ p.t2 {
 .buttontext {
   margin-top: 2%;
 }
+#popText {
+  background: grey;
+}
 #displayLabel{
   display: block;
   width: 100%;
   float: right;
   height: 5%;
+
+}
+#displayLabel p {
+  margin-top: 0px;
+  margin-left: 5px;
+  padding-top:0px;
+  opacity: 0.5;
+  color: grey;
+  display: inline-block;
+}
+#bPlot line{
+  opacity: 0.5;
+  stroke: grey;
 }

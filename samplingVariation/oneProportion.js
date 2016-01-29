@@ -143,9 +143,19 @@ function oneProportion(inputData, heading, focus){
 		var lastElement = this.samples[0][this.samples[0].length -1];
 		var total = lastElement[0] + lastElement[1];
 		//this.xScale.domain([0,total]);
+		var gridHeight = (this.barHeight - this.radius*0)/(this.radius*2);
+		var gridWidths = [Math.floor((this.xScale((this.samples[0][0][1])/total))/(this.radius*2)-1),Math.floor(this.xScale((this.samples[0][1][1])/total)/(this.radius*2)-1)];
+
 		svg.append("svg").attr("class", "pop");
 		var g1Rect = svg.select(".pop").selectAll("g").data(this.samples[0]);
-		var groups = g1Rect.enter().append("g");
+		var groups = g1Rect.enter().append("g").attr("id",function(d,i){return "popRect"+i});
+		for(var h = 0;h<2;h++){
+			for(var j =0;j<gridWidths[h];j++){
+				for(var k = 0; k< gridHeight;k++){
+					d3.select("#popRect"+h).append("circle").attr("cy",this.windowHelper.section1.bottom - this.barHeight +(k*this.radius*2) + this.radius).attr("cx", self.xScale(this.samples[0][h][0]/total)+this.radius +(j*this.radius*2)).attr("r",this.radius).attr("fill-opacity",0).attr("stroke-opacity",0.5);
+				}
+			}
+		}
 		var fontSize = this.windowHelper.section1.height /9;
 		groups.append("rect")
 			.attr("height",this.barHeight)
@@ -161,14 +171,16 @@ function oneProportion(inputData, heading, focus){
 			.text(function(d){return d[1]})
 			.attr("fill",function(d,i){return colorByIndex[i]})
 			.style("font-size", fontSize+"px")
-			.attr("text-anchor","middle").style("opacity",0.6);
+			.attr("text-anchor","middle").style("opacity",0.6).style("stroke","black");
 		groups.append("text")
 			.attr("x", function(d){return self.xScale((d[0] +(d[1]/2))/total)})
 			.attr("y", this.windowHelper.section1.bottom - this.barHeight + fontSize)
 			.text(function(d, i){return self.order[i]})
 			.attr("fill",function(d,i){return colorByIndex[i]})
 			.style("font-size",fontSize+"px")
-			.attr("text-anchor","middle").style("opacity",0.6);
+			.attr("text-anchor","middle").style("opacity",0.6).style("stroke","black");
+
+
 		/*var circle = svg.selectAll("circle").data(this.population);
 		   circle.enter().append("circle")
 		    .attr("cx", function(d, i) { 
@@ -181,6 +193,8 @@ function oneProportion(inputData, heading, focus){
 		    .attr("stroke","#556270")
 		    .attr("stroke-opacity",1); 
 	*/
+
+
 		svg.append("line").attr("x1", this.populationStatistic).attr("y1", this.windowHelper.section1.bottom+20).attr("x2", this.populationStatistic).attr("y2", this.windowHelper.section1.bottom-20).style("stroke-width", 2).style("stroke", "black");
 	
 	}
@@ -198,7 +212,11 @@ function oneProportion(inputData, heading, focus){
 			var end = start + repititions;
 			if(repititions > 100) this.transitionSpeed = 50;
 			var jumps = 1;
-			if(repititions > 20) jumps = 1;
+			if(repititions > 20) 
+			{
+				jumps = 2;
+				if(incDist) jumps = 10;
+			}
 			if(repititions == 1) this.transitionSpeed = 1000;
 			if(repititions == 5) this.transitionSpeed = 500;
 			if(repititions == 20) this.transitionSpeed = 100;
@@ -212,6 +230,7 @@ function oneProportion(inputData, heading, focus){
 			settings.delay = 1000;
 			settings.pauseDelay = 1000;
 			settings.fadeIn = 200;
+			settings.repititions = repititions;
 			this.fadeIn(settings);
 			//self.stepAnim(start, end, goSlow, jumps);
 		}
@@ -230,7 +249,7 @@ function oneProportion(inputData, heading, focus){
 				settings.svg = d3.select(".svg");
 				this.settings = settings;
 				if(settings.goSlow)settings.svg.select(".sampleLines").selectAll("g").remove();
-				var circle = settings.svg.select(".pop").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
+				//var circle = settings.svg.selectAll(".g1Circles, .g2Circles").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
 				settings.svg.select(".sampleLines").selectAll("line").style("stroke", "steelblue").style("opacity",0.5).attr("y2",this.windowHelper.section2.bottom - this.barHeight/2 );
 				var powScale = d3.scale.pow();
 				powScale.exponent(4);
@@ -345,7 +364,7 @@ function oneProportion(inputData, heading, focus){
 			}
 			if(settings.goSlow){
 			sampleRect.selectAll("*").transition().duration(this.transitionSpeed).style("opacity",0.5);
-			meanLines.transition().duration(this.transitionSpeed).style("opacity",1).each("end", function(d, i){
+			meanLines.transition().duration(this.transitionSpeed).style("opacity",1).transition().duration(this.transitionSpeed).each("end", function(d, i){
 				//if(d == self.drawnSamples[self.drawnSamples.length-1]){
 				if(i==0){
 					if(settings.incDist){
@@ -421,7 +440,7 @@ function oneProportion(inputData, heading, focus){
 		this.animationState = 4;
 		settings.indexUpTo += settings.jumps;
 		this.index += settings.jumps;
-		if(settings.indexUpTo >= settings.end){
+		if(settings.indexUpTo >= settings.end  || settings.indexUpTo>= this.numSamples){
 			mainControl.doneVis();
 			this.animationState = 0;
 			return;

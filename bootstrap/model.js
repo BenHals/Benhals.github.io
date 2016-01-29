@@ -10,6 +10,7 @@ this.dataSplit = null;
 	this.controller = controller;
 	this.currentCategory = null;
 	this.currentDisplayType =0;
+	this.fileName = "no current file"
 
 	this.visualisations = [{name:"oneMean", numeretical:1,categorical:0,stats:0,setupParams:function(num, cat, modelObj){return new oneMean(modelObj.inputData, num[0], modelObj.stats[0][0])}},
 	{name:"twoMeans", numeretical:1,categorical:1,stats:0,setupParams:function(num, cat, modelObj){return new twoMeans(modelObj.inputData, cat[0], num[0], modelObj.stats[0][0])}},
@@ -50,6 +51,7 @@ this.dataSplit = null;
 	this.getFile = function(inputFile){
 		var file = inputFile.target.files[0];
 		var fileName = inputFile.target.value.split('\\').pop();
+		this.fileName = fileName;
 		d3.select("#importButton +label").text(fileName);
 		var reader = new FileReader();
 		reader.readAsText(file);
@@ -80,6 +82,7 @@ this.dataSplit = null;
 		callback(this.dataHeadings);
 	}
 	this.loadPresetData = function(){
+		this.fileName = "test data"
 		controller.setUpDataVeiw(this.testingData);
 	}
 	this.varSelected = function(e){

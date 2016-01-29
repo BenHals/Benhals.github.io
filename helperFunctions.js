@@ -14,9 +14,13 @@ function setUpWindow(radius){
 	windowHelper.section2 = new Object();
 	windowHelper.section3 = new Object();
 
+	windowHelper.sampleSection = windowHelper.width/3;
+	windowHelper.marginSample = windowHelper.sampleSection/50;
+	windowHelper.sampleSectionDiv = (windowHelper.sampleSection - windowHelper.marginSample*3)/6;
+
 	windowHelper.section1.height = windowHelper.height/3 - radius*2;
 	windowHelper.section2.height = windowHelper.height/3 - radius*2;
-	windowHelper.section3.height = windowHelper.height/3 - radius*3;
+	windowHelper.section3.height = windowHelper.height/3 - radius*10;
 
 	windowHelper.section1.top = 0 + radius;
 	windowHelper.section1.bottom = windowHelper.section1.top + windowHelper.section1.height;
@@ -45,9 +49,11 @@ function drawArrow(to, from, yValue, placement, id, op, color){
 		var from = from(data);
 		var diff = to - from;
 	}
+	var headSize = 20;
+	if(Math.abs(diff) < headSize) headSize =Math.abs(diff)*0.5;
 	if(diff != 0) {var arrowHead = diff / Math.abs(diff);} else { var arrowHead = 0;}
-	group.append("line").attr("x1", to).attr("x2", to - arrowHead*20).attr("y1", yValue).attr("y2", yValue + arrowHead*10).style("stroke-width", 2).style("stroke", color).style("opacity", op);
-	group.append("line").attr("x1", to).attr("x2", to - arrowHead*20).attr("y1", yValue).attr("y2", yValue - arrowHead*10).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	group.append("line").attr("x1", to).attr("x2", to - arrowHead*headSize).attr("y1", yValue).attr("y2", yValue + arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	group.append("line").attr("x1", to).attr("x2", to - arrowHead*headSize).attr("y1", yValue).attr("y2", yValue - arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op);
 
 }
 
@@ -73,7 +79,8 @@ function heapYValues3(itemsToHeap, xScale, radius, sampleIndex, areaTopY, areaBo
 	yScale = d3.scale.linear().range([areaBottomY,Math.max(areaBottomY - maxY,areaTopY+radius*2)]);
 	yScale.domain([0,maxY]);
 	for(var l = 0; l<itemsToHeap.length;l++){
-		itemsToHeap[l].yPerSample[sampleIndex] = yScale(itemsToHeap[l].yPerSample[sampleIndex]);
+		var curValue = itemsToHeap[l].yPerSample[sampleIndex];
+		itemsToHeap[l].yPerSample[sampleIndex] = yScale(curValue);
 	}
 }
 
@@ -97,6 +104,18 @@ function getStatistic(stat, items){
 		}
 		var med = item.value;
 		return med;
+	}
+	if(stat =="Lq"){
+		if(items.length == 1) return items[0].value;
+		items.sort(function(a,b){return a.value - b.value});
+		var lQIndex = Math.floor(items.length*0.25);
+		return items[lQIndex].value;
+	}
+	if(stat =="Uq"){
+		if(items.length == 1) return items[0].value;
+		items.sort(function(a,b){return a.value - b.value});
+		var lQIndex = Math.floor(items.length*0.75);
+		return items[lQIndex].value;
 	}
 }
 
@@ -182,4 +201,20 @@ var colorByIndex = [d3.rgb("blue"),d3.rgb("red")];
 //alert(leastSquares([60,61,62,63,65],[3.1,3.6,3.8,4,4.1]));
 function onlyUnique(value, index, self) { 
     return self.indexOf(value) === index;
+}
+
+function makeBoxplot(x,y,width,height,population,xScale,lq,med,uq){
+		var median = getStatistic("Median", population);
+		var lQ = getStatistic("Lq", population);
+		var uQ = getStatistic("Uq", population);
+		//d3.select(".svg").append("rect").attr("x",x).attr("y",y).attr("width",width).attr("height",height).attr("fill","green");
+		var container = d3.select(".svg").append("svg").attr("id","bPlot");
+		container.append("line").attr("x1",x).attr("x2",xScale(lQ)).attr("y1",y + height/2).attr("y2",y+height/2);
+		container.append("line").attr("x1",xScale(lQ)).attr("x2",xScale(lQ)).attr("y1",y).attr("y2",y+height);
+		container.append("line").attr("x1",xScale(median)).attr("x2",xScale(median)).attr("y1",y).attr("y2",y+height);
+		container.append("line").attr("x1",xScale(uQ)).attr("x2",xScale(uQ)).attr("y1",y).attr("y2",y+height);
+		container.append("line").attr("x1",xScale(uQ)).attr("x2",x+width).attr("y1",y + height/2).attr("y2",y+height/2);
+		container.append("line").attr("x1",xScale(lQ)).attr("x2",xScale(uQ)).attr("y1",y).attr("y2",y);
+		container.append("line").attr("x1",xScale(lQ)).attr("x2",xScale(uQ)).attr("y1",y+height).attr("y2",y+height);
+
 }

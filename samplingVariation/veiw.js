@@ -3,10 +3,13 @@ function view(controller){
 	this.dataScreen = null;
 	this.controller = controller;
 	this.windowHelper = setUpWindow(5);
+	d3.select("#module").text("module: Sampling Variation"+"; ");
 
 	this.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
 		d3.select("#startButton").style("background-color","#094b85");
+
+
 	}
 	this.leaveVis = function(){
 		d3.select("#visControls").remove();
@@ -127,8 +130,13 @@ function view(controller){
 			.style("font-size", this.windowHelper.height/20+"px")
 			.attr("text-anchor","middle").style("opacity",0.6);
 	}
-	this.varSelected = function(){
+	this.varSelected = function(e){
 		d3.select("#startButton").attr("disabled", null);
+		var vars = "";
+		for(var i = 0; i<e.length;i++){
+			vars = vars + " " +e[i].value;
+		}
+		d3.select("#variable").text("variable: " + vars+"; ");
 	}
 	this.focusSelector = function(headings, curCategory){
 		var focusContainer = d3.select("#focusContainer");
@@ -168,7 +176,7 @@ function view(controller){
 		//tab1.style("display","none");
 	}
 	this.setUpDataVeiw = function(dataHeadings){
-
+		d3.select("#file").text("file: " + mainControl.model.fileName +"; ");
 		var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
 		selectMenu.selectAll("*").remove();
 		dataHeadings.forEach(function(e){

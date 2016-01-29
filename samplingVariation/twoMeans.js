@@ -176,11 +176,17 @@ this.drawSample = function(){
 	var xAxis2 = d3.svg.axis();
 	xAxis2.scale(this.xScale2);
 	svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section3.bottom + this.radius) + ")").call(xAxis2);
+	d3.selectAll(".axis text").filter(function(d){
+		return d == 0;
+	}).style("font-size",20).style("font-weight",700);
 	var middle = this.windowHelper.section1.top +(this.windowHelper.section1.height/4 * 3);
 	//svg.append("line").attr("x1", this.xScale(this.preCalculatedTStat[0].s0)).attr("x2", this.xScale(this.preCalculatedTStat[0].s1)).attr("y1", middle).attr("y2", middle).style("stroke-width", 2).style("stroke", "red");
 	drawArrow(this.xScale(this.preCalculatedTStat[0].s1), this.xScale(this.preCalculatedTStat[0].s0), middle, svg, "popDiff", 1, "blue");
-	svg.append("line").attr("x1", this.xScale2(this.preCalculatedTStat[0].value)).attr("x2", this.xScale2(this.preCalculatedTStat[0].value)).attr("y1", this.windowHelper.section3.top).attr("y2", this.windowHelper.section3.bottom).style("stroke-width", 0.5).style("stroke", "blue");
-	drawArrow(this.xScale2(this.preCalculatedTStat[0].value), this.xScale2(0), this.windowHelper.section3.bottom + this.radius, svg, "popDiffBot", 1, "blue");
+	svg.append("text").attr("x", this.xScale(this.preCalculatedTStat[0].s1)).attr("y", middle).text(Math.round((this.preCalculatedTStat[0].s1 - this.preCalculatedTStat[0].s0)*100)/100).style("stroke","blue");
+	svg.append("line").attr("x1", this.xScale2(this.preCalculatedTStat[0].value)).attr("x2", this.xScale2(this.preCalculatedTStat[0].value)).attr("y1", this.windowHelper.section3.bottom + this.radius*8).attr("y2", this.windowHelper.section3.bottom + this.radius).style("stroke-width", 2).style("stroke", "blue");
+	//drawArrow(this.xScale2(this.preCalculatedTStat[0].value), this.xScale2(0), this.windowHelper.section3.bottom + this.radius, svg, "popDiffBot", 1, "blue");
+	svg.append("text").attr("x", this.xScale2(this.preCalculatedTStat[0].value)).attr("y",this.windowHelper.section3.bottom + this.radius*8).text(Math.round((this.preCalculatedTStat[0].s1 - this.preCalculatedTStat[0].s0)*100)/100).style("stroke","blue");
+
 	var middle = this.windowHelper.section2.top +(this.windowHelper.section2.height/2) + this.radius * 2;
 	svg.append("svg").attr("class","sampleDiffs");
 	svg.append("svg").attr("class","sampleLines2");
@@ -247,7 +253,11 @@ this.drawSample = function(){
 			var end = start + repititions;
 			if(repititions > 100) this.transitionSpeed = 0;
 			var jumps = 1;
-			//if(repititions > 20) jumps = 10;
+			if(repititions > 20) 
+			{
+				jumps = 2;
+				if(incDist) jumps = 10;
+			}
 			//this.stepAnim(start, end, goSlow, jumps, incDist);
 			var settings = new Object();
 			settings.goSlow = goSlow;
@@ -258,6 +268,7 @@ this.drawSample = function(){
 			settings.delay = 1000;
 			settings.pauseDelay = this.transitionSpeed;
 			settings.fadeIn = 200;
+			settings.repititions = repititions;
 			this.fadeIn(settings);
 		} 
 	}
@@ -518,9 +529,15 @@ this.drawSample = function(){
 		this.animationState = 4;
 		settings.indexUpTo += settings.jumps;
 		this.index += settings.jumps;
-		if(settings.indexUpTo >= settings.end -1 ){
+		if(settings.indexUpTo >= settings.end  || settings.indexUpTo>= this.numSamples){
 			mainControl.doneVis();
 			this.animationState = 0;
+			if(settings.repititions == 1000 && settings.incDist){
+				d3.select(".meanOfSamples").selectAll("g").remove();
+				settings.svg.select(".sampleLines").selectAll("*").remove();
+				var circleOverlay = settings.svg.select("#circleOverlay").selectAll("g").data([]);
+				circleOverlay.exit().remove();
+			}
 			return;
 		}
 		this.fadeIn(settings);

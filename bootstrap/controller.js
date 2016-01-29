@@ -38,9 +38,13 @@ function controller(){
 		}
 	}
 	this.impButPressed = function(e){
+		this.view.destroyFocus();
+		this.view.destroyVSelect();
 		this.model.getFile(e);
 	}
 	this.loadTestData = function(){
+		this.view.destroyFocus();
+		this.view.destroyVSelect();
 		this.model.loadPresetData();
 	}
 	this.varSelected = function(e){
@@ -48,7 +52,7 @@ function controller(){
 		this.view.destroyFocus();
 		this.view.destroyVSelect();
 		this.model.varSelected(e.target.selectedOptions);
-		this.view.varSelected();
+		this.view.varSelected(e.target.selectedOptions);
 	}
 	this.noVisAvail = function(){
 		this.view.noVisAvail();
@@ -66,6 +70,7 @@ function controller(){
 	this.stopPressed = function(){
 		this.model.display.stop();
 		this.view.doneVis();
+		this.paused = false;
 	}
 	this.statChanged = function(e){
 		this.model.display.changeStat(e.target.value);

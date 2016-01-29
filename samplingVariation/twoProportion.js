@@ -26,7 +26,7 @@ function twoProportion(inputData, heading, heading2, focus){
 
 
 	this.setUpPopulation = function(){
-		this.sampleSize = 20;
+		this.sampleSize = 40;
 		this.samples.push([]);
 		this.drawnSamples = [];
 		var groups = {};
@@ -206,8 +206,11 @@ function twoProportion(inputData, heading, heading2, focus){
 		xAxis2.scale(this.xScale2)
 		svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section3.bottom + this.radius) + ")").call(xAxis2);
 
-		drawArrow(this.xScale2(this.popDiff), this.xScale2(0), this.windowHelper.section3.bottom, svg.select(".pop"), "popDiffBot", 0.5, "blue");
-		svg.append("line").attr("x1", this.xScale2(this.popDiff)).attr("y1", this.windowHelper.section3.bottom - this.marginSize*5).attr("x2", this.xScale2(this.popDiff)).attr("y2", this.windowHelper.section3.bottom).style("stroke-width", 0.5).style("stroke", "blue").attr("stroke-dasharray","5,5").style("opacity",1);;
+		d3.selectAll(".axis text").filter(function(d){
+			return d == 0 || d == 0.0;
+		}).style("font-size",20).style("font-weight",700);
+
+
 	}
 	this.drawPop = function(){
 		if(!this.popSetup) return;
@@ -216,6 +219,7 @@ function twoProportion(inputData, heading, heading2, focus){
 		var svg = d3.select(".svg");
 		//svg.append("text").text("what");
 		var sampleSelection = svg.append("svg").attr("class","sampleSelection");
+		svg.append("svg").attr("class","lineFade");
 		for(var i =0;i<this.unique2.length;i++){
 			for(var k=0;k<this.order.length;k++){
 				sampleSelection.append("svg").classed(this.unique2[i].replace(/\s+/g, '') +" "+this.order[k].replace(/\s+/g, ''),true);
@@ -282,6 +286,8 @@ function twoProportion(inputData, heading, heading2, focus){
 		}
 		if(this.popDiff){
 			 drawArrow(this.xScale(this.group1Proportion), this.xScale(this.group2Proportion), this.windowHelper.section1.bottom  - this.barHeight -this.marginSize/2, svg.select(".pop"), "popDiff", 1, "blue");
+			d3.select(".svg").append("text").attr("x", this.xScale(this.group1Proportion)).attr("y", this.windowHelper.section1.bottom  - this.barHeight -this.marginSize/2).text(Math.round(this.popDiff*100)/100).style("stroke","blue");
+
 		}
 
 
@@ -343,7 +349,11 @@ function twoProportion(inputData, heading, heading2, focus){
 			var end = start + repititions;
 			if(repititions > 100) this.transitionSpeed = 50;
 			var jumps = 1;
-			if(repititions > 20) jumps = 1;
+			if(repititions > 20) 
+			{
+				jumps = 2;
+				if(incDist) jumps = 10;
+			}
 			if(repititions == 1) this.transitionSpeed = 1000;
 			if(repititions == 5) this.transitionSpeed = 500;
 			if(repititions == 20) this.transitionSpeed = 100;
@@ -357,6 +367,8 @@ function twoProportion(inputData, heading, heading2, focus){
 			settings.delay = 1000;
 			settings.pauseDelay = 1000;
 			settings.fadeIn = 200;
+			this.drawnMeans = [];
+			settings.repititions = repititions;
 			this.makeRects(settings);
 			//self.stepAnim(start, end, goSlow, jumps);
 		}
@@ -489,7 +501,7 @@ function twoProportion(inputData, heading, heading2, focus){
 					.attr("text-anchor","middle")
 					.style("opacity",0);
 
-					groups.append("line").attr("x1", function(d){ return self.xScale(d[0][1]/d[1][1])}).attr("y1", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (i) - self.marginSize *(i+1) + 20}).attr("x2", function(d){ return self.xScale(d[0][1]/d[1][1])}).attr("y2", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (i+1) - self.marginSize *(i+1) - 20}).style("stroke-width", 2).style("stroke", "black").style("opacity",0);
+					//groups.append("line").attr("x1", function(d){ return self.xScale(d[0][1]/d[1][1])}).attr("y1", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (i) - self.marginSize *(i+1) + 20}).attr("x2", function(d){ return self.xScale(d[0][1]/d[1][1])}).attr("y2", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (i+1) - self.marginSize *(i+1) - 20}).style("stroke-width", 2).style("stroke", "black").style("opacity",0);
 
 					groups.append("rect")
 					.attr("height",this.barHeight)
@@ -510,6 +522,14 @@ function twoProportion(inputData, heading, heading2, focus){
 					.attr("text-anchor","middle")
 					.style("opacity",0);
 
+			this.drawnSamples.push(settings.sample);
+			var middle = this.windowHelper.section2.top +(this.windowHelper.section2.height/2) + this.radius * 2;
+			var mLines = settings.svg.select(".lineFade").selectAll("g").data(this.drawnSamples);
+			mLines.selectAll("line").style("opacity",0.2).style("stroke", "steelblue").attr("y2",function(){return +d3.select(this).attr("y1") - 20});
+			//mLines.remove();
+			var meanLineG = mLines.enter().append("g");
+				meanLineG.append("line").attr("x1", function(d){ return self.xScale(d[0][0][1]/d[0][1][1])}).attr("y1", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (0) - self.marginSize *(0+1) + 20}).attr("x2", function(d){ return self.xScale(d[0][0][1]/d[0][1][1])}).attr("y2", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (0+1) - self.marginSize *(0+1) - 20}).style("stroke-width", 2).style("stroke", "black").style("opacity",1);
+				meanLineG.append("line").attr("x1", function(d){ return self.xScale(d[1][0][1]/d[1][1][1])}).attr("y1", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (1) - self.marginSize *(1+1) + 20}).attr("x2", function(d){ return self.xScale(d[1][0][1]/d[1][1][1])}).attr("y2", function(d,i){ return self.windowHelper.section2.bottom - self.barHeight * (1+1) - self.marginSize *(1+1) - 20}).style("stroke-width", 2).style("stroke", "black").style("opacity",1);
 
 				drawArrow(this.xScale(settings.sample[0][0][1]/settings.sample[0][1][1]), this.xScale(settings.sample[1][0][1]/settings.sample[1][1][1]), this.windowHelper.section2.bottom  - this.barHeight -this.marginSize/2 *3, svg.select(".sampleLines"), "sampDiff", 1, "red");
 
@@ -646,6 +666,11 @@ function twoProportion(inputData, heading, heading2, focus){
 		if(settings.indexUpTo >= settings.end || settings.indexUpTo>= this.numSamples){
 			mainControl.doneVis();
 			this.animationState = 0;
+			if(settings.repititions == 1000 && settings.incDist){
+				//drawArrow(this.xScale2(this.popDiff), this.xScale2(0), this.windowHelper.section3.bottom, d3.select(".pop"), "popDiffBot", 0.5, "blue");
+				d3.select(".svg").append("line").attr("x1", this.xScale2(this.popDiff)).attr("y1", this.windowHelper.section3.bottom + this.radius*8).attr("x2", this.xScale2(this.popDiff)).attr("y2", this.windowHelper.section3.bottom + this.radius).style("stroke-width", 2).style("stroke", "blue").attr("stroke-dasharray","5,5").style("opacity",1);;
+				d3.select(".svg").append("text").attr("x", this.xScale2(this.popDiff)).attr("y", this.windowHelper.section3.bottom + this.radius*8).text(Math.round(this.popDiff*100)/100).style("stroke","blue");
+			}
 			return;
 		}
 		this.makeRects(settings);
@@ -821,6 +846,7 @@ function twoProportion(inputData, heading, heading2, focus){
 						d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
 		this.index = 1;
 		this.drawnSamples = [];
+		d3.select(".lineFade").selectAll("*").remove();
 		var self = this;
 		var svg = d3.select(".svg");
 		svg.select(".sampleLines").selectAll("*").remove();

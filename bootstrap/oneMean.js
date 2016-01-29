@@ -43,6 +43,8 @@ function oneMean(inputData, heading, statistic){
 
 		this.populationStatistic = 0;
 		this.populationStatistic = getStatistic(this.statistic, this.population);
+				makeBoxplot(this.radius,this.windowHelper.section1.twoThird + this.radius *2,this.windowHelper.innerWidth-this.radius,this.windowHelper.section1.bottom - this.windowHelper.section1.twoThird - this.radius*4,this.population,this.xScale);
+
 		heapYValues3(this.population, this.xScale, this.radius, 0, this.windowHelper.section1.top, this.windowHelper.section1.twoThird);
 		this.popSetup = true;
 		this.sampleSize = this.population.length;
