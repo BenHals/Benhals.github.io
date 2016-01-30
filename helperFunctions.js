@@ -98,24 +98,29 @@ function getStatistic(stat, items){
 	if(stat =="Median"){
 		if(items.length == 1) return items[0].value;
 		items.sort(function(a,b){return a.value - b.value});
-		var item = items[Math.floor(items.length/2)];
+		var itemLow = items[Math.floor((items.length-1)/2)];
+		var itemHigh = items[Math.ceil((items.length-1)/2)];
 		if(!item){
 			alert("wat");
 		}
-		var med = item.value;
+		var med = (itemLow.value + itemHigh.value)/2;
 		return med;
 	}
 	if(stat =="Lq"){
 		if(items.length == 1) return items[0].value;
 		items.sort(function(a,b){return a.value - b.value});
-		var lQIndex = Math.floor(items.length*0.25);
-		return items[lQIndex].value;
+		var lQIndexLow = Math.floor(items.length*0.25);
+		var lQIndexHigh = Math.ceil(items.length*0.25);
+
+		return (items[lQIndexLow].value+items[lQIndexHigh].value)/2;
 	}
 	if(stat =="Uq"){
 		if(items.length == 1) return items[0].value;
 		items.sort(function(a,b){return a.value - b.value});
-		var lQIndex = Math.floor(items.length*0.75);
-		return items[lQIndex].value;
+		var lQIndexLow = Math.floor(items.length*0.75);
+		var lQIndexHigh = Math.ceil(items.length*0.75);
+
+		return (items[lQIndexLow].value+items[lQIndexHigh].value)/2;
 	}
 }
 

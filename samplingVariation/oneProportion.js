@@ -199,6 +199,7 @@ function oneProportion(inputData, heading, focus){
 	
 	}
 	this.startAnim = function(repititions, goSlow, incDist){
+				this.incDist = incDist;
 		var self = this;
 		if(repititions >999) this.resetLines();
 		if(this.animationState == 0){
@@ -479,7 +480,6 @@ function oneProportion(inputData, heading, focus){
 		}
 
 				//this.animationState = 0;
-		d3.selectAll(".goButton").attr("disabled",null);
 	}
 	this.stepAnim = function(indexUpTo, goUpTo, goSlow, jumps){
 		var svg = d3.select(".svg");

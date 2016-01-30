@@ -12,7 +12,8 @@ function view(controller){
 
 	}
 	this.leaveVis = function(){
-		d3.select("#visControls").remove();
+		d3.select("#visControls1").remove();
+		d3.select("#visControls26").remove();
 	}
 	this.setUpTab2 = function(){
 		var tab2Top = d3.select("#tab2Top");
@@ -102,6 +103,7 @@ function view(controller){
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Top");
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Mid");
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Bot");
+		var backToMain = tab1.append("a").attr("name", "backToMain").attr("class","bluebutton").attr("value","mainButton").attr("id","mainButton").attr("href","../index.html").text("< Back To Main Menu");
 		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
 		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
 		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
@@ -179,8 +181,9 @@ function view(controller){
 		d3.select("#file").text("file: " + mainControl.model.fileName +"; ");
 		var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
 		selectMenu.selectAll("*").remove();
+		selectMenu.append("option").attr("value","placeHolder").text("Please Choose a variable").attr("disabled",true).attr("selected",true).attr("hidden",true);
 		dataHeadings.forEach(function(e){
-			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")");
+			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")").attr("data");
 		});
 
 		d3.select("#startButton").remove();
@@ -197,6 +200,14 @@ function view(controller){
 				selectFirst=false;
 			}
 		});
+	}
+	this.unPause = function(incDist){
+		if(incDist){
+			var tab = d3.select("#visControls2");
+		}else{
+			var tab = d3.select("#visControls1");
+		}
+		tab.select(".goButton").attr("disabled",null);
 	}
 	this.startedVis = function(incDist){
 		d3.selectAll(".goButton").attr("disabled","true");

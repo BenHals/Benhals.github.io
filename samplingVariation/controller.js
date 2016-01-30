@@ -117,6 +117,7 @@ function controller(){
 	this.switchTab1 = function(){
 		d3.select("#tab1").style("display","block");
 		d3.select("#tab2").style("display","none");
+		this.view.leaveVis();
 		//this.view.makeButtons();
 		//this.setUpStatSelection(this.model.stats[this.model.currentCategory])
 	}
@@ -146,6 +147,7 @@ function controller(){
 			this.paused = true;
 		}else{
 			this.model.display.unPause();
+			this.view.unPause(this.model.display.incDist);
 			d3.select("#pauseButton").attr("value","Pause");
 			this.paused = false;
 		}

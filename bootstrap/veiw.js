@@ -10,7 +10,8 @@ function view(controller){
 		d3.select("#startButton").style("background-color","#094b85");
 	}
 	this.leaveVis = function(){
-		d3.select("#visControls").remove();
+		d3.select("#visControls1").remove();
+		d3.select("#visControls2").remove();
 	}
 	this.setUpTab2 = function(){
 		var tab2Top = d3.select("#tab2Top");
@@ -113,6 +114,8 @@ function view(controller){
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Top");
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Mid");
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Bot");
+		var backToMain = tab1.append("a").attr("name", "backToMain").attr("class","bluebutton").attr("value","mainButton").attr("id","mainButton").attr("href","../index.html").text("< Back To Main Menu");
+
 		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
 		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
 		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");

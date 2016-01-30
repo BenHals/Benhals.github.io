@@ -78,6 +78,7 @@ select {
   z-index: -1;
 }
 .bluebutton{
+
   display: inline-block;
   vertical-align: middle;
   text-align: center;
@@ -102,6 +103,10 @@ select {
   color: white;
   background-color: grey;
   cursor: default;
+}
+#mainButton{
+    margin-bottom: 1px;
+  border-bottom: 5px solid #18afe3;
 }
 #leftHalf {
   display: block;

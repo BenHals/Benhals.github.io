@@ -46,6 +46,7 @@ function oneMean(inputData, heading, statistic){
 		makeBoxplot(this.radius,this.windowHelper.section1.twoThird + this.radius *2,this.windowHelper.innerWidth-this.radius,this.windowHelper.section1.bottom - this.windowHelper.section1.twoThird - this.radius*4,this.population,this.xScale);
 		heapYValues3(this.population, this.xScale, this.radius, 0, this.windowHelper.section1.top, this.windowHelper.section1.twoThird);
 		this.popSetup = true;
+		this.fontS = this.windowHelper.width * this.windowHelper.height / 50000;
 	}
 
 	this.setUpSamples = function(sSize){
@@ -112,6 +113,7 @@ function oneMean(inputData, heading, statistic){
 
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).style("stroke-width", 2).style("stroke", "black");
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", 0).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.height).style("stroke-width", 0.5).style("stroke", "black").attr("stroke-dasharray","5,5");
+		svg.append("text").attr("x", this.xScale(this.populationStatistic)).attr("y",this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).text(Math.round((this.populationStatistic)*100)/100).style("stroke","blue").attr("font-size",this.fontS);
 
 	}
 	this.drawSamples = function(){
@@ -137,6 +139,7 @@ function oneMean(inputData, heading, statistic){
 			    .attr("stroke-opacity",0); 
 	}
 	this.startAnim = function(repititions, goSlow, incDist){
+				this.incDist = incDist;
 		//this.fadeIn(goSlow, this.index);
 		if(repititions >999) this.resetLines();
 		if(this.animationState == 0){
@@ -153,7 +156,11 @@ function oneMean(inputData, heading, statistic){
 			var end = start + repititions;
 			if(repititions > 100) this.transitionSpeed = 0;
 			var jumps = 1;
-			if(repititions > 20) jumps = 10;
+			if(repititions > 20) 
+			{
+				jumps = 2;
+				if(incDist) jumps = 10;
+			}
 			//this.stepAnim(start, end, goSlow, jumps, incDist);
 			var settings = new Object();
 			settings.goSlow = goSlow;
@@ -359,7 +366,7 @@ function oneMean(inputData, heading, statistic){
 			if(this.transitionSpeed > 200){
 				redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo+this.radius/2).attr("y2", downTo-this.radius/2).each("end",function(){d3.select(this).remove()});
 			}
-			if(settings.goSlow){
+			if(settings.goSlow || settings.repititions == 5){
 				meanCircles = meanCircles.transition().delay(this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0] -(self.windowHelper.section3.bottom-d.yPerSample[0])*2}).each('end', function(d, i){
 					if(!sentFinish){
 						self.animStepper(settings);
@@ -478,6 +485,5 @@ function oneMean(inputData, heading, statistic){
 		}
 
 				//this.animationState = 0;
-		d3.selectAll(".goButton").attr("disabled",null);
 	}
 }

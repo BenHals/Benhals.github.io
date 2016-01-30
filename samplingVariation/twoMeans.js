@@ -235,6 +235,7 @@ this.drawSample = function(){
 	}
 } */
 	this.startAnim = function(repititions, goSlow, incDist){
+				this.incDist = incDist;
 		//this.fadeIn(goSlow, this.index);
 		d3.select(".sampleLines").selectAll("*").remove();
 				this.drawnMeans = [];
@@ -718,6 +719,6 @@ this.unPause = function(){
 	}
 
 			//this.animationState = 0;
-	d3.selectAll(".goButton").attr("disabled",null);
+
 }
 }
