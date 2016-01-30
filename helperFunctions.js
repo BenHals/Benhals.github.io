@@ -57,6 +57,25 @@ function drawArrow(to, from, yValue, placement, id, op, color){
 
 }
 
+
+function drawArrowDown(to, from, xValue, placement, id, op, color, width){
+	var group = placement.append("svg").attr("id",id);
+	group.append("line").attr("y1", from).attr("y2", to).attr("x1", xValue).attr("x2", xValue).style("stroke-width", 2).style("stroke", color).style("opacity", op).style("stroke-width",width);
+	var diff = to - from;
+	if(isNaN(diff)){
+		var data = placement.data();
+		data = data[data.length-1];
+		var to= to(data);
+		var from = from(data);
+		var diff = to - from;
+	}
+	var headSize = 20;
+	if(Math.abs(diff) < headSize) headSize =Math.abs(diff)*0.5;
+	if(diff != 0) {var arrowHead = diff / Math.abs(diff);} else { var arrowHead = 0;}
+	group.append("line").attr("y1", to).attr("y2", to - arrowHead*headSize).attr("x1", xValue).attr("x2", xValue + arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op).style("stroke-width",width);
+	group.append("line").attr("y1", to).attr("y2", to - arrowHead*headSize).attr("x1", xValue).attr("x2", xValue - arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op).style("stroke-width",width);
+
+}
 function heapYValues3(itemsToHeap, xScale, radius, sampleIndex, areaTopY, areaBottomY){
 	var section = radius * 0.8;
 	var buckets = {};
@@ -84,7 +103,8 @@ function heapYValues3(itemsToHeap, xScale, radius, sampleIndex, areaTopY, areaBo
 	}
 }
 
-function getStatistic(stat, items){
+function getStatistic(stat, origItems){
+	var items = origItems.slice(0);
 	if(stat =="Mean"){
 		var mean = 0;
 		for(var i =0;i<items.length;i++){

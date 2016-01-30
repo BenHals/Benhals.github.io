@@ -132,14 +132,15 @@ function oneMean(inputData, heading, statistic){
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).style("stroke-width", 2).style("stroke", "black");
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", 0).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.height).style("stroke-width", 0.5).style("stroke", "black").attr("stroke-dasharray","5,5");
 		var fontSize = (this.windowHelper.height - (this.population.length+2)*this.windowHelper.marginSample) / (this.population.length+2);
+		var titleFS = this.windowHelper.width * this.windowHelper.height / 50000;
 		var popText = svg.append("svg").attr("id","popText");
 		svg.append("svg").attr("id","sampText");
 		popText.append("rect").attr("width",self.windowHelper.sampleSectionDiv*3).attr("x", self.windowHelper.marginSample).attr("height",self.windowHelper.height - self.windowHelper.marginSample).attr("y", self.windowHelper.marginSample).attr("rx", "20").attr("ry","20").style("fill","#D0D0D0").style("stroke","black");
 		popText.append("rect").attr("width",self.windowHelper.sampleSectionDiv*3).attr("x", self.windowHelper.marginSample*2 + self.windowHelper.sampleSectionDiv*3).attr("height",self.windowHelper.height - self.windowHelper.marginSample).attr("y", self.windowHelper.marginSample).attr("rx", "20").attr("ry","20").style("fill","#D0D0D0").style("stroke","black");
-		svg.append("text").text(heading).attr("x",self.windowHelper.sampleSectionDiv).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",fontSize*1.5).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
+		svg.append("text").text(heading).attr("x",self.windowHelper.sampleSectionDiv).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",titleFS).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 		popText.selectAll("text").data(this.population).enter().append("text").text(function(d){return d.value}).attr("x",self.windowHelper.sampleSectionDiv).attr("y",function(d,i){return (fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 		svg.append("svg").attr("id","redTContainer");
-		svg.append("text").text("ReSample").attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",fontSize*1.1).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
+		svg.append("text").text("ReSample").attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",titleFS).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 
 	}
 	this.drawSamples = function(){
@@ -171,7 +172,7 @@ function oneMean(inputData, heading, statistic){
 	}
 	this.startAnim = function(repititions, goSlow, incDist){
 		this.incDist = incDist;
-		if(repititions >999) this.resetLines();
+		if(repititions >999 || repititions == 1) this.resetLines();
 		if(this.animationState == 0){
 			if(repititions == 1) this.transitionSpeed = 1000;
 			if(repititions == 5) this.transitionSpeed = 500;
@@ -228,10 +229,11 @@ function oneMean(inputData, heading, statistic){
 		d3.selectAll(".sCRemove").remove();
 		d3.selectAll(".stepCircle").attr("fill-opacity", 0);
 		drawArrow(self.windowHelper.sampleSectionDiv, 0, self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2) - self.fontSize/2,d3.select("#sampText"), "pointerArrow", 1, "red" );
-		d3.select("#redTContainer").append("text").attr("id","redText").text(self.settings.sample[self.upTo].value).attr("x",self.windowHelper.sampleSectionDiv).attr("y",self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2)).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("opacity",1).style("fill","red");
+		var rsText = d3.select("#redTContainer").append("text").attr("id","redText").text(self.settings.sample[self.upTo].value).attr("x",self.windowHelper.sampleSectionDiv).attr("y",self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2)).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("fill","red").style("opacity",1);
 		if(self.upTo <= 5 && self.settings.repititions == 1 && !self.settings.incDist){
 			var rT2 = d3.select("#redTContainer").append("text").attr("id","redText").text(self.settings.sample[self.upTo].value).attr("x",self.windowHelper.sampleSectionDiv).attr("y",self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2)).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("opacity",1).style("fill","red");
 			rT2.transition().duration(speed*0.75).attr("y",self.fontSize*(self.upTo+3)+self.windowHelper.marginSample*(self.upTo+2)).attr("x",self.windowHelper.sampleSectionDiv*4);
+			//rsText.transition().delay(speed*0.75).duration(100).style("opacity",1);
 		}
 		if(self.showSteps){
 			var meanCircles = d3.select(".pop").selectAll("circle").filter(function(d){
@@ -265,16 +267,17 @@ function oneMean(inputData, heading, statistic){
 
 		var popText = d3.select("#sampText").selectAll("text").data(self.drawnResamps);
 		popText.style("fill","black");
-		popText.enter().append("text").text(function(d){
+		var newText = popText.enter().append("text").text(function(d){
 			return d.value;
-		}).attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",function(d,i){return (self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("fill","red");
+		}).attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",function(d,i){return (self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("fill","red").style("opacity",function(){if(self.upTo <= 5 && self.settings.repititions == 1 && !self.settings.incDist){return 0}else{return 1}});
+					newText.transition().delay(speed*0.75).duration(100).style("opacity",1);
 		self.upTo += 1;
 		if(self.upTo == self.goTo){
 			this.fadeIn(self.settings);
 			d3.select("#pointerArrow").remove();
 			d3.selectAll("#redText").remove();
 			d3.selectAll(".stepCircle").remove();
-						popText.style("fill","black");
+						popText.style("fill","rgb(255, 113, 72)");
 			return true;
 		}else{
 			self.waiting = true;
@@ -291,6 +294,9 @@ function oneMean(inputData, heading, statistic){
 			self.pause();
 			return;
 		}
+		var i = self.upTo;
+		d3.select("#circleOverlay").selectAll(".c"+(i-1)).style("fill","#FF7148");
+		d3.select(".pop").selectAll(".c"+(i-1)).style("fill","#C7D0D5").attr("fill-opacity",0.5);
 		if(self.animationState == 0) return;
 				this.animationState = 3;
 						    this.settings.restarting = false;
@@ -305,14 +311,13 @@ function oneMean(inputData, heading, statistic){
 			d3.selectAll(".stepCircle").remove();
 			return true;
 		}
-		var i = self.upTo;
+
 		var selected = self.population[i];
 		var speed = 1000;
 		d3.select("#pointerArrow").remove();
 		d3.selectAll("#redText").remove();
 		d3.selectAll(".stepCircle").remove();
-		d3.select("#circleOverlay").selectAll(".c"+(i-1)).style("fill","#FF7148");
-		d3.select(".pop").selectAll(".c"+(i-1)).style("fill","#C7D0D5").attr("fill-opacity",0.5);
+
 
 		drawArrow(self.windowHelper.sampleSectionDiv, 0, self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2) - self.fontSize/2,d3.select("#sampText"), "pointerArrow", 1, "red" );
 		d3.select("#redTContainer").append("text").attr("id","redText").text(self.population[self.upTo].value).attr("x",self.windowHelper.sampleSectionDiv).attr("y",self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2)).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("opacity",1).style("fill","red");
@@ -359,7 +364,7 @@ function oneMean(inputData, heading, statistic){
 
 			popText.enter().append("text").text(function(d){
 				return d.value;
-			}).attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",function(d,i){return (fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
+			}).attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",function(d,i){return (fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("fill","rgb(255, 113, 72)");
 			this.fadeIn(settings);
 		}
 
@@ -492,9 +497,10 @@ function oneMean(inputData, heading, statistic){
 		}
 
 		if(this.transitionSpeed > 200){
-			redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).each("end",function(){d3.select(this).remove()});
+			//redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).each("end",function(){d3.select(this).remove()});
+			redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo+this.radius/2).attr("y2", downTo-this.radius/2).each("end",function(){d3.select(this).remove()});
 		}
-		if(settings.goSlow){
+		if(settings.goSlow || settings.repititions == 5){
 			meanCircles = meanCircles.transition().delay(this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]}).each('end', function(d, i){
 				if(!sentFinish){
 					self.animStepper(settings);
@@ -519,6 +525,9 @@ function oneMean(inputData, heading, statistic){
 		settings.indexUpTo += settings.jumps;
 		this.index += settings.jumps;
 		if(settings.indexUpTo >= settings.end  || settings.indexUpTo>= this.numSamples){
+			if(settings.repititions == 1000 && settings.incDist){
+				d3.select("#CIButton").attr("disabled",null);
+			}
 			this.animationState = 0;
 			mainControl.doneVis();
 			return;
@@ -533,25 +542,34 @@ function oneMean(inputData, heading, statistic){
 			});
 		visibleCircles.style("opacity",0.2);
 
-		d3.select(".svg").append("svg").attr("id","CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red");
-					d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic-this.CISplit)).style("stroke","red");
-					d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x1",this.xScale(this.populationStatistic+this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red");
+		d3.select(".svg").append("svg").attr("id","CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red").style("stroke-width",5);
+					drawArrowDown(this.windowHelper.section3.bottom + this.windowHelper.section3.height/10, this.windowHelper.section3.bottom - this.windowHelper.section3.height/4, this.xScale(this.populationStatistic-this.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+					drawArrowDown(this.windowHelper.section3.bottom + this.windowHelper.section3.height/10, this.windowHelper.section3.bottom - this.windowHelper.section3.height/4, this.xScale(this.populationStatistic+this.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+
+					//d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic-this.CISplit)).style("stroke","red");
+					//d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x1",this.xScale(this.populationStatistic+this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red");
 					d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic+this.CISplit)).text(Math.round((this.populationStatistic+this.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
-	d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic-this.CISplit)).text(Math.round((this.populationStatistic-this.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
-		var c2 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red");
-		var c3 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red");
+					d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic-this.CISplit)).text(Math.round((this.populationStatistic-this.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
+		var c2 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red").style("stroke-width",5);
+		var c3 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red").style("stroke-width",5);
 
 		c2.transition().duration(1000).transition().duration(1000).attr("y1",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4).attr("y2",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4);
 		c3.transition().duration(1000).transition().duration(1000).attr("y1",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4).attr("y2",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4).transition().duration(1000)
 		.transition().duration(1000).attr("y1",this.windowHelper.section1.bottom - this.windowHelper.section1.height/4).attr("y2",this.windowHelper.section1.bottom - this.windowHelper.section1.height/4).each("end",function(){
-					d3.select("#CISplit").append("line").attr("y1",self.windowHelper.section1.bottom - self.windowHelper.section1.height/4).attr("y2",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x1",self.xScale(self.populationStatistic-self.CISplit)).attr("x2",self.xScale(self.populationStatistic-self.CISplit)).style("stroke","red");
-					d3.select("#CISplit").append("line").attr("y1",self.windowHelper.section1.bottom - self.windowHelper.section1.height/4).attr("y2",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x1",self.xScale(self.populationStatistic+self.CISplit)).attr("x2",self.xScale(self.populationStatistic+self.CISplit)).style("stroke","red");
+					//d3.select("#CISplit").append("line").attr("y1",self.windowHelper.section1.bottom - self.windowHelper.section1.height/4).attr("y2",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x1",self.xScale(self.populationStatistic-self.CISplit)).attr("x2",self.xScale(self.populationStatistic-self.CISplit)).style("stroke","red");
+					//d3.select("#CISplit").append("line").attr("y1",self.windowHelper.section1.bottom - self.windowHelper.section1.height/4).attr("y2",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x1",self.xScale(self.populationStatistic+self.CISplit)).attr("x2",self.xScale(self.populationStatistic+self.CISplit)).style("stroke","red");
+					drawArrowDown(self.windowHelper.section1.bottom + self.windowHelper.section1.height/10, self.windowHelper.section1.bottom - self.windowHelper.section1.height/4, self.xScale(self.populationStatistic-self.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+					drawArrowDown(self.windowHelper.section1.bottom + self.windowHelper.section1.height/10, self.windowHelper.section1.bottom - self.windowHelper.section1.height/4, self.xScale(self.populationStatistic+self.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+					d3.select("#CISplit").append("text").attr("y",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x",self.xScale(self.populationStatistic+self.CISplit)).text(Math.round((self.populationStatistic+self.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
+					d3.select("#CISplit").append("text").attr("y",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x",self.xScale(self.populationStatistic-self.CISplit)).text(Math.round((self.populationStatistic-self.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
 
 		});
 
 	}
 
 	this.resetLines =function(){
+								d3.select("#CIButton").attr("disabled",true);
+								d3.selectAll(".notInCI").style("opacity",1);
 		this.drawnMeans = [];
 		d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
 		this.index = 1;

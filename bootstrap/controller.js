@@ -15,7 +15,8 @@ function controller(){
 	}
 	this.startVisFull = function(){
 		this.model.destroy();
-		var sampleSize = d3.select("#sampsize").property("value");
+		//var sampleSize = d3.select("#sampsize").property("value");
+		var sampleSize = this.model.inputData.length;
 		this.model.display.setUpPopulation();
 		this.model.display.setUpSamples(sampleSize);
 		this.model.display.draw();

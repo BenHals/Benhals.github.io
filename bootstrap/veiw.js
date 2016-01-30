@@ -18,15 +18,15 @@ function view(controller){
 		tab2Top.selectAll("*").remove();
 		tab2Top.append("input").attr("type","button").attr("value","< Back to Data Input").attr("class","bluebutton").attr("id","backTab2").attr("disabled",null).attr("onClick","mainControl.switchTab1()")
 			.style("height","15%");
-		tab2Top.append("label").text("Sample Size");
-		tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
+		//tab2Top.append("label").text("Sample Size");
+		//tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
 
 		tab2Top.append("label").text("Statistic");
 		tab2Top.append("select").attr("id","statSelect").append("option").text("Select variable");
 		var SSize = document.getElementById("sampsize");
-		SSize.onchange = function(e){
-			controller.startVisPreveiw();
-		}
+		//SSize.onchange = function(e){
+		//	controller.startVisPreveiw();
+		//}
 		var SS = document.getElementById("statSelect");
 		SS.onchange = function(e){
 			controller.statChanged(e);
@@ -77,7 +77,7 @@ function view(controller){
 		vs.append("label").attr("for","distThousand").attr("class","repLabel").text("1000");
 		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").classed("goButton",true).attr("id","distSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(true)")
 			.style("height","15%");
-		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIBUtton",true).attr("id","CIButton").attr("disabled",null).attr("onClick","mainControl.showCI()")
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIBUtton",true).attr("id","CIButton").attr("disabled",true).attr("onClick","mainControl.showCI()")
 			.style("height","15%");
 		/*
 		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "mainControl.startAnimation(1,true)");
