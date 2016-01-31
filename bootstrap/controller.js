@@ -7,6 +7,7 @@ function controller(){
 	this.view.loadMain(this.model.dataHeadings);
 	this.paused = false;
 	this.going = false;
+	this.fadeOn = false;
 	this.startAnimation = function(numReps, goSlow, incDist){
 		this.model.display.startAnim(numReps, goSlow, incDist);
 	}
@@ -158,7 +159,19 @@ function controller(){
 		this.view.doneVis();
 	}
 	this.showCI = function(){
-		this.model.display.showCI();
+		this.model.display.showCI("1");
+	}
+	this.showCITenk = function(){
+		this.model.display.showCI("10");
+	}
+	this.fadeToggle = function(){
+		if(!this.fadeOn){
+			this.view.fadeOn();
+			this.fadeOn = true;
+		}else{
+			this.view.fadeOff();
+			this.fadeOn = false;
+		}
 	}
 }
 

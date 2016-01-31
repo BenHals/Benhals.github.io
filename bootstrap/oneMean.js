@@ -53,7 +53,10 @@ function oneMean(inputData, heading, statistic){
 	this.setUpSamples = function(sSize){
 		this.sampleSize = sSize;
 		var statList = [];
+		var oldSampNum = this.numSamples;
+		//this.numSamples = 10000;
 		this.samples = this.makeSamples(this.population, this.numSamples, sSize);
+		this.tenKSamples = this.makeSamples(this.population, 10000, sSize);
 		for(var k = 0; k < this.numSamples;k++){
 			var stat = getStatistic(this.statistic, this.samples[k])
 			statList.push(stat);
@@ -77,8 +80,26 @@ function oneMean(inputData, heading, statistic){
 		this.CISplit = CISplit;
 		heapYValues3(this.preCalculatedTStat, this.xScale, this.radius, 0, this.windowHelper.section3.top,this.windowHelper.section3.bottom);
 
+		statList = [];
+		var higherNum = 100000;
+		this.tenKSamples = this.makeSamples(this.population, higherNum, sSize);
+
+		for(var k = 0; k < higherNum;k++){
+			var stat = getStatistic(this.statistic, this.tenKSamples[k])
+			statList.push(stat);
+		}
+		statList.sort(function(a,b){
+			if(Math.abs(self.populationStatistic - a ) < Math.abs(self.populationStatistic - b)) return -1;
+			if(Math.abs(self.populationStatistic - a ) > Math.abs(self.populationStatistic - b)) return 1;
+			return 0;
+		})
+		CISplit = Math.abs(this.populationStatistic - statList[higherNum*0.95]);
+		this.CISplitTenK = CISplit;
+
 		this.statsDone = true;
 		this.sampSetup = true;
+				this.fontS = this.windowHelper.width * this.windowHelper.height / 50000;
+				//this.numSamples = 1000;
 	}
 
 	this.makeSamples = function(population, numSamples, sampleSize){
@@ -131,7 +152,10 @@ function oneMean(inputData, heading, statistic){
 
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).style("stroke-width", 2).style("stroke", "black");
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", 0).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.height).style("stroke-width", 0.5).style("stroke", "black").attr("stroke-dasharray","5,5");
+		svg.append("text").attr("x", this.xScale(this.populationStatistic)).attr("y",this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).text(Math.round((this.populationStatistic)*100)/100).style("stroke","blue").attr("font-size",this.fontS);
+
 		var fontSize = (this.windowHelper.height - (this.population.length+2)*this.windowHelper.marginSample) / (this.population.length+2);
+		if(fontSize>this.windowHelper.sampleSection*0.1)fontSize=this.windowHelper.sampleSection*0.1;
 		var titleFS = this.windowHelper.width * this.windowHelper.height / 50000;
 		var popText = svg.append("svg").attr("id","popText");
 		svg.append("svg").attr("id","sampText");
@@ -347,6 +371,7 @@ function oneMean(inputData, heading, statistic){
 		if(settings.repititions == 1000) opacity = 0.2;
 		mLines.style("opacity",opacity).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
 		var fontSize = (this.windowHelper.height - (this.population.length+2)*this.windowHelper.marginSample) / (this.population.length+2);
+		if(fontSize>this.windowHelper.sampleSection*0.1)fontSize=this.windowHelper.sampleSection*0.1;
 		this.fontSize = fontSize;
 		var popText = d3.select("#sampText");
 		popText = popText.selectAll("text").data([]);
@@ -526,7 +551,7 @@ function oneMean(inputData, heading, statistic){
 		this.index += settings.jumps;
 		if(settings.indexUpTo >= settings.end  || settings.indexUpTo>= this.numSamples){
 			if(settings.repititions == 1000 && settings.incDist){
-				d3.select("#CIButton").attr("disabled",null);
+				d3.selectAll(".CIButton").attr("disabled",null);
 			}
 			this.animationState = 0;
 			mainControl.doneVis();
@@ -535,40 +560,42 @@ function oneMean(inputData, heading, statistic){
 		this.buildList(settings);
 
 	}
-	this.showCI = function(){
+	this.showCI = function(variableName){
+		var CIVar = this.CISplit;
+		if(variableName=="10") CIVar= this.CISplitTenK;
 		var self = this;
 		var visibleCircles = d3.selectAll(".notInCI").filter(function(){
 			return this.attributes["fill-opacity"].value == "1";
 			});
 		visibleCircles.style("opacity",0.2);
 
-		d3.select(".svg").append("svg").attr("id","CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red").style("stroke-width",5);
-					drawArrowDown(this.windowHelper.section3.bottom + this.windowHelper.section3.height/10, this.windowHelper.section3.bottom - this.windowHelper.section3.height/4, this.xScale(this.populationStatistic-this.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
-					drawArrowDown(this.windowHelper.section3.bottom + this.windowHelper.section3.height/10, this.windowHelper.section3.bottom - this.windowHelper.section3.height/4, this.xScale(this.populationStatistic+this.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+		d3.select(".svg").append("svg").attr("id","CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-CIVar)).attr("x2",this.xScale(this.populationStatistic+CIVar)).style("stroke","red").style("stroke-width",5);
+					drawArrowDown(this.windowHelper.section3.bottom + this.windowHelper.section3.height/10, this.windowHelper.section3.bottom - this.windowHelper.section3.height/4, this.xScale(this.populationStatistic-CIVar), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+					drawArrowDown(this.windowHelper.section3.bottom + this.windowHelper.section3.height/10, this.windowHelper.section3.bottom - this.windowHelper.section3.height/4, this.xScale(this.populationStatistic+CIVar), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
 
 					//d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic-this.CISplit)).style("stroke","red");
 					//d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x1",this.xScale(this.populationStatistic+this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red");
-					d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic+this.CISplit)).text(Math.round((this.populationStatistic+this.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
-					d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic-this.CISplit)).text(Math.round((this.populationStatistic-this.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
-		var c2 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red").style("stroke-width",5);
-		var c3 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-this.CISplit)).attr("x2",this.xScale(this.populationStatistic+this.CISplit)).style("stroke","red").style("stroke-width",5);
+					d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic+CIVar)).text(Math.round((this.populationStatistic+CIVar)*100)/100).style("stroke","red").style("font-size", 12);
+					d3.select("#CISplit").append("text").attr("y",this.windowHelper.section3.bottom + this.windowHelper.section3.height/10).attr("x",this.xScale(this.populationStatistic-CIVar)).text(Math.round((this.populationStatistic-CIVar)*100)/100).style("stroke","red").style("font-size", 12);
+		var c2 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-CIVar)).attr("x2",this.xScale(this.populationStatistic+CIVar)).style("stroke","red").style("stroke-width",5);
+		var c3 = d3.select("#CISplit").append("line").attr("y1",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("y2",this.windowHelper.section3.bottom - this.windowHelper.section3.height/4).attr("x1",this.xScale(this.populationStatistic-CIVar)).attr("x2",this.xScale(this.populationStatistic+CIVar)).style("stroke","red").style("stroke-width",5);
 
 		c2.transition().duration(1000).transition().duration(1000).attr("y1",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4).attr("y2",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4);
 		c3.transition().duration(1000).transition().duration(1000).attr("y1",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4).attr("y2",this.windowHelper.section2.bottom - this.windowHelper.section2.height/4).transition().duration(1000)
 		.transition().duration(1000).attr("y1",this.windowHelper.section1.bottom - this.windowHelper.section1.height/4).attr("y2",this.windowHelper.section1.bottom - this.windowHelper.section1.height/4).each("end",function(){
 					//d3.select("#CISplit").append("line").attr("y1",self.windowHelper.section1.bottom - self.windowHelper.section1.height/4).attr("y2",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x1",self.xScale(self.populationStatistic-self.CISplit)).attr("x2",self.xScale(self.populationStatistic-self.CISplit)).style("stroke","red");
 					//d3.select("#CISplit").append("line").attr("y1",self.windowHelper.section1.bottom - self.windowHelper.section1.height/4).attr("y2",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x1",self.xScale(self.populationStatistic+self.CISplit)).attr("x2",self.xScale(self.populationStatistic+self.CISplit)).style("stroke","red");
-					drawArrowDown(self.windowHelper.section1.bottom + self.windowHelper.section1.height/10, self.windowHelper.section1.bottom - self.windowHelper.section1.height/4, self.xScale(self.populationStatistic-self.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
-					drawArrowDown(self.windowHelper.section1.bottom + self.windowHelper.section1.height/10, self.windowHelper.section1.bottom - self.windowHelper.section1.height/4, self.xScale(self.populationStatistic+self.CISplit), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
-					d3.select("#CISplit").append("text").attr("y",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x",self.xScale(self.populationStatistic+self.CISplit)).text(Math.round((self.populationStatistic+self.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
-					d3.select("#CISplit").append("text").attr("y",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x",self.xScale(self.populationStatistic-self.CISplit)).text(Math.round((self.populationStatistic-self.CISplit)*100)/100).style("stroke","red").style("font-size", 12);
+					drawArrowDown(self.windowHelper.section1.bottom + self.windowHelper.section1.height/10, self.windowHelper.section1.bottom - self.windowHelper.section1.height/4, self.xScale(self.populationStatistic-CIVar), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+					drawArrowDown(self.windowHelper.section1.bottom + self.windowHelper.section1.height/10, self.windowHelper.section1.bottom - self.windowHelper.section1.height/4, self.xScale(self.populationStatistic+CIVar), d3.select("#CISplit"), "ciDownArrow", 1, "red",0.75);
+					d3.select("#CISplit").append("text").attr("y",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x",self.xScale(self.populationStatistic+CIVar)).text(Math.round((self.populationStatistic+CIVar)*100)/100).style("stroke","red").style("font-size", 12);
+					d3.select("#CISplit").append("text").attr("y",self.windowHelper.section1.bottom + self.windowHelper.section1.height/10).attr("x",self.xScale(self.populationStatistic-CIVar)).text(Math.round((self.populationStatistic-CIVar)*100)/100).style("stroke","red").style("font-size", 12);
 
 		});
 
 	}
 
 	this.resetLines =function(){
-								d3.select("#CIButton").attr("disabled",true);
+								d3.selectAll(".CIButton").attr("disabled",true);
 								d3.selectAll(".notInCI").style("opacity",1);
 		this.drawnMeans = [];
 		d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");

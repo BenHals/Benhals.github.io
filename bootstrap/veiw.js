@@ -77,7 +77,11 @@ function view(controller){
 		vs.append("label").attr("for","distThousand").attr("class","repLabel").text("1000");
 		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").classed("goButton",true).attr("id","distSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(true)")
 			.style("height","15%");
-		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIBUtton",true).attr("id","CIButton").attr("disabled",true).attr("onClick","mainControl.showCI()")
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButton").attr("disabled",true).attr("onClick","mainControl.showCI()")
+			.style("height","15%");
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI for 10,000").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButtonTenK").attr("disabled",true).attr("onClick","mainControl.showCITenk()")
+			.style("height","15%");
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Fade On/Off").attr("class","bluebutton").classed("fadeButton",true).attr("id","fadeButton").attr("disabled",null).attr("onClick","mainControl.fadeToggle()")
 			.style("height","15%");
 		/*
 		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "mainControl.startAnimation(1,true)");
@@ -234,5 +238,11 @@ function view(controller){
 	this.doneVis = function(){
 		d3.select("#pauseButton").remove();
 		d3.selectAll(".goButton").attr("disabled",null).style("display","block");
+	}
+	this.fadeOn = function(){
+		d3.select(".svg").append("rect").attr("id","fadeBox").attr("x",this.windowHelper.sampleSection-5).attr("y",this.windowHelper.section1.bottom + this.windowHelper.section1.height/10).attr("width", this.windowHelper.width).attr("height",this.windowHelper.height).style("opacity",0.8).style("fill","#F5F5F5");
+	}
+	this.fadeOff = function(){
+		d3.select("#fadeBox").remove();
 	}
 }
