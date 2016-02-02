@@ -304,14 +304,14 @@ this.drawSample = function(){
 		//this.fadeIn(goSlow, this.index);
 		d3.select(".sampleLines").selectAll("*").remove();
 				this.drawnMeans = [];
-		if(repititions >999) this.resetLines();
+		if(repititions >900) this.resetLines();
 		if(this.animationState == 0){
 			if(repititions == 1) this.transitionSpeed = 1000;
 			if(repititions == 5) this.transitionSpeed = 500;
 			if(repititions == 20) this.transitionSpeed = 100;
 			if(repititions == 1000) this.transitionSpeed = 0;
 			//this.animationState = 1;
-			if(this.index > this.numSamples){
+			if(this.index > this.numSamples*0.9){
 				this.index = this.index % this.numSamples;
 				this.resetLines();
 			}
@@ -841,7 +841,7 @@ this.drawSample = function(){
 		this.animationState = 6;
 		settings.indexUpTo += settings.jumps;
 		this.index += settings.jumps;
-		if(settings.indexUpTo >= settings.end-10 || settings.indexUpTo>= this.numSamples-10){
+		if(settings.indexUpTo >= settings.end || settings.indexUpTo>= this.numSamples-10){
 			mainControl.doneVis();
 			if(settings.repititions == 1000 && settings.incDist){
 				var svg = d3.select(".svg").append("g").attr("id","meanBox");
