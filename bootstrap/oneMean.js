@@ -600,7 +600,7 @@ function oneMean(inputData, heading, statistic){
 		this.drawnMeans = [];
 		d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
 		this.index = 1;
-		d3.select("#CISplit").remove();
+		d3.selectAll("#CISplit").remove();
 		var self = this;
 		var svg = d3.select(".svg");
 		//var meanLines = svg.select(".sampleLines").selectAll("line").attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
