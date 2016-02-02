@@ -40,7 +40,7 @@ function setUpWindow(radius){
 
 function drawArrow(to, from, yValue, placement, id, op, color){
 	var group = placement.append("svg").attr("id",id);
-	group.append("line").attr("x1", from).attr("x2", to).attr("y1", yValue).attr("y2", yValue).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	var mainLine = group.append("line").attr("x1", from).attr("x2", to).attr("y1", yValue).attr("y2", yValue).style("stroke-width", 2).style("stroke", color).style("opacity", op);
 	var diff = to - from;
 	if(isNaN(diff)){
 		var data = placement.data();
@@ -52,9 +52,9 @@ function drawArrow(to, from, yValue, placement, id, op, color){
 	var headSize = 20;
 	if(Math.abs(diff) < headSize) headSize =Math.abs(diff)*0.5;
 	if(diff != 0) {var arrowHead = diff / Math.abs(diff);} else { var arrowHead = 0;}
-	group.append("line").attr("x1", to).attr("x2", to - arrowHead*headSize).attr("y1", yValue).attr("y2", yValue + arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op);
-	group.append("line").attr("x1", to).attr("x2", to - arrowHead*headSize).attr("y1", yValue).attr("y2", yValue - arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op);
-
+	var arm1 = group.append("line").attr("x1", to).attr("x2", to - arrowHead*headSize).attr("y1", yValue).attr("y2", yValue + arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	var arm2 = group.append("line").attr("x1", to).attr("x2", to - arrowHead*headSize).attr("y1", yValue).attr("y2", yValue - arrowHead*1*headSize/2).style("stroke-width", 2).style("stroke", color).style("opacity", op);
+	return [mainLine, arm1, arm2];
 }
 
 
