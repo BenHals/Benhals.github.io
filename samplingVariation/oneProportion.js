@@ -149,10 +149,17 @@ function oneProportion(inputData, heading, focus){
 		svg.append("svg").attr("class", "pop");
 		var g1Rect = svg.select(".pop").selectAll("g").data(this.samples[0]);
 		var groups = g1Rect.enter().append("g").attr("id",function(d,i){return "popRect"+i});
+		this.groupCircles = [[],[], gridHeight];
 		for(var h = 0;h<2;h++){
+			var num = this.samples[0][h][1];
+			var numCols = Math.ceil(num/gridHeight);
+			var margin = ((Math.floor((this.xScale((this.samples[0][h][1])/total))) - numCols*this.radius*2)-this.radius)/(numCols-1);
+			this.groupCircles[h] = [num,numCols,margin];
 			for(var j =0;j<gridWidths[h];j++){
+				if(k*j > this.samples[0][h][1]) continue;
 				for(var k = 0; k< gridHeight;k++){
-					d3.select("#popRect"+h).append("circle").attr("cy",this.windowHelper.section1.bottom - this.barHeight +(k*this.radius*2) + this.radius).attr("cx", self.xScale(this.samples[0][h][0]/total)+this.radius +(j*this.radius*2)).attr("r",this.radius).attr("fill-opacity",0).attr("stroke-opacity",0.5);
+					if(gridHeight*(j) + k +1 > this.samples[0][h][1]) continue;
+					d3.select("#popRect"+h).append("circle").attr("cy",this.windowHelper.section1.bottom - this.barHeight +(k*this.radius*2) + this.radius).attr("cx", self.xScale(this.samples[0][h][0]/total)+this.radius +(j*this.radius*2 +j*margin)).attr("r",this.radius).attr("fill-opacity",0).attr("stroke-opacity",0.5);
 				}
 			}
 		}
@@ -260,10 +267,15 @@ function oneProportion(inputData, heading, focus){
 				for(var i =0; i< settings.sample.length;i++){
 					randSelection.push([]);
 					for(var k = 0; k< settings.sample[i][1];k++){
-						cY = Math.random()*(100-(this.radius*2)) + this.radius;
-						cX = Math.random()*(pop[i][1] - (this.radius*2)) + pop[i][0] + this.radius;
+						var posData = this.groupCircles[i];
+						var margin = posData[2];
+						cY = Math.round(Math.random()*(this.groupCircles[2]-1)) + 1;
+						cX = Math.round(Math.random()*(posData[1]-1));
+						if(cX == posData[1]-1){
+							cY = posData[0]%this.groupCircles[2];
+						}
 						var scale = i;
-						randSelection[i].push([cX,cY, scale]);
+						randSelection[i].push([this.radius +(cX*this.radius*2 +cX*margin), -(cY*this.radius*2) + this.radius + this.barHeight, scale, i]);
 					}
 				}
 				var allInSample = randSelection[0].concat(randSelection[1]);
@@ -271,12 +283,13 @@ function oneProportion(inputData, heading, focus){
 				var g1Circles = settings.svg.select(".g1Circles").selectAll("circle").data(randSelection[0], function(d){return d});
 				g1Circles.exit().remove();
 				g1Circles.enter().append("circle");
-				g1Circles.attr("cx",function(d){return self.xScale(d[0]/self.total)}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r",self.radius).style("fill",colorByIndex[0]).attr("fill-opacity",0).attr("stroke-opacity",0);
+				g1Circles.attr("cx",function(d){
+					return self.xScale(self.samples[0][0][0]/self.total) + d[0]}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r",self.radius).style("fill",colorByIndex[0]).attr("fill-opacity",0).attr("stroke-opacity",0);
 
 				var g2Circles = settings.svg.select(".g2Circles").selectAll("circle").data(randSelection[1], function(d){return d});
 				g2Circles.exit().remove();
 				g2Circles.enter().append("circle");
-				g2Circles.attr("cx",function(d){return self.xScale(d[0]/self.total)}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r","5").style("fill",colorByIndex[1]).attr("fill-opacity",0).attr("stroke-opacity",0);
+				g2Circles.attr("cx",function(d){return self.xScale(self.samples[0][1][0]/self.total) + d[0]}).attr("cy",function(d){return self.windowHelper.section1.bottom - d[1]}).attr("r","5").style("fill",colorByIndex[1]).attr("fill-opacity",0).attr("stroke-opacity",0);
 
 			var lastElement = settings.sample[1];
 			var sampleTotal = lastElement[0] + lastElement[1];
@@ -307,7 +320,7 @@ function oneProportion(inputData, heading, focus){
 				.transition().duration(function(d,i){return settings.delay*2/allInSample.length * (allInSample.length - allInSample.indexOf(d))})
 				.transition().duration(settings.pauseDelay)
 				.transition().duration(this.transitionSpeed).attr("cy",function(d){return self.windowHelper.section2.bottom -self.barHeight/2- d[1]}).attr("cx",function(d){
-					return scales[d[2]](d[0]/self.total)}).each("end", function(d, i){
+					return self.xScale(settings.sample[d[3]][0]/self.sampleSize) + d[0]/((self.xScale((self.samples[0][0][0] + self.samples[0][d[3]][1])/self.total)) / self.xScale((settings.sample[0][0] + settings.sample[d[3]][1])/self.sampleSize))}).each("end", function(d, i){
 						var test = i;
 						if(i==0){
 							self.makeRects(settings);
