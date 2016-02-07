@@ -291,9 +291,9 @@ this.drawSample = function(){
 			settings.allInSample = allInSample;
 
 			//settings.svg.select(".sampleLines").selectAll("line").style("opacity",0.2).style("stroke", "steelblue");
-			d3.select(".meanOfSamples").selectAll("g").remove();
-			settings.svg.select(".sampleLines").selectAll("*").remove();
-			this.drawnMeans = [];
+			//d3.select(".meanOfSamples").selectAll("g").remove();
+			//settings.svg.select(".sampleLines").selectAll("*").remove();
+			//this.drawnMeans = [];
 			var powScale = d3.scale.pow();
 			powScale.exponent(4);
 			powScale.domain([0,settings.delay*2]);
@@ -338,6 +338,7 @@ this.drawSample = function(){
 		    var fillInTime = this.transitionSpeed/this.baseTransitionSpeed;
 		    this.settings.restarting = false;
 		}
+
 		if(settings.goSlow){
 			circleOverlay = settings.svg.select("#circleOverlay").selectAll("circle").transition().delay(function(d,i){
 					//return delay*2/sample.length * sample.indexOf(d)
@@ -372,25 +373,31 @@ this.drawSample = function(){
 			var circle = settings.svg.select("#circleOverlay").selectAll(".move");
 		var test = [this.samples[0][settings.indexUpTo], this.samples[1][settings.indexUpTo]];
 		var sampMean = this.preCalculatedTStat.slice(settings.indexUpTo + 1, settings.indexUpTo+settings.jumps + 1);
-			/*if(sampMean.length > 1){
-				this.drawnMeans = this.drawnMeans.concat(sampMean.slice(0,-1));
-				mLines = settings.svg.select(".sampleLines").selectAll("line").data(this.drawnMeans);
-				mLines.enter().append("line").attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird -this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 1);
-				mLines.style("opacity",0.2).style("stroke", "steelblue");
-				this.drawnMeans.push(sampMean[sampMean.length-1]);
-			}else{
-				this.drawnMeans = this.drawnMeans.concat(sampMean);
-			} */
-			this.drawnMeans.push(sampMean[sampMean.length -1]);
-				var middle = this.windowHelper.section2.top +(this.windowHelper.section2.height/2) + this.radius * 2;
+		if(!sampMean) {
+			this.animStepper(settings);
+			return;
+		}
+		for(var k = 0;k<sampMean.length-1;k++){
+			this.drawnMeans.push(sampMean[k]);
+		}
+			var middle = this.windowHelper.section2.top +(this.windowHelper.section2.height/2) + this.radius * 2;
+			if(this.drawnMeans.length > 0){
 			var mLines = settings.svg.select(".sampleLines").selectAll("g").data(this.drawnMeans);
-			//mLines.style("opacity",0.2).style("stroke", "steelblue");
-			mLines.remove();
 			var meanLineG = mLines.enter().append("g");
-			meanLineG.append("line").attr("x1", function(d){return self.xScale(d.s0);}).attr("x2", function(d){return self.xScale(d.s0);}).attr("y1", middle - self.radius * 10 - this.thirds).attr("y2", middle + this.radius * 10 -this.thirds).style("stroke-width", 3).style("stroke", "black").style("opacity",0);
-			meanLineG.append("line").attr("x1", function(d){return self.xScale(d.s1);}).attr("x2", function(d){return self.xScale(d.s1);}).attr("y1", this.windowHelper.section2.bottom + this.radius * 10 - this.thirds).attr("y2", this.windowHelper.section2.bottom - this.radius * 10 - this.thirds).style("stroke-width", 3).style("stroke", "black").style("opacity",0);
-			drawArrow(function(d){return self.xScale(d.s1);},function(d){return self.xScale(d.s0);},middle, meanLineG, "diffLine", 0, "red")
-			//meanLineG.append("line").attr("id","differenceLine").attr("x1", function(d){return self.xScale(d.s0);}).attr("x2", function(d){return self.xScale(d.s1);}).attr("y1", middle).attr("y2", middle).style("stroke-width", 2).style("stroke", "black").style("opacity",0);
+			meanLineG.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d.s0);}).attr("x2", function(d){return self.xScale(d.s0);}).attr("y1", middle + self.radius * 10 - this.thirds).attr("y2", middle - this.radius * 10 -this.thirds).style("stroke-width", 3).style("stroke", "black").style("opacity",1);
+			meanLineG.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d.s1);}).attr("x2", function(d){return self.xScale(d.s1);}).attr("y1", this.windowHelper.section2.bottom + this.radius * 10 - this.thirds).attr("y2", this.windowHelper.section2.bottom - this.radius * 10 - this.thirds).style("stroke-width", 3).style("stroke", "black").style("opacity",1);
+		
+			d3.selectAll(".memLine").style("opacity",0.2).style("stroke","steelblue").attr("y2",function(){ return d3.select(this).attr("y1")-self.thirds/2});
+			d3.selectAll("#diffLine").remove();
+		}
+			this.drawnMeans.push(sampMean[sampMean.length-1]);
+		mLines = settings.svg.select(".sampleLines").selectAll("g").data(this.drawnMeans);
+		meanLineG = mLines.enter().append("g");
+		meanLineG.append("line").attr("class","memLine").attr("x1", function(d){
+			return self.xScale(d.s0);}).attr("x2", function(d){return self.xScale(d.s0);}).attr("y1", middle + self.radius * 10 - this.thirds).attr("y2", middle - this.radius * 10 -this.thirds).style("stroke-width", 3).style("stroke", "black").style("opacity",1);
+		meanLineG.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d.s1);}).attr("x2", function(d){return self.xScale(d.s1);}).attr("y1", this.windowHelper.section2.bottom + this.radius * 10 - this.thirds).attr("y2", this.windowHelper.section2.bottom - this.radius * 10 - this.thirds).style("stroke-width", 3).style("stroke", "black").style("opacity",1);
+		drawArrow(function(d){return self.xScale(d.s1);},function(d){return self.xScale(d.s0);},middle, meanLineG, "diffLine", 1, "red")
+
 			this.settings.circle = circle;
 			this.settings.sampMean = sampMean;
 			this.settings.mLines = mLines;
