@@ -205,21 +205,23 @@ this.drawPop = function(){
 		    .attr("fill-opacity", 0.5)
 		    .attr("stroke","#556270")
 		    .attr("stroke-opacity",1).attr("class",function(d){return "c"+d.id});
-		svg.select("#pop"+i).append("line").attr("x1", this.xScale(this.groupStats[this.groups[i]])).attr("x2", this.xScale(this.groupStats[this.groups[i]])).attr("y1", pos+20).attr("y2", pos-20).style("stroke-width", 2).style("stroke", "black");
-		svg.select("#pop"+i).append("text").attr("y", pos).attr("x", this.windowHelper.innerWidth*0.9).text(this.groups[i]).attr("fill","red").style("font-size","0.75em").attr("text-anchor","left").style("opacity",1).style("font-size",this.windowHelper.section1.height / 10);
-		svg.select("#pop"+i).append("text").attr("y", pos+this.windowHelper.section2.top- this.thirds).attr("x", this.windowHelper.innerWidth*0.9).text(this.groups[i]).attr("fill","red").style("font-size","0.75em").attr("text-anchor","left").style("opacity",1).style("font-size",this.windowHelper.section1.height / 10);
+		svg.select("#pop"+i).append("line").attr("x1", this.xScale(this.groupStats[this.groups[i]])).attr("x2", this.xScale(this.groupStats[this.groups[i]])).attr("y1", pos+20).attr("y2", pos-50).style("stroke-width", 2).style("stroke", "black").style("stroke-width",3);
+		svg.select("#pop"+i).append("text").attr("y", pos - this.thirds*1.1).attr("x", this.windowHelper.innerWidth*0.9).text(this.groups[i]).attr("fill","red").style("font-size","0.75em").attr("text-anchor","left").style("opacity",1).style("font-size",this.windowHelper.section1.height / 10);
+		svg.select("#pop"+i).append("text").attr("y", pos+this.windowHelper.section2.top- this.thirds*0.7).attr("x", this.windowHelper.innerWidth*0.9).text(this.groups[i]).attr("fill","red").style("font-size","0.75em").attr("text-anchor","left").style("opacity",1).style("font-size",this.windowHelper.section1.height / 10);
 
 	} 
 
 		//svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).style("stroke-width", 2).style("stroke", "black");
 		//svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", 0).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.height).style("stroke-width", 0.5).style("stroke", "black").attr("stroke-dasharray","5,5");
-		var fontSize = (this.windowHelper.height - (this.allPop.length+2)*this.windowHelper.marginSample) / (this.allPop.length+2);
+		var fS = getFontSize(this.windowHelper,this.allPop.length);
+		var fontSize = fS[0];
+		var titleFS = fS[1];
 		var popText = svg.append("svg").attr("id","popText");
 		svg.append("svg").attr("id","sampText");
 		popText.append("rect").attr("width",self.windowHelper.sampleSectionDiv*3).attr("x", self.windowHelper.marginSample).attr("height",self.windowHelper.height - self.windowHelper.marginSample).attr("y", self.windowHelper.marginSample).attr("rx", "20").attr("ry","20").style("fill","#D0D0D0").style("stroke","black");
 		popText.append("rect").attr("width",self.windowHelper.sampleSectionDiv*3).attr("x", self.windowHelper.marginSample*2 + self.windowHelper.sampleSectionDiv*3).attr("height",self.windowHelper.height - self.windowHelper.marginSample).attr("y", self.windowHelper.marginSample).attr("rx", "20").attr("ry","20").style("fill","#D0D0D0").style("stroke","black");
-		svg.append("text").text(headingContinuous).attr("x",self.windowHelper.sampleSectionDiv*0 + self.windowHelper.marginSample).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",fontSize*1.5).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
-		svg.append("text").text(headingGroup).attr("x",self.windowHelper.sampleSectionDiv*2).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",fontSize*1.5).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
+		svg.append("text").text(headingContinuous).attr("x",self.windowHelper.sampleSectionDiv*0 + self.windowHelper.marginSample).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",fontSize).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
+		svg.append("text").text(headingGroup).attr("x",self.windowHelper.sampleSectionDiv*2).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",fontSize).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 		var popTextG = popText.selectAll("g").data(this.allPop).enter().append("g");
 		popTextG.append("text").text(function(d){return d.value}).attr("x",self.windowHelper.sampleSectionDiv*0 +self.windowHelper.marginSample).attr("y",function(d,i){return (fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 		popTextG.append("text").text(function(d){return d.group}).attr("x",self.windowHelper.sampleSectionDiv*2 -self.windowHelper.marginSample).attr("y",function(d,i){return (fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("stroke", function(d){return colorByIndex[self.groups.indexOf(d.group)]});
@@ -286,6 +288,7 @@ this.drawSample = function(){
 	var overlayContainer = svg.append("svg").attr("id","circleOverlay");
 	overlayContainer.append("svg").attr("id","circleOverlayStill");
 	overlayContainer.append("svg").attr("id","circleOverlayDrop");
+	d3.select("#fadeButton").remove();
 }
 /*this.startAnim = function(repititions, goSlow){
 	if(repititions >999) this.resetLines();
@@ -648,7 +651,7 @@ this.drawSample = function(){
 			circleOverlay = settings.svg.select("#circleOverlay").selectAll("circle").transition().delay(function(d,i){
 					return 1;
 				}).duration(settings.fadeIn).style("fill", "#FF7148").attr("fill-opacity", 1)
-				.transition().duration(this.transitionSpeed*2).each('end', function(d, i){
+				.transition().duration(this.transitionSpeed*3).each('end', function(d, i){
 						if(d == settings.allInSample[0]){
 							if(settings.incDist){
 								self.distDrop(settings);
@@ -863,8 +866,6 @@ this.drawSample = function(){
 			mainControl.doneVis();
 			if(settings.repititions == 1000 && settings.incDist){
 				var svg = d3.select(".svg").append("g").attr("id","meanBox");
-				svg.append("text").attr("x", this.xScale2(this.preCalculatedTStat[0].value)).attr("y", this.windowHelper.section3.bottom + this.radius*8).text(Math.round(this.populationStatistic*100)/100).style("stroke","blue").style("opacity",1);
-				svg.append("line").attr("x1", this.xScale2(this.populationStatistic)).attr("x2", this.xScale2(this.populationStatistic)).attr("y1", this.windowHelper.section3.bottom + this.radius*8).attr("y2", this.windowHelper.section3.bottom + this.radius).style("stroke-width", 2).style("stroke", "blue");
 				d3.selectAll(".CIButton").attr("disabled",null);
 			}
 			this.animationState = 0;
@@ -882,6 +883,7 @@ this.drawSample = function(){
 			CIVar = this.LargeCISplit;
 		}
 		svg.append("svg").attr("id","CISplit");
+
 		var middle = this.windowHelper.section1.top +(this.windowHelper.section1.height/4 * 3);
 		var to = this.xScale(this.preCalculatedTStat[0].s1);
 		var from = this.xScale(this.preCalculatedTStat[0].s0);
@@ -894,6 +896,9 @@ this.drawSample = function(){
 		arrow[2].transition().duration(2000).attr("y1",this.windowHelper.section3.bottom).attr("y2",this.windowHelper.section3.bottom -headSize*arrowHead/2).attr("x1",this.xScale2(this.populationStatistic)).attr("x2", this.xScale2(this.populationStatistic) - arrowHead*headSize);
 		arrow[0].transition().duration(2000).attr("x1",this.xScale2(0)).attr("x2",this.xScale2(this.populationStatistic)).attr("y1",this.windowHelper.section3.bottom).attr("y2",this.windowHelper.section3.bottom)
 			.transition().duration(500).each("end",function(){
+				svg.append("text").attr("x", self.xScale2(self.populationStatistic)).attr("y", self.windowHelper.section3.bottom + self.radius*8).text(Math.round(self.populationStatistic*100)/100).style("stroke","blue").style("opacity",1);
+				svg.append("line").attr("x1", self.xScale2(self.populationStatistic)).attr("x2", self.xScale2(self.populationStatistic)).attr("y1", self.windowHelper.section3.bottom + self.radius*8).attr("y2", self.windowHelper.section3.bottom + self.radius).style("stroke-width", 2).style("stroke", "blue");
+
 				var visibleCircles = d3.selectAll(".notInCI").filter(function(){
 					return this.attributes["fill-opacity"].value == "1";
 				});
@@ -1039,6 +1044,9 @@ this.resetData = function(){
 }
 
 this.resetLines = function(){
+	d3.select("#sampText").selectAll("*").remove();
+	d3.select("#redTContainer").selectAll("*").remove();
+	
 	d3.select("#meanBox").remove();
 	d3.selectAll("#CISplit").remove();
 									d3.selectAll(".CIButton").attr("disabled",true);

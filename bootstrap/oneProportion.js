@@ -34,7 +34,7 @@ function oneProportion(inputData, heading, focus){
 		}
 		for(var i = 0; i<inputData.length;i++){
 			var value = inputData[i][heading];
-			if(!(value == this.focusGroup)) value = "Other Groups";
+			if(!(value == this.focusGroup)) value = this.order[1];
 			if(!(value in groups)) groups[value] = 0;
 			groups[value] += 1;
 			var addItem = new item(0, i);

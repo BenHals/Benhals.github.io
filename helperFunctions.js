@@ -243,3 +243,10 @@ function makeBoxplot(x,y,width,height,population,xScale,lq,med,uq){
 		container.append("line").attr("x1",xScale(lQ)).attr("x2",xScale(uQ)).attr("y1",y+height).attr("y2",y+height);
 
 }
+function getFontSize(wH, leng){
+
+		var fontSize = (wH.height - (leng+2)*wH.marginSample) / (leng+2);
+		if(fontSize>wH.sampleSection*0.05)fontSize=wH.sampleSection*0.05;
+		var titleFS = wH.width * wH.height / 50000;
+		return [fontSize, titleFS];
+}

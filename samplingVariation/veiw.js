@@ -141,6 +141,7 @@ function view(controller){
 		d3.select("#variable").text("variable: " + vars+"; ");
 	}
 	this.focusSelector = function(headings, curCategory){
+		headings.sort();
 		var focusContainer = d3.select("#focusContainer");
 		focusContainer.append("label").attr("for","focusController").text("Choose Category to focus on.")
 		var focusController = focusContainer.append("select").attr("size",headings.length).attr("id","focusController");
