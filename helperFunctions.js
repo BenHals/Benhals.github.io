@@ -7,7 +7,7 @@ function buttonController(buttonString){
 function setUpWindow(radius){
 	var windowHelper = new Object();
 	windowHelper.width = window.innerWidth*0.8;
-	windowHelper.height = window.innerHeight*0.95*0.99 - 15;
+	windowHelper.height = window.innerHeight*0.92*0.99;
 	windowHelper.innerWidth = windowHelper.width - radius*2;
 	windowHelper.margin = windowHelper.height/10;
 	windowHelper.section1 = new Object();

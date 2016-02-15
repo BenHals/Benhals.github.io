@@ -4,11 +4,11 @@ function view(controller){
 	this.controller = controller;
 	this.windowHelper = setUpWindow(5);
 	d3.select("#module").text("module: Sampling Variation"+"; ");
-	d3.select("#module").text("Sampling Variation");
+	d3.select("#banner").text("Sampling Variation");
 
 	this.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
-		d3.select("#startButton").style("background-color","#094b85");
+		//d3.select("#startButton").style("background","#094b85");
 
 
 	}
@@ -107,7 +107,7 @@ function view(controller){
 		var backToMain = tab1.append("a").attr("name", "backToMain").attr("class","bluebutton").attr("value","mainButton").attr("id","mainButton").attr("href","../index.html").text("< Back To Main Menu");
 		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
 		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
-		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
+		var usePreset = tab1.append("input").attr("class","bluebutton").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
 		var container = tab1.append("div").attr("id","inputContainer").attr("class","selectContainer");
 		var focusContainer = tab1.append("div").attr("id","focusContainer").attr("class","selectContainer");
 		var vSelectContainer = tab1.append("div").attr("id","vSelectContainer").attr("class","selectContainer");

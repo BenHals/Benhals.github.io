@@ -35,9 +35,9 @@ option{
   display: block;
   height: 3%;
   width: 100%;
-  background: #18afe3;
+  background: #094b85;
   text-align: center;
-  color: #094b85;
+  color: #fff;
   font-weight: 700;
   font-size: 100%;
 }
@@ -89,7 +89,7 @@ select {
   z-index: -1;
 }
 .bluebutton{
-
+  margin-top:1px;
   display: inline-block;
   vertical-align: middle;
   text-align: center;
@@ -101,6 +101,11 @@ select {
   color: white;
   background-color: #094b85;
   cursor: pointer;
+}
+.bluebutton:hover{
+  /*background: #18afe3;
+  color: #094b85;*/
+  border: 3px solid #18afe3;
 }
 .bluebutton:disabled{
   display: inline-block;
@@ -116,9 +121,9 @@ select {
   cursor: default;
 }
 #mainButton{
-    margin-bottom: 1px;
-  border-bottom: 5px solid #18afe3;
-}
+  /*border: 5px solid #18afe3;*/
+ /* background: #18afe3;
+*/}
 #leftHalf {
   display: block;
   float: left;

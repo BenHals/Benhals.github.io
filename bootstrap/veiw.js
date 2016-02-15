@@ -8,7 +8,7 @@ function view(controller){
 
 	this.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
-		d3.select("#startButton").style("background-color","#094b85");
+		//d3.select("#startButton").style("background-color","#094b85");
 	}
 	this.leaveVis = function(){
 		d3.select("#visControls1").remove();
@@ -123,7 +123,7 @@ function view(controller){
 
 		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
 		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
-		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
+		var usePreset = tab1.append("input").attr("class","bluebutton").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
 		var container = tab1.append("div").attr("id","inputContainer").attr("class","selectContainer");
 		var focusContainer = tab1.append("div").attr("id","focusContainer").attr("class","selectContainer");
 		var vSelectContainer = tab1.append("div").attr("id","vSelectContainer").attr("class","selectContainer");

@@ -155,6 +155,7 @@ function oneMean(inputData, heading, statistic){
 		svg.append("text").attr("x", this.xScale(this.populationStatistic)).attr("y",this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).text(Math.round((this.populationStatistic)*100)/100).style("stroke","blue").attr("font-size",this.fontS);
 		var fS = getFontSize(this.windowHelper,this.population.length);
 		var fontSize = fS[0];
+		self.fontSize = fontSize;
 		var titleFS = fS[1];
 		var popText = svg.append("svg").attr("id","popText");
 		svg.append("svg").attr("id","sampText");
@@ -369,9 +370,9 @@ function oneMean(inputData, heading, statistic){
 		var opacity = 1;
 		if(settings.repititions == 1000) opacity = 0.2;
 		mLines.style("opacity",opacity).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
-		var fontSize = (this.windowHelper.height - (this.population.length+2)*this.windowHelper.marginSample) / (this.population.length+2);
-		if(fontSize>this.windowHelper.sampleSection*0.1)fontSize=this.windowHelper.sampleSection*0.1;
-		this.fontSize = fontSize;
+		//var fontSize = (this.windowHelper.height - (this.population.length+2)*this.windowHelper.marginSample) / (this.population.length+2);
+		//if(fontSize>this.windowHelper.sampleSection*0.1)fontSize=this.windowHelper.sampleSection*0.1;
+		var fontSize = this.fontSize;
 		var popText = d3.select("#sampText");
 		popText = popText.selectAll("text").data([]);
 		popText.exit().remove();
