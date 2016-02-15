@@ -3,33 +3,31 @@ function view(controller){
 	this.dataScreen = null;
 	this.controller = controller;
 	this.windowHelper = setUpWindow(5);
-	d3.select("#module").text("module: Sampling Variation"+"; ");
-	d3.select("#module").text("Sampling Variation");
+	d3.select("#module").text("module: Randomisation Variation"+"; ");
+		d3.select("#banner").text("Randomisation Variation");
 
 	this.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
 		d3.select("#startButton").style("background-color","#094b85");
-
-
 	}
 	this.leaveVis = function(){
 		d3.select("#visControls1").remove();
-		d3.select("#visControls26").remove();
+		d3.select("#visControls2").remove();
 	}
 	this.setUpTab2 = function(){
 		var tab2Top = d3.select("#tab2Top");
 		tab2Top.selectAll("*").remove();
 		tab2Top.append("input").attr("type","button").attr("value","< Back to Data Input").attr("class","bluebutton").attr("id","backTab2").attr("disabled",null).attr("onClick","mainControl.switchTab1()")
 			.style("height","15%");
-		tab2Top.append("label").text("Sample Size");
-		tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
+		//tab2Top.append("label").text("Sample Size");
+		//tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
 
 		tab2Top.append("label").text("Statistic");
 		tab2Top.append("select").attr("id","statSelect").append("option").text("Select variable");
 		var SSize = document.getElementById("sampsize");
-		SSize.onchange = function(e){
-			controller.startVisPreveiw();
-		}
+		//SSize.onchange = function(e){
+		//	controller.startVisPreveiw();
+		//}
 		var SS = document.getElementById("statSelect");
 		SS.onchange = function(e){
 			controller.statChanged(e);
@@ -39,6 +37,14 @@ function view(controller){
 		//tab2Top.append("input").attr("type","button").attr("value","Pause").classed("bluebutton", true).attr("id","Pause").attr("disabled",true).attr("onClick","mainControl.pause()")
 		//	.style("height","15%");
 	}
+	this.tSDisable = function(){
+		d3.select("#cBoxLabel").classed("disabled", true);
+		d3.select("#trackCBox").attr("disabled",true);
+	}
+	this.tSUnDisable = function(){
+		d3.select("#cBoxLabel").classed("disabled", null);
+		d3.select("#trackCBox").attr("disabled",null);
+	}
 	this.makeButtons = function(){
 		d3.select("#stopButton").remove();
 		d3.select("#tab2Top").append("input").attr("type","button").attr("value","Stop").classed("bluebutton", true).attr("id","stopButton").attr("disabled",null).attr("onClick","mainControl.stopPressed()")
@@ -46,14 +52,17 @@ function view(controller){
 		var tab2 = d3.select("#tab2");
 		var vs = tab2.select("#tab2Mid").append("div").attr("id","visControls1");
 		vs.append("label").text("Sampling");
-		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1").attr("id","sampOne").attr("class","repSelect").attr("checked",true).text("1");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1").attr("id","sampOne").attr("class","repSelect").attr("checked",true).text("1").attr("onClick","mainControl.view.tSUnDisable()");
 		vs.append("label").attr("for","sampOne").attr("class","repLabel").text("1");
-		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","5").attr("id","sampFive").attr("class","repSelect").text("5");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","5").attr("id","sampFive").attr("class","repSelect").text("5").attr("onClick","mainControl.view.tSDisable()");
 		vs.append("label").attr("for","sampFive").attr("class","repLabel").text("5");
-		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","20").attr("id","sampTwenty").attr("class","repSelect").text("20");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","20").attr("id","sampTwenty").attr("class","repSelect").text("20").attr("onClick","mainControl.view.tSDisable()");
 		vs.append("label").attr("for","sampTwenty").attr("class","repLabel").text("20");
-		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1000").attr("id","sampThousand").attr("class","repSelect").text("1000");
+		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1000").attr("id","sampThousand").attr("class","repSelect").text("1000").attr("onClick","mainControl.view.tSDisable()");
 		vs.append("label").attr("for","sampThousand").attr("class","repLabel").text("1000");
+		vs.append("label").attr("for","trackCBox").attr("id","cBoxLabel").text("Track sample").classed("disabled",null);
+		vs.append("input").attr("type", "checkbox").attr("id","trackCBox").attr("value","trackCBox").attr("disabled",null);
+
 		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").classed("goButton",true).attr("id","startSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(false)")
 			.style("height","15%");
 
@@ -68,6 +77,12 @@ function view(controller){
 		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","1000").attr("id","distThousand").attr("class","repSelect").text("1000");
 		vs.append("label").attr("for","distThousand").attr("class","repLabel").text("1000");
 		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").classed("goButton",true).attr("id","distSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(true)")
+			.style("height","15%");
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButton").attr("disabled",true).attr("onClick","mainControl.showCI()")
+			.style("height","15%");
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI for 10,000").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButtonTenK").attr("disabled",true).attr("onClick","mainControl.showCITenk()")
+			.style("height","15%");
+		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Fade On/Off").attr("class","bluebutton").classed("fadeButton",true).attr("id","fadeButton").attr("disabled",null).attr("onClick","mainControl.fadeToggle()")
 			.style("height","15%");
 		/*
 		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "mainControl.startAnimation(1,true)");
@@ -105,6 +120,7 @@ function view(controller){
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Mid");
 		tab2.append("div").attr("class","tab2Divider").attr("id","tab2Bot");
 		var backToMain = tab1.append("a").attr("name", "backToMain").attr("class","bluebutton").attr("value","mainButton").attr("id","mainButton").attr("href","../index.html").text("< Back To Main Menu");
+
 		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
 		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
 		var usePreset = tab1.append("input").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
@@ -183,9 +199,8 @@ function view(controller){
 		d3.select("#file").text("file: " + mainControl.model.fileName +"; ");
 		var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
 		selectMenu.selectAll("*").remove();
-		selectMenu.append("option").attr("value","placeHolder").text("Please Choose a variable").attr("disabled",true).attr("selected",true).attr("hidden",true);
 		dataHeadings.forEach(function(e){
-			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")").attr("data");
+			selectMenu.append("option").attr("value",e).text(e[0]+" ("+e[1]+")");
 		});
 
 		d3.select("#startButton").remove();
@@ -225,5 +240,11 @@ function view(controller){
 	this.doneVis = function(){
 		d3.select("#pauseButton").remove();
 		d3.selectAll(".goButton").attr("disabled",null).style("display","block");
+	}
+	this.fadeOn = function(){
+		d3.select(".svg").append("rect").attr("id","fadeBox").attr("x",this.windowHelper.sampleSection-5).attr("y",this.windowHelper.section1.bottom + this.windowHelper.section1.height/10).attr("width", this.windowHelper.width).attr("height",this.windowHelper.height).style("opacity",0.8).style("fill","#F5F5F5");
+	}
+	this.fadeOff = function(){
+		d3.select("#fadeBox").remove();
 	}
 }

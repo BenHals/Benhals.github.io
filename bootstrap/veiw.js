@@ -4,6 +4,7 @@ function view(controller){
 	this.controller = controller;
 	this.windowHelper = setUpWindow(5);
 	d3.select("#module").text("module: Bootstrapping"+"; ");
+	d3.select("#banner").text("Bootstrapping");
 
 	this.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
