@@ -215,6 +215,7 @@ this.drawPop = function(){
 		//svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", 0).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.height).style("stroke-width", 0.5).style("stroke", "black").attr("stroke-dasharray","5,5");
 		var fS = getFontSize(this.windowHelper,this.allPop.length);
 		var fontSize = fS[0];
+		this.fontSize = fontSize;
 		var titleFS = fS[1];
 		var popText = svg.append("svg").attr("id","popText");
 		svg.append("svg").attr("id","sampText");
@@ -516,8 +517,8 @@ this.drawSample = function(){
 		var opacity = 1;
 		if(settings.repititions == 1000) opacity = 0.2;
 		//mLines.style("opacity",opacity).style("stroke", "steelblue").attr("y2", this.windowHelper.section2.twoThird +5);
-		var fontSize = (this.windowHelper.height - (this.allPop.length+2)*this.windowHelper.marginSample) / (this.allPop.length+2);
-		this.fontSize = fontSize;
+		//var fontSize = (this.windowHelper.height - (this.allPop.length+2)*this.windowHelper.marginSample) / (this.allPop.length+2);
+		//this.fontSize = fontSize;
 		var popText = d3.select("#sampText");
 		popText = popText.selectAll("g").data([]);
 		popText.exit().remove();
@@ -777,7 +778,7 @@ this.drawSample = function(){
 				var middle = this.windowHelper.section2.top +(this.windowHelper.section2.height/2) + this.radius * 2;
 			var sampMean = this.preCalculatedTStat.slice(settings.indexUpTo, settings.indexUpTo+settings.jumps);
 			if(this.transitionSpeed > 200){
-				var downTo = this.preCalculatedTStat[settings.indexUpTo+1].yPerSample[0];
+				var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0];
 				var redLine = settings.svg.select(".meanOfSamples").selectAll("g").data(sampMean).enter().append("g");
 	
 				var to = this.xScale(sampMean[0].s1);
@@ -810,14 +811,14 @@ this.drawSample = function(){
 				redLine.append("line").attr("x1", to).attr("x2", to - diff).attr("y1", middle).attr("y2", middle - diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
 			*/} 
 			var meanCircles = settings.svg.select(".meanOfSamples").selectAll("circle").filter(function(d, i){
-				return (i>=settings.indexUpTo+1) && (i <settings.indexUpTo+settings.jumps+1);
+				return (i>=settings.indexUpTo) && (i <settings.indexUpTo+settings.jumps);
 			});
 
 			this.settings.sampMean = sampMean;
 			this.settings.meanCircles = meanCircles;
 			this.settings.diff = diff;
 		}else{
-			var downTo = this.preCalculatedTStat[settings.indexUpTo+1].yPerSample[0];
+			var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0];
 			var rL = this.settings.redLine;
 			d3.select("#redLine").remove();
 			var redLine = settings.svg.select(".meanOfSamples").append("g");
@@ -837,7 +838,7 @@ this.drawSample = function(){
 		//	meanCircles =meanCircles.attr("cy", function(d){return d.yPerSample[0]}).style("fill","red").transition().duration(this.transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").style("fill","#C7D0D5");
 		//}else{
 			if(this.transitionSpeed > 200){
-				var acrossTo = this.preCalculatedTStat[settings.indexUpTo+1].xPerSample[0];
+				var acrossTo = this.preCalculatedTStat[settings.indexUpTo].xPerSample[0];
 				//d3.select("#redlineMain").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).attr("x1", this.xScale2(0)).attr("x2", acrossTo);
 				//d3.selectAll(".arrowHead").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", function(d,i){return downTo + Math.pow(-1, i)*self.settings.diff }).attr("x1", acrossTo).attr("x2", acrossTo - self.settings.diff);
 

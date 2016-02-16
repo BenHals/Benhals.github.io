@@ -78,12 +78,6 @@ function view(controller){
 		vs.append("label").attr("for","distThousand").attr("class","repLabel").text("1000");
 		vs.append("input").attr("type","button").attr("value","Go").attr("class","bluebutton").classed("goButton",true).attr("id","distSampling").attr("disabled",null).attr("onClick","mainControl.startSampling(true)")
 			.style("height","15%");
-		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButton").attr("disabled",true).attr("onClick","mainControl.showCI()")
-			.style("height","15%");
-		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI for 10,000").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButtonTenK").attr("disabled",true).attr("onClick","mainControl.showCITenk()")
-			.style("height","15%");
-		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Fade On/Off").attr("class","bluebutton").classed("fadeButton",true).attr("id","fadeButton").attr("disabled",null).attr("onClick","mainControl.fadeToggle()")
-			.style("height","15%");
 		/*
 		vs.append("input").attr("name", "do1").attr("type", "button").attr("value","1 sample").attr("onClick", "mainControl.startAnimation(1,true)");
 		vs.append("input").attr("name", "do10").attr("type", "button").attr("value","10 samples").attr("onClick", "mainControl.startAnimation(10, false)");

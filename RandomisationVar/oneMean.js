@@ -49,8 +49,9 @@ function oneMean(inputData, heading, statistic){
 		heapYValues3(this.population, this.xScale, this.radius, 0, this.windowHelper.section1.top, this.windowHelper.section1.twoThird);
 		this.popSetup = true;
 		this.sampleSize = this.population.length;
+		var range = (max-min)/2;
 		this.xScale2 = d3.scale.linear().range([this.windowHelper.sampleSection,this.windowHelper.innerWidth]);
-		this.xScale2.domain([-10,10]);
+		this.xScale2.domain([0-range,0+range]);
 	}
 
 	this.setUpSamples = function(sSize){
@@ -58,6 +59,7 @@ function oneMean(inputData, heading, statistic){
 		var statList = [];
 		var oldSampNum = this.numSamples;
 		var twelfths = (this.windowHelper.section2.bottom - this.windowHelper.section2.top)/12;
+		this.twelfths = twelfths;
 		//this.numSamples = 10000;
 		this.samples = this.makeSamples(this.population, this.numSamples, sSize);
 
@@ -74,9 +76,10 @@ function oneMean(inputData, heading, statistic){
 			statList.push([stat0,stat1,diff]);
 
 			heapYValues3(g0, this.xScale,this.radius, k+1, this.windowHelper.section2.top, this.windowHelper.section2.bottom-(8*twelfths));
-			heapYValues3(g1, this.xScale,this.radius, k+1, this.windowHelper.section2.top, this.windowHelper.section2.bottom-2*twelfths);
+			heapYValues3(g1, this.xScale,this.radius, k+1, this.windowHelper.section2.top, this.windowHelper.section2.bottom-1*twelfths);
 			this.preCalculatedTStat.push(new item(diff, k));
 		}
+		this.statList = statList;
 		heapYValues3(this.preCalculatedTStat, this.xScale2, this.radius, 0, this.windowHelper.section3.top,this.windowHelper.section3.bottom);
 		this.statsDone = true;
 		this.sampSetup = true;
@@ -152,6 +155,10 @@ function oneMean(inputData, heading, statistic){
 		svg.append("svg").attr("id","redTContainer");
 		svg.append("text").text("ReSample").attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",self.windowHelper.marginSample*2 + fontSize*2).style("font-size",titleFS).style("font-weight", 700).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 
+
+		svg.append("text").text("data").attr("x", this.windowHelper.sampleSection).attr("y",this.windowHelper.section1.top + this.fontSize*2).style("font-weight",700);
+		svg.append("text").text("Randomly grouped data").attr("x", this.windowHelper.sampleSection).attr("y",this.windowHelper.section2.top + this.fontSize*2).style("font-weight",700);
+		svg.append("text").text("Randomisation Distribution").attr("x", this.windowHelper.sampleSection).attr("y",this.windowHelper.section3.top + this.fontSize*2).style("font-weight",700);
 	}
 	this.drawSamples = function(){
 		if(!this.sampSetup) return;
@@ -161,6 +168,8 @@ function oneMean(inputData, heading, statistic){
 		var sampleMeans = [];
 		var svg = d3.select(".svg");
 		svg.append("svg").attr("id","circleOverlay");
+		d3.select("#circleOverlay").append("svg").attr("id","static");
+		d3.select("#circleOverlay").append("svg").attr("id","split");
 		var meanCircles = svg.select(".meanOfSamples").selectAll("circle").data(this.preCalculatedTStat)
 			.enter().append("circle")
 			    .attr("cx", function(d, i) { 
@@ -179,6 +188,8 @@ function oneMean(inputData, heading, statistic){
 			    		return "notInCI";
 			    	}
 			    }); 
+		this.drawnMeans = [];
+
 	}
 	this.startAnim = function(repititions, goSlow, incDist){
 		this.incDist = incDist;
@@ -187,14 +198,13 @@ function oneMean(inputData, heading, statistic){
 			if(repititions == 1) this.transitionSpeed = 1000;
 			if(repititions == 5) this.transitionSpeed = 500;
 			if(repititions == 20) this.transitionSpeed = 100;
-			if(repititions == 1000) this.transitionSpeed = 0;
+			if(repititions == 1000) this.transitionSpeed = 10;
 			if(this.index >= this.numSamples-1){
 				this.index = this.index % this.numSamples;
 				this.resetLines();
 			}
 			var start = this.index;
 			var end = start + repititions;
-			if(repititions > 100) this.transitionSpeed = 0;
 			var jumps = 1;
 			if(repititions > 20) jumps = 5;
 
@@ -212,12 +222,21 @@ function oneMean(inputData, heading, statistic){
 			settings.pauseDelay = 1000;
 			settings.fadeIn = 200;
 			settings.repititions = repititions;
+			this.settings = settings;
 				this.dropDown(settings);
 
 		} 
 	}
 	this.dropDown = function(settings){
+		if(this.animationState == -1) return;
+		if(this.animationState == 1) return;
+		this.animationState = 1;
 		var self = this;
+
+		if(!self.settings.restarting){
+							this.settings = settings;
+		d3.select(".sampleLines").selectAll(".memLine").style("opacity",0.3).attr("y1",function(){return d3.select(this).attr("y2") - self.twelfths +self.radius}).style("stroke","steelblue");
+		d3.select(".sampleLines").selectAll("#diffLine").remove();
 		this.animationState = 1;
 		settings.sample = this.samples[settings.indexUpTo];
 		settings.svg = d3.select(".svg");
@@ -228,7 +247,7 @@ function oneMean(inputData, heading, statistic){
 		popText.exit().remove();
 		var reoveCirl = svg.select("#circleOverlay").selectAll("circle");
 		reoveCirl.remove();
-		var dropCircle = svg.select("#circleOverlay").selectAll("circle").data(this.population);
+		var dropCircle = svg.select("#circleOverlay").select("#static").selectAll("circle").data(this.population);
 		   dropCircle.enter().append("circle")
 		    .attr("cx", function(d, i) { 
 		    	return d.xPerSample[0]; })
@@ -239,9 +258,13 @@ function oneMean(inputData, heading, statistic){
 		    .attr("fill-opacity", 0)
 		    .style("stroke","#556270")
 		    .attr("stroke-opacity",1).attr("class",function(d){return "g"+d.sampleG[settings.indexUpTo]});
-
+		}
+		else{
+			dropCircle = d3.select("#circleOverlay").select("#static").selectAll("circle");
+			this.settings.restarting = false;
+		}
 		if(settings.goSlow){
-			dropCircle.transition().duration(this.transitionSpeed).attr("cy", function(d){return d.yPerSample[0] + self.windowHelper.section2.top}).transition().duration(this.transitionSpeed).each('end',function(d,i){
+			dropCircle.transition().duration(this.transitionSpeed).attr("cy", function(d){return d.yPerSample[0] + self.windowHelper.section2.height}).transition().duration(this.transitionSpeed).each('end',function(d,i){
 				if(d==self.population[0]){
 						self.splitUp(settings);
 					
@@ -255,13 +278,30 @@ function oneMean(inputData, heading, statistic){
 
 	}
 	this.splitUp = function(settings){
+		if(this.animationState == -1 || this.animationState == 0) return;
+		if(this.animationState == 2) return;
+		this.animationState = 2;
+		var twelfths = (this.windowHelper.section2.bottom - this.windowHelper.section2.top)/12;
 		var self = this;
+
+		if(!self.settings.restarting){
+		var splitCircle = d3.select("#circleOverlay").select("#split").selectAll("circle").data(this.population);
+		   splitCircle.enter().append("circle")
+		    .attr("cx", function(d, i) { 
+		    	return d.xPerSample[0]; })
+		    .attr("cy", function(d) {
+		    	return d.yPerSample[0] + self.windowHelper.section2.height;
+		    })
+		    .attr("r", function(d) { return self.radius; })
+		    .attr("fill-opacity", 0)
+		    .style("stroke","#556270")
+		    .attr("stroke-opacity",1).attr("class",function(d){return "split"+d.sampleG[settings.indexUpTo]});
 		var g0 = d3.selectAll(".g0");
 		var g1 = d3.selectAll(".g1");
 		settings.colorIndex = colorByIndex;
 
-		//g0.attr("stroke", colorByIndex[0]).style("stroke", colorByIndex[0]);
-		//g1.attr("stroke", colorByIndex[1]).style("stroke", colorByIndex[1]);
+		g0.attr("stroke", colorByIndex[0]).style("stroke", colorByIndex[0]).style("opacity",0.3);
+		g1.attr("stroke", colorByIndex[1]).style("stroke", colorByIndex[1]).style("opacity",0.3);
 		var popText = d3.select("#sampText").selectAll("text").data(self.population);
 		popText.style("fill","black");
 		var newText = popText.enter().append("text").text(function(d){
@@ -271,9 +311,29 @@ function oneMean(inputData, heading, statistic){
 				return "B";
 			}
 		}).attr("x",self.windowHelper.sampleSectionDiv*4).attr("y",function(d,i){return (self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("fill",function(d) {return settings.colorIndex[d.sampleG[settings.indexUpTo-1]]}).style("opacity",1);
-
+		}else{
+			var splitCircle = d3.select("#circleOverlay").select("#split").selectAll("circle");
+			this.settings.restarting = false;
+		}
 		var dropCircle = d3.selectAll(".g0,.g1");
-		dropCircle.style("stroke", function(d){
+
+		var stats = this.statList.slice(settings.indexUpTo-1, settings.indexUpTo+settings.jumps-1);
+		for(var i =0;i<stats.length-1;i++){
+			this.drawnMeans.push(stats[i]);
+		}
+		var gLines = d3.select(".sampleLines").selectAll("g").data(this.drawnMeans);
+		var preG = gLines.enter().append("g");
+		preG.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d[0])}).attr("x2", function(d){return self.xScale(d[0])}).attr("y1",self.windowHelper.section2.bottom -9*twelfths ).attr("y2",self.windowHelper.section2.bottom -7*twelfths );
+		preG.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d[1])}).attr("x2", function(d){return self.xScale(d[1])}).attr("y1",self.windowHelper.section2.bottom -2*twelfths ).attr("y2",self.windowHelper.section2.bottom -0*twelfths );
+		d3.select(".sampleLines").selectAll(".memLine").style("opacity",0.3).attr("y1",function(){return d3.select(this).attr("y2") - self.twelfths +self.radius}).style("stroke","steelblue");
+		this.drawnMeans.push(stats[stats.length-1]);
+		gLines = d3.select(".sampleLines").selectAll("g").data(this.drawnMeans);
+		var lineGroups = gLines.enter().append("g");
+		lineGroups.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d[0])}).attr("x2", function(d){return self.xScale(d[0])}).attr("y1",self.windowHelper.section2.bottom -9*twelfths ).attr("y2",self.windowHelper.section2.bottom -7*twelfths );
+		lineGroups.append("line").attr("class","memLine").attr("x1", function(d){return self.xScale(d[1])}).attr("x2", function(d){return self.xScale(d[1])}).attr("y1",self.windowHelper.section2.bottom -2*twelfths ).attr("y2",self.windowHelper.section2.bottom -0*twelfths );
+		drawArrow(function(d){return self.xScale(d[1])}, function(d){return self.xScale(d[0])}, self.windowHelper.section2.bottom -6*twelfths, lineGroups, "diffLine", 1, "red");
+		if(settings.goSlow){
+		splitCircle.style("stroke", function(d){
 			var test = settings.colorIndex[d.sampleG[settings.indexUpTo-1]];
 			return test}).transition().duration(this.transitionSpeed).attr("cy",function(d,i){return d.yPerSample[settings.indexUpTo]}).each("end", function(d){
 				if(d==self.population[0]){
@@ -285,64 +345,110 @@ function oneMean(inputData, heading, statistic){
 					
 				}
 		});
+		}else{
+			splitCircle.style("stroke", function(d){return settings.colorIndex[d.sampleG[settings.indexUpTo-1]];}).attr("cy",function(d,i){return d.yPerSample[settings.indexUpTo]})
+			.transition().duration(this.transitionSpeed).each("end", function(d){
+				if(d==self.population[0]){
+					if(!settings.incDist){
+						self.animStepper(settings);
+					}else{
+						self.distDrop(settings);
+					}
+					
+				}
+		});
+		}
 
 
 
 	}
 
 	this.distDrop = function(settings){
-		if(this.animationState == -1 || this.animationState == 0) return;
-					if(this.animationState == 5) return;
+		d3.select(".meanOfSamples").selectAll("g").remove();
+		if(this.animationState == 5) return;
 			this.animationState = 5;
 		if(!this.settings.restarting){
 			var sentFinish = false;
 			var self = this;
-
-			var sampMean = this.preCalculatedTStat.slice(settings.indexUpTo, settings.indexUpTo+settings.jumps);
+				var middle = self.windowHelper.section2.bottom -6*this.twelfths;
+			var sampMean = this.statList.slice(settings.indexUpTo-1, settings.indexUpTo+settings.jumps-1);
 			if(this.transitionSpeed > 200){
-				var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0];
-				var redLine = settings.svg.select(".meanOfSamples").append("line").attr("id","redLine").attr("y1", this.windowHelper.section2.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section2.twoThird -this.windowHelper.lineHeight).attr("x1",this.xScale(sampMean[0].value)).attr("x2",this.xScale(sampMean[0].value)).style("stroke-width", 2).style("stroke", "red").style("opacity", 0);
+				var redLine = settings.svg.select(".meanOfSamples").selectAll("g").data(sampMean).enter().append("g");
+	
+				var to = this.xScale(sampMean[0][1]);
+				var from = this.xScale(sampMean[0][0]);
+				var toScaled = sampMean[0][1] - sampMean[0][0];
+				var diff = (to-from) / 10;
+				var yValue = middle;
 
-			}
+
+		var diff = to - from;
+	var headSize = 20;
+	if(Math.abs(diff) < headSize) headSize =Math.abs(diff)*0.5;
+	if(diff != 0) {var arrowHead = diff / Math.abs(diff);} else { var arrowHead = 0;}
+		var arrow = drawArrow(function(d){
+					return self.xScale(d[1]);
+				}, function(d){
+					return self.xScale(d[0]);
+				}, middle, redLine, "redlineMain", 1, "red");
+		arrow[1].transition().duration(2000).attr("y1",this.windowHelper.section3.bottom).attr("y2",this.windowHelper.section3.bottom + headSize*arrowHead/2).attr("x1",this.xScale2(toScaled)).attr("x2", this.xScale2(toScaled) - arrowHead*headSize);
+		arrow[2].transition().duration(2000).attr("y1",this.windowHelper.section3.bottom).attr("y2",this.windowHelper.section3.bottom -headSize*arrowHead/2).attr("x1",this.xScale2(toScaled)).attr("x2", this.xScale2(toScaled) - arrowHead*headSize);
+		arrow[0].transition().duration(2000).attr("x1",this.xScale2(0)).attr("x2",this.xScale2(toScaled)).attr("y1",this.windowHelper.section3.bottom).attr("y2",this.windowHelper.section3.bottom);
+
+
+				/*redLine.append("line").attr("x1", function(d){
+					return self.xScale(d.s0);
+				}).attr("x2", function(d){
+					return self.xScale(d.s1);
+				}).attr("y1", middle).attr("y2", middle).style("stroke-width", 2).style("stroke", "red").style("opacity",0).attr("id", "redlineMain");
+				redLine.append("line").attr("x1", to).attr("x2", to - diff).attr("y1", middle).attr("y2", middle + diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
+				redLine.append("line").attr("x1", to).attr("x2", to - diff).attr("y1", middle).attr("y2", middle - diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
+			*/} 
 			var meanCircles = settings.svg.select(".meanOfSamples").selectAll("circle").filter(function(d, i){
-				return (i>=settings.indexUpTo) && (i <settings.indexUpTo+settings.jumps);
+				return (i>=settings.indexUpTo-1) && (i <settings.indexUpTo+settings.jumps-1);
 			});
 
 			this.settings.sampMean = sampMean;
 			this.settings.meanCircles = meanCircles;
+			this.settings.diff = diff;
 		}else{
-			var downTo = this.preCalculatedTStat[settings.indexUpTo].yPerSample[0];
 			var rL = this.settings.redLine;
 			d3.select("#redLine").remove();
-			if(rL) var redLine =  settings.svg.select(".meanOfSamples").append("line").attr("id","redLine").attr("y1", rL[0]).attr("y2", rL[1]).attr("x1",rL[2]).attr("x2",rL[2]).style("stroke-width", 2).style("stroke", "red").style("opacity", 0);
+			var redLine = settings.svg.select(".meanOfSamples").append("g");
+			if(rL){
+				var test = rL[0] + this.settings.diff ;
+				redLine.append("line").attr("x1", rL[1]).attr("x2", rL[2]).attr("y1", rL[0]).attr("y2", rL[0]).style("stroke", "red").style("opacity", 1).attr("id","redlineMain");
+				redLine.append("line").attr("x1", rL[2]).attr("x2", rL[2] - settings.diff).attr("y1", rL[0]).attr("y2", rL[0]-0 + settings.diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
+				redLine.append("line").attr("x1", rL[2]).attr("x2", rL[2] - settings.diff).attr("y1", rL[0]).attr("y2", rL[0] - settings.diff).style("stroke-width", 2).style("stroke", "red").style("opacity", 1).attr("class","arrowHead");
+			} //var redLine =  settings.svg.select(".meanOfSamples").append("line").attr("id","redLine").attr("y1", rL[0]).attr("y2", rL[1]).attr("x1",rL[2]).attr("x2",rL[2]).style("stroke-width", 2).style("stroke", "red").style("opacity", 0);
 			var self = this;
 			var sampMean = this.settings.sampMean;
 			var meanCircles = this.settings.meanCircles;
 
 			this.settings.restarting = false;
 		}
+		//if(this.transitionSpeed <= 100){
+		//	meanCircles =meanCircles.attr("cy", function(d){return d.yPerSample[0]}).style("fill","red").transition().duration(this.transitionSpeed).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").style("fill","#C7D0D5");
+		//}else{
+			if(this.transitionSpeed > 200){
+				var acrossTo = this.preCalculatedTStat[settings.indexUpTo-1].xPerSample[0];
+				//d3.select("#redlineMain").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).attr("x1", this.xScale2(0)).attr("x2", acrossTo);
+				//d3.selectAll(".arrowHead").style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", function(d,i){return downTo + Math.pow(-1, i)*self.settings.diff }).attr("x1", acrossTo).attr("x2", acrossTo - self.settings.diff);
 
-		if(this.transitionSpeed > 200){
-			//redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo).attr("y2", downTo).each("end",function(){d3.select(this).remove()});
-			redLine.style("opacity",1).transition().duration(this.transitionSpeed*2).attr("y1", downTo+this.radius/2).attr("y2", downTo-this.radius/2).each("end",function(){d3.select(this).remove()});
-		}
-		if(settings.goSlow || settings.repititions == 5){
-			meanCircles = meanCircles.transition().delay(this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]}).each('end', function(d, i){
-				if(!sentFinish){
-					self.animStepper(settings);
-					sentFinsih = true;
-				}
-			});
-		}else{
-			meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]})
-				.transition().duration(this.transitionSpeed*2).each('end', function(d, i){
-				if(d == self.preCalculatedTStat[settings.indexUpTo]){
-					self.animStepper(settings);
-					sentFinsih = true;
-				}
-			});
-		}
-
+			}
+			if(settings.goSlow || this.transitionSpeed == 500){
+				meanCircles = meanCircles.transition().delay(this.transitionSpeed*2).attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]}).each('end', function(d, i){
+					if(!sentFinish){
+						self.animStepper(settings);
+						sentFinsih = true;
+					}
+				});
+			}else{
+				meanCircles = meanCircles.attr("fill-opacity",1).attr("stroke-opacity",1).style("stroke", "steelblue").attr("cy", function(d){return d.yPerSample[0]})
+					.transition().duration(this.transitionSpeed*2);
+					setTimeout(self.animStepper(settings), 100);
+			}
+		//}
 	}
 	this.animStepper = function(settings){
 		if(this.animationState == -1 || this.animationState == 0) return;
@@ -405,7 +511,7 @@ function oneMean(inputData, heading, statistic){
 		var self = this;
 		var svg = d3.select(".svg");
 		//var meanLines = svg.select(".sampleLines").selectAll("line").attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).attr("x1", function(d){return self.xScale(d.value)}).attr("x2", function(d){return self.xScale(d.value)}).style("stroke-width", 2).style("stroke", "green").style("opacity", 0);
-		svg.select(".sampleLines").selectAll("line").remove();
+		svg.select(".sampleLines").selectAll("g").remove();
 		this.drawnMeans = [];
 		var meanCircles = svg.select(".meanOfSamples").selectAll("circle")
 		    .attr("cx", function(d, i) { 
@@ -415,7 +521,7 @@ function oneMean(inputData, heading, statistic){
 		    })
 		    .attr("fill-opacity", 0)
 		    .attr("stroke-opacity",0); 
-		d3.select("#circleOverlay").selectAll("*").remove();
+		d3.select("#circleOverlay").selectAll("circle").remove();
 		d3.select(".pop").selectAll("circle").attr("cy", function(d, i){return d.yPerSample[0];}).style("fill", "#C7D0D5").attr("fill-opacity",0.2);
 		svg.select(".meanOfSamples").selectAll("line").remove();
 		d3.select("#pointerArrow").remove();
@@ -483,21 +589,17 @@ function oneMean(inputData, heading, statistic){
 		//d3.select(".svg").selectAll("*").transition().duration(20).attr("stop","true");
 		//this.animationState = this.pauseState;
 		this.settings.restarting = true;
+				if(this.pauseState == 1){
+			this.animationState = 0;
+			this.dropDown(this.settings);
+		}
 				if(this.pauseState == 2){
 			this.animationState = 1;
-			this.fadeNumber(this);
-		}
-				if(this.pauseState == 3){
-			this.animationState = 2;
-			this.trackPoints(this);
-		}
-		if(this.pauseState == 4){
-			this.animationState = 3;
-			this.fadeIn(this.settings);
+			this.splitUp(this.settings);
 		}
 
-		if(this.pauseState == 5){
-			this.animationState = 4;
+		if(this.pauseState == 3){
+			this.animationState = 2;
 			this.distDrop(this.settings);
 		}
 
