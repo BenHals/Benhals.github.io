@@ -13,10 +13,10 @@ this.dataSplit = null;
 	this.fileName = "no current file"
 
 	this.visualisations = [{name:"oneMean", numeretical:1,categorical:0,stats:0,setupParams:function(num, cat, modelObj){return new oneMean(modelObj.inputData, num[0], modelObj.stats[0][0])}},
-	{name:"twoMeans", numeretical:1,categorical:1,stats:0,setupParams:function(num, cat, modelObj){return new twoMeans(modelObj.inputData, cat[0], num[0], modelObj.stats[0][0])}},
-	{name:"oneProportion", numeretical:0,categorical:1,stats:1,setupParams:function(num, cat, modelObj){var unique = modelObj.dataSplit[cat[0]].filter(onlyUnique); modelObj.controller.makeFocusSelector(unique, cat[0]);return new oneProportion(modelObj.inputData, cat[0], unique[0])}},
-	{name:"twoProportion", numeretical:0,categorical:2,stats:1,setupParams:function(num, cat, modelObj){var unique1 = modelObj.dataSplit[cat[0]].filter(onlyUnique); modelObj.controller.makeFocusSelector(unique1, cat[0]); modelObj.controller.makeVarSelector(cat[0],cat[1]);return new twoProportion(modelObj.inputData, cat[0], cat[1], unique1[0])}},
-	{name:"slope", numeretical:2,categorical:0,stats:2,setupParams:function(num, cat, modelObj){return new slope(modelObj.inputData, num[0], num[1])}}];
+	{name:"twoMeans", numeretical:1,categorical:1,stats:0,setupParams:function(num, cat, modelObj){return new twoMeans(modelObj.inputData, cat[0], num[0], modelObj.stats[0][0])}}];
+	//{name:"oneProportion", numeretical:0,categorical:1,stats:1,setupParams:function(num, cat, modelObj){var unique = modelObj.dataSplit[cat[0]].filter(onlyUnique); modelObj.controller.makeFocusSelector(unique, cat[0]);return new oneProportion(modelObj.inputData, cat[0], unique[0])}},
+	//{name:"twoProportion", numeretical:0,categorical:2,stats:1,setupParams:function(num, cat, modelObj){var unique1 = modelObj.dataSplit[cat[0]].filter(onlyUnique); modelObj.controller.makeFocusSelector(unique1, cat[0]); modelObj.controller.makeVarSelector(cat[0],cat[1]);return new twoProportion(modelObj.inputData, cat[0], cat[1], unique1[0])}},
+	//{name:"slope", numeretical:2,categorical:0,stats:2,setupParams:function(num, cat, modelObj){return new slope(modelObj.inputData, num[0], num[1])}}];
 
 	this.loadData = function(){
 		this.dataSplit = [];

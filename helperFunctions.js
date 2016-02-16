@@ -57,7 +57,18 @@ function drawArrow(to, from, yValue, placement, id, op, color){
 	return [mainLine, arm1, arm2];
 }
 
+	function showHelp(){
+		d3.select("#helpBox").remove();
+		this.windowHelper = setUpWindow(5);
+		var hBox = d3.select(".svg").append("svg").attr("id","helpBox");
+		hBox.append("circle").attr("cx",this.windowHelper.width/16).attr("cy",this.windowHelper.height/16).attr("r",10).style("fill", "#094b85");
+		hBox.append("text").attr("x",this.windowHelper.width/16 - 10/2).attr("y",this.windowHelper.height/16+10/2).text("1").style("fill","white").style("font-weight",700);
+		hBox.append("text").attr("x",this.windowHelper.width/16 + 10 + 10).attr("y",this.windowHelper.height/16 + 10/2).text("Select a File").style("font-weight",700);
 
+		hBox.append("circle").attr("cx",this.windowHelper.width/16).attr("cy",this.windowHelper.height/3).attr("r",10).style("fill", "#094b85");
+		hBox.append("text").attr("x",this.windowHelper.width/16 - 10/2).attr("y",this.windowHelper.height/3+10/2).text("2").style("fill","white").style("font-weight",700);
+		hBox.append("text").attr("x",this.windowHelper.width/16 + 10 + 10).attr("y",this.windowHelper.height/3 + 10/2).text("Select Variables. Use Ctrl+Click to select Multiple").style("font-weight",700);
+	}
 function drawArrowDown(to, from, xValue, placement, id, op, color, width){
 	var group = placement.append("svg").attr("id",id);
 	group.append("line").attr("y1", from).attr("y2", to).attr("x1", xValue).attr("x2", xValue).style("stroke-width", 2).style("stroke", color).style("opacity", op).style("stroke-width",width);

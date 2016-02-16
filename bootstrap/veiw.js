@@ -112,6 +112,7 @@ function view(controller){
 		
 	}*/
 	this.loadMain = function(dataHeadings){
+		showHelp();
 		d3.select(".controls").selectAll("*").remove();
 		var tab1 = d3.select(".controls").append("div").attr("id","tab1").attr("class","tab");
 		var tab2 = d3.select(".controls").append("div").attr("id","tab2").attr("class","tab");
@@ -150,6 +151,7 @@ function view(controller){
 			.attr("text-anchor","middle").style("opacity",0.6);
 	}
 	this.varSelected = function(e){
+		d3.select("#helpBox").remove();
 		d3.select("#startButton").attr("disabled", null);
 		var vars = "";
 		for(var i = 0; i<e.length;i++){
