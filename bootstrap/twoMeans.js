@@ -536,7 +536,7 @@ this.drawSample = function(){
 			var popTextG =popText.enter().append("g");
 			popTextG.append("text").text(function(d){
 				return d.value;
-			}).attr("x",self.windowHelper.marginSample*3 + self.windowHelper.sampleSectionDiv*3).attr("y",function(d,i){return (fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
+			}).attr("x",self.windowHelper.marginSample*3 + self.windowHelper.sampleSectionDiv*3).attr("y",function(d,i){return (self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block");
 			popTextG.append("text").text(function(d){
 				return d.group;
 			}).attr("x",self.windowHelper.marginSample*-2 + self.windowHelper.sampleSectionDiv*5).attr("y",function(d,i){return (self.fontSize*(i+3)+self.windowHelper.marginSample*(i+2))}).style("font-size",self.fontSize).style("margin",self.windowHelper.marginSample+"px").style("display","inline-block").style("stroke", function(d){return colorByIndex[self.groups.indexOf(d.group)]});
