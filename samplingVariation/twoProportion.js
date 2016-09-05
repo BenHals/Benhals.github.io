@@ -233,7 +233,9 @@ function twoProportion(inputData, heading, heading2, focus){
 
 		svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section1.bottom + this.radius) + ")").call(xAxis);
 		svg.append("g").attr("class","axis").attr("transform", "translate(0," + (this.windowHelper.section2.bottom + this.radius) + ")").call(xAxis);
-
+		svg.append("text").attr("class","sectionLabel").attr("y",this.windowHelper.section1.top + 15).text("Population").style("opacity", 1).style("font-size",15).style("fill","black");
+		svg.append("text").attr("class","sectionLabel").attr("y",this.windowHelper.section2.top + 15*2.5).text("Sample").style("opacity", 1).style("font-size",15).style("fill","black");
+		svg.append("text").attr("class","sectionLabel").attr("y",this.windowHelper.section3.top + 15*2.5).text("Sampling Distribution").style("opacity", 1).style("font-size",15).style("fill","black");
 		var fontSize = this.windowHelper.section1.height / (this.unique2.length*3);
 		if(fontSize > 32) fontSize = 32;
 		this.marginSize = this.windowHelper.height/70;

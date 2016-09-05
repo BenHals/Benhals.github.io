@@ -156,7 +156,9 @@ function slope(inputData, headingX, headingY){
 		svg.append("g").attr("class","axis").attr("transform", "translate(25," + (this.windowHelper.section3.bottom) + ")").call(xAxis);
 		svg.append("g").attr("class","axis").attr("transform", "translate("+25+","+(this.windowHelper.section3.top)+")").call(slopeAxis);
 		svg.append("g").attr("class","axis").attr("transform", "translate("+(25 +this.windowHelper.innerWidth*0.7)+","+this.windowHelper.section3.top+")").call(slopeAxis);
-
+		svg.append("text").attr("class","sectionLabel").attr("y",this.windowHelper.section1.top + 15).text("Population").style("opacity", 1).style("font-size",15).style("fill","black");
+		svg.append("text").attr("class","sectionLabel").attr("y",this.windowHelper.section2.top + 15*2.5).text("Sample").style("opacity", 1).style("font-size",15).style("fill","black");
+		svg.append("text").attr("class","sectionLabel").attr("y",this.windowHelper.section3.top + 15*2.5).text("Sampling Distribution").style("opacity", 1).style("font-size",15).style("fill","black");
 		var test =this.xScale.domain();
 		svg.select(".popCircles").append("line").attr("x1",this.xScale(0)+25).attr("y1",this.yScale(this.populationStatistic[1])).attr("x2",this.xScale(this.xScale.domain()[1])+25).attr("y2",this.slopeScale(this.populationStatistic[0])).style("stroke-width", 2).style("stroke", "black");
 		svg.select(".popCircles").append("text")

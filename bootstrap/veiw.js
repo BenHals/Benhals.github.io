@@ -51,7 +51,7 @@ function view(controller){
 			.style("height","15%");
 		var tab2 = d3.select("#tab2");
 		var vs = tab2.select("#tab2Mid").append("div").attr("id","visControls1");
-		vs.append("label").text("Sampling");
+		vs.append("label").text("Re-Sampling");
 		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","1").attr("id","sampOne").attr("class","repSelect").attr("checked",true).text("1").attr("onClick","mainControl.view.tSUnDisable()");
 		vs.append("label").attr("for","sampOne").attr("class","repLabel").text("1");
 		vs.append("input").attr("type","radio").attr("name","Sampling").attr("value","5").attr("id","sampFive").attr("class","repSelect").text("5").attr("onClick","mainControl.view.tSDisable()");
@@ -67,7 +67,7 @@ function view(controller){
 			.style("height","15%");
 
 		vs = tab2.select("#tab2Bot").append("div").attr("id","visControls2");
-		vs.append("label").text("Sampling Distribution");
+		vs.append("label").text("Bootstrap Distribution");
 		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","1").attr("id","distOne").attr("class","repSelect").attr("checked",true).text("1");
 		vs.append("label").attr("for","distOne").attr("class","repLabel").text("1");
 		vs.append("input").attr("type","radio").attr("name","Dist").attr("value","5").attr("id","distFive").attr("class","repSelect").text("5");
