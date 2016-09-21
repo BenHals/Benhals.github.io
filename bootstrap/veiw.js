@@ -123,7 +123,14 @@ function view(controller){
 		var backToMain = tab1.append("a").attr("name", "backToMain").attr("class","bluebutton").attr("value","mainButton").attr("id","mainButton").attr("href","../index.html").text("< Back To Main Menu");
 
 		var importFileB = tab1.append("input").attr("name", "importfiles").attr("type", "file").attr("value","import files").attr("id","importButton");
-		var label = tab1.append("label").attr("for", "importButton").text("Choose a file").attr("class","bluebutton");
+		var label = tab1.append("label").attr("for", "importButton").text("Choose a Local file").attr("class","bluebutton");
+
+		//var importFromURL = tab1.append("input").attr("name", "importURL").attr("type", "button").attr("value","Data from URL").attr("id","importURL").attr("class","bluebutton").attr("onClick","mainControl.loadFromURL()");
+		//var URLInput = tab1.append("input").attr("name", "URLInput").attr("type", "text").attr("placeholder","import data from...").attr("id","URLInput");
+
+		var textInput = tab1.append("textarea").attr("name", "textInput").attr("type", "text").attr("placeholder","paste csv data here...").attr("id","textInput");
+		var importFromText = tab1.append("input").attr("name", "importText").attr("type", "button").attr("value","Data from Text").attr("id","importText").attr("class","bluebutton").attr("disabled", "true");
+
 		var usePreset = tab1.append("input").attr("class","bluebutton").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
 		var container = tab1.append("div").attr("id","inputContainer").attr("class","selectContainer");
 		var focusContainer = tab1.append("div").attr("id","focusContainer").attr("class","selectContainer");
@@ -137,6 +144,24 @@ function view(controller){
 		SM.onchange = function(e){
 			controller.varSelected(e);
 		}
+		// var urlButton = document.getElementById("importURL");
+		// urlButton.onchange = function(e){
+		// 	controller.loadFromURL(document.getElementById("URLInput").value);
+		// }
+		// $("#importURL").click(function(){
+		// 	controller.loadFromURL($("#URLInput").val());
+		// })
+		$("#importText").click(function(){
+			var data = $("#textInput").val();
+			controller.loadFromText(data);
+		})
+		$("#textInput").on('change keyup paste', function() {
+			if(!$.trim($("#textInput").val())){
+    			$("#importText").prop("disabled", true);
+			}else{
+				$("#importText").prop("disabled", false);
+			}
+		});
 
 	}
 	this.noVisAvail = function(){

@@ -153,6 +153,9 @@ function oneMean(inputData, heading, statistic){
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.section1.twoThird-this.windowHelper.lineHeight).style("stroke-width", 2).style("stroke", "black");
 		svg.append("line").attr("x1", this.xScale(this.populationStatistic)).attr("y1", 0).attr("x2", this.xScale(this.populationStatistic)).attr("y2", this.windowHelper.height).style("stroke-width", 0.5).style("stroke", "black").attr("stroke-dasharray","5,5");
 		svg.append("text").attr("x", this.xScale(this.populationStatistic)).attr("y",this.windowHelper.section1.twoThird+this.windowHelper.lineHeight).text(Math.round((this.populationStatistic)*100)/100).style("stroke","blue").attr("font-size",this.fontS);
+		svg.append("text").attr("class","sectionLabel").attr("x",this.windowHelper.sampleSection).attr("y",this.windowHelper.section1.top + 15).text("Sample").style("opacity", 1).style("font-size",15).style("fill","black").style("font-weight","bold");
+		svg.append("text").attr("class","sectionLabel").attr("x",this.windowHelper.sampleSection).attr("y",this.windowHelper.section2.top + 15*2.5).text("Re-Sample").style("opacity", 1).style("font-size",15).style("fill","black").style("font-weight","bold");
+		svg.append("text").attr("class","sectionLabel").attr("x",this.windowHelper.sampleSection).attr("y",this.windowHelper.section3.top + 15*2.5).text("Bootstrap Distribution").style("opacity", 1).style("font-size",15).style("fill","black").style("font-weight","bold");
 		var fS = getFontSize(this.windowHelper,this.population.length);
 		var fontSize = fS[0];
 		self.fontSize = fontSize;

@@ -63,9 +63,16 @@ function model(controller){
 		}
 
 	}
+	this.loadFromText = function(text){
+		controller.setUpDataVeiw(text);
+	}
 	this.setUpDataVeiw = function(csv, callback){
 		var self = this;
 		var parsed = d3.csv.parse(csv);
+		if(parsed.length == 0){
+			alert("Not valid CSV data");
+			return;
+		}
 		this.inputData = parsed;
 		this.dataHeadings = [];
 		Object.keys(parsed[0]).forEach(function(d){self.dataHeadings.push([d,'n']); self.dataSplit[d] = []});

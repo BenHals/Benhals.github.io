@@ -25,6 +25,12 @@ function controller(){
 
 
 	}
+	this.loadFromURL = function(url){
+		this.model.loadFromURL(url);
+	}
+	this.loadFromText = function(text){
+		this.model.loadFromText(text);
+	}
 	this.notImplemented = function(){
 
 	}

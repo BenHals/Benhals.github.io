@@ -25,6 +25,9 @@ function controller(){
 	this.notImplemented = function(){
 
 	}
+	this.loadFromText = function(text){
+		this.model.loadFromText(text);
+	}
 	this.startVisPreveiw = function(){
 		d3.select("#Calculate").attr("disabled", null);
 		d3.select("#tab2Mid").selectAll("*").remove();

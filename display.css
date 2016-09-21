@@ -55,7 +55,10 @@ label {
   color: #094b85;
   background-color: #EEFFFF;
 }
-
+textarea{
+  width:100%;
+  max-width: 100%;
+}
 .disabled {
   color:grey;
 }
