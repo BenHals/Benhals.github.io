@@ -291,3 +291,6 @@ p.t2 {
   opacity: 0.5;
   stroke: grey;
 }
+.presetItems {
+  cursor: pointer;
+}

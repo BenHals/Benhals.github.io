@@ -1,46 +1,47 @@
-function view(controller){
-
+var viewBase = function(tabOwner, controller){
+	this.tabOwner = tabOwner;
 	this.dataScreen = null;
 	this.controller = controller;
 	this.windowHelper = setUpWindow(5);
 	d3.select("#module").text("module: Sampling Variation"+"; ");
 	d3.select("#banner").text("Sampling Variation");
+}
 
-	this.visPreveiw = function(disp){
+viewBase.prototype.visPreveiw = function(disp){
 		d3.select("#visControls").remove();
 		//d3.select("#startButton").style("background","#094b85");
-
-
 	}
 
-	this.leaveVis = function(){
+viewBase.prototype.leaveVis = function(){
 		d3.select("#visControls1").remove();
 		d3.select("#visControls26").remove();
 	}
-	this.setUpTab2 = function(){
+viewBase.prototype.setUpTab2 = function(){
+	var self = this;
 		var tab2Top = d3.select("#tab2Top");
 		tab2Top.selectAll("*").remove();
 		tab2Top.append("input").attr("type","button").attr("value","< Back to Data Input").attr("class","bluebutton").attr("id","backTab2").attr("disabled",null).attr("onClick","mainControl.switchTab1()")
 			.style("height","15%");
-		tab2Top.append("label").text("Sample Size");
-		tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
+		//tab2Top.append("label").text("Sample Size");
+		//tab2Top.append("input").attr("type","text").attr("value","20").attr("id","sampsize");
 
 		tab2Top.append("label").text("Statistic");
 		tab2Top.append("select").attr("id","statSelect").append("option").text("Select variable");
 		var SSize = document.getElementById("sampsize");
-		SSize.onchange = function(e){
-			controller.startVisPreveiw();
-		}
+		//SSize.onchange = function(e){
+		//	controller.startVisPreveiw();
+		//}
 		var SS = document.getElementById("statSelect");
 		SS.onchange = function(e){
-			controller.statChanged(e);
+			self.controller.statChanged(e);
 		}
 		tab2Top.append("input").attr("type","button").attr("value","Precalculate Display").classed("bluebutton", true).attr("id","Calculate").attr("disabled",null).attr("onClick","mainControl.startVisPressed()")
 			.style("height","15%");
 		//tab2Top.append("input").attr("type","button").attr("value","Pause").classed("bluebutton", true).attr("id","Pause").attr("disabled",true).attr("onClick","mainControl.pause()")
 		//	.style("height","15%");
 	}
-	this.makeButtons = function(){
+
+viewBase.prototype.makeButtons = function(){
 		d3.select("#stopButton").remove();
 		d3.select("#tab2Top").append("input").attr("type","button").attr("value","Stop").classed("bluebutton", true).attr("id","stopButton").attr("disabled",null).attr("onClick","mainControl.stopPressed()")
 			.style("height","15%");
@@ -78,26 +79,9 @@ function view(controller){
 		vs.append("input").attr("name", "stop").attr("type", "button").attr("value","stop ").attr("onClick", "mainControl.stopPressed()"); */
 		//vs.append("input").attr("name", "back").attr("type", "button").attr("value","back ").attr("onClick", "mainControl.backPressed()");
 	}
-	/*this.twoMeanPressed = function(){
-		this.dataScreen = startTwoMeans();
-		this.makeButtons();
-	}
-	this.oneMeanPressed = function(){
-		dataScreen = startOneMean();
-		makeButtons();
-		
-	}
-	this.oneProportionPressed = function(){
-		dataScreen = startOneProportion();
-		makeButtons();
-		
-	}
-	this.slopePressed = function(){
-		dataScreen = startSlope();
-		makeButtons();
-		
-	}*/
-	this.loadMain = function(dataHeadings){
+
+viewBase.prototype.loadMain = function(dataHeadings){
+		var self = this;
 		showHelp();
 		d3.select(".controls").selectAll("*").remove();
 		var tab1 = d3.select(".controls").append("div").attr("id","tab1").attr("class","tab");
@@ -117,18 +101,21 @@ function view(controller){
 		var textInput = tab1.append("textarea").attr("name", "textInput").attr("type", "text").attr("placeholder","paste csv data here...").attr("id","textInput");
 		var importFromText = tab1.append("input").attr("name", "importText").attr("type", "button").attr("value","Data from Text").attr("id","importText").attr("class","bluebutton").attr("disabled", "true");
 
+		var importFromPreset = tab1.append("input").attr("name", "importPreset").attr("type", "button").attr("value","import Preset").attr("id","importPreset").attr("class","bluebutton");
+		var presetSelect = tab1.append("div").attr("id","presetSelect");
+
 		var usePreset = tab1.append("input").attr("class","bluebutton").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
 		var container = tab1.append("div").attr("id","inputContainer").attr("class","selectContainer");
 		var focusContainer = tab1.append("div").attr("id","focusContainer").attr("class","selectContainer");
 		var vSelectContainer = tab1.append("div").attr("id","vSelectContainer").attr("class","selectContainer");
 		var IB = document.getElementById("importButton");
 		IB.onchange = function(e){
-			controller.impButPressed(e);
+			self.controller.impButPressed(e);
 		}
 		var selectMenu = d3.select("#inputContainer").append("select").attr("size",dataHeadings.length).attr("multiple","multiple").attr("id","selectMenu");
 		var SM = document.getElementById("selectMenu");
 		SM.onchange = function(e){
-			controller.varSelected(e);
+			self.controller.varSelected(e);
 		}
 		// var urlButton = document.getElementById("importURL");
 		// urlButton.onchange = function(e){
@@ -137,9 +124,21 @@ function view(controller){
 		// $("#importURL").click(function(){
 		// 	controller.loadFromURL($("#URLInput").val());
 		// })
+		$("#importPreset").click(function(){
+			d3.select("#presetSelect").selectAll("*").remove();
+			var data = self.controller.getPresets();
+			data.forEach(function(i){
+				d3.select("#presetSelect").append("div").text(i).attr("class", "presetItems");
+			});
+			//self.controller.loadFromText(data);
+		})
+		$("#presetSelect").on('click', '.presetItems', function(){
+			var data = this.innerText;
+			self.controller.loadFromPreset(data);
+		})
 		$("#importText").click(function(){
 			var data = $("#textInput").val();
-			controller.loadFromText(data);
+			self.controller.loadFromText(data);
 		})
 		$("#textInput").on('change keyup paste', function() {
 			if(!$.trim($("#textInput").val())){
@@ -150,7 +149,8 @@ function view(controller){
 		});
 
 	}
-	this.noVisAvail = function(){
+
+viewBase.prototype.noVisAvail = function(){
 		var svg = d3.select(".svg");
 
 		svg.append("text")
@@ -161,7 +161,8 @@ function view(controller){
 			.style("font-size", this.windowHelper.height/20+"px")
 			.attr("text-anchor","middle").style("opacity",0.6);
 	}
-	this.varSelected = function(e){
+
+viewBase.prototype.varSelected = function(e){
 				d3.select("#helpBox").remove();
 		d3.select("#startButton").attr("disabled", null);
 		var vars = "";
@@ -170,7 +171,8 @@ function view(controller){
 		}
 		d3.select("#variable").text("variable: " + vars+"; ");
 	}
-	this.focusSelector = function(headings, curCategory){
+viewBase.prototype.focusSelector = function(headings, curCategory){
+		var self = this;
 		headings.sort();
 		var focusContainer = d3.select("#focusContainer");
 		focusContainer.append("label").attr("for","focusController").text("Choose Category to focus on.")
@@ -180,10 +182,11 @@ function view(controller){
 		});
 		var SM = document.getElementById("focusController");
 		SM.onchange = function(e){
-			controller.focusSelected(e);
+			self.controller.focusSelected(e);
 		}
 	}
-	this.makeVarSelector = function(cat1,cat2){
+viewBase.prototype.makeVarSelector = function(cat1,cat2){
+	var self = this;
 		var vSelectContainer = d3.select("#vSelectContainer");
 		vSelectContainer.append("label").attr("for","vSelectContainer").text("Choose variable to split on.")
 		var vSelectController = vSelectContainer.append("select").attr("size",2).attr("id","vSelectController");
@@ -192,23 +195,22 @@ function view(controller){
 
 		var SM = document.getElementById("vSelectController");
 		SM.onchange = function(e){
-			controller.varChanged(e);
+			self.controller.varChanged(e);
 		}
 	}
-	this.destroyFocus = function(){
+viewBase.prototype.destroyFocus = function(){
 		d3.select("#focusContainer").selectAll("*").remove();
 	}
-	this.destroyVSelect = function(){
+viewBase.prototype.destroyVSelect = function(){
 		d3.select("#vSelectContainer").selectAll("*").remove();
 	}
-
-	this.finishSetUp = function(){
+viewBase.prototype.finishSetUp = function(){
 		//d3.select("#startButton").style("background-color","green");
 		this.makeButtons();
 		//var tab1 = d3.select("#tab1");
 		//tab1.style("display","none");
 	}
-	this.setUpDataVeiw = function(dataHeadings){
+viewBase.prototype.setUpDataVeiw = function(dataHeadings){
 
 		d3.select("#file").text("file: " + mainControl.model.fileName +"; ");
 		var selectMenu = d3.select("#inputContainer select").attr("size",dataHeadings.length).attr("multiple","multiple");
@@ -221,7 +223,7 @@ function view(controller){
 		d3.select("#startButton").remove();
 		d3.select("#tab1").append("input").attr("type","button").attr("value","Analyse").attr("class","bluebutton").attr("id","startButton").attr("disabled","true").attr("onClick","mainControl.switchTab2()");
 	}
-	this.setUpStatSelection = function(category){
+viewBase.prototype.setUpStatSelection = function(category){
 		var statSelection = d3.select("#statSelect");
 		statSelection.selectAll("*").remove();
 		var selectFirst = true;
@@ -233,7 +235,7 @@ function view(controller){
 			}
 		});
 	}
-	this.unPause = function(incDist){
+viewBase.prototype.unPause = function(incDist){
 		if(incDist){
 			var tab = d3.select("#visControls2");
 		}else{
@@ -241,7 +243,7 @@ function view(controller){
 		}
 		tab.select(".goButton").attr("disabled",null);
 	}
-	this.startedVis = function(incDist){
+viewBase.prototype.startedVis = function(incDist){
 		d3.selectAll(".goButton").attr("disabled","true");
 		d3.select("#pauseButton").remove();
 		if(incDist){
@@ -252,8 +254,22 @@ function view(controller){
 		tab.select(".goButton").style("display","none");
 		tab.append("input").attr("type","button").attr("value","Pause").classed("bluebutton", true).attr("id","pauseButton").attr("disabled",null).attr("onClick","mainControl.pause()").style("height","15%");
 	}
-	this.doneVis = function(){
+viewBase.prototype.doneVis = function(){
 		d3.select("#pauseButton").remove();
 		d3.selectAll(".goButton").attr("disabled",null).style("display","block");
 	}
-}
+viewBase.prototype.tSDisable = function(){
+		d3.select("#cBoxLabel").classed("disabled", true);
+		d3.select("#trackCBox").attr("disabled",true);
+	}
+viewBase.prototype.tSUnDisable = function(){
+		d3.select("#cBoxLabel").classed("disabled", null);
+		d3.select("#trackCBox").attr("disabled",null);
+	}
+viewBase.prototype.fadeOn = function(){
+		d3.select(".svg").append("rect").attr("id","fadeBox").attr("x",this.windowHelper.sampleSection-5).attr("y",this.windowHelper.section1.bottom + this.windowHelper.section1.height/10).attr("width", this.windowHelper.width).attr("height",this.windowHelper.height).style("opacity",0.8).style("fill","#F5F5F5");
+	}
+viewBase.prototype.fadeOff = function(){
+		d3.select("#fadeBox").remove();
+	}
+
