@@ -164,7 +164,7 @@ function oneProportion(inputData, heading, focus){
 		for(var h = 0;h<2;h++){
 			var num = this.samples[0][h][1];
 			var numCols = Math.ceil(num/gridHeight);
-			var margin = ((Math.floor((this.xScale((this.samples[0][h][1])/total))) - numCols*this.radius*2)-this.radius)/(numCols-1);
+			var margin = ((Math.floor((this.xScale((this.samples[0][h][1])/total))) - numCols*this.radius*2)-this.radius)/(numCols);
 			this.groupCircles[h] = [num,numCols,margin];
 			for(var j =0;j<gridWidths[h];j++){
 				if(k*j > this.samples[0][h][1]) continue;

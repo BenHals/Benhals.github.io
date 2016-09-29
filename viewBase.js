@@ -126,10 +126,8 @@ viewBase.prototype.loadMain = function(dataHeadings){
 		// })
 		$("#importPreset").click(function(){
 			d3.select("#presetSelect").selectAll("*").remove();
-			var data = self.controller.getPresets();
-			data.forEach(function(i){
-				d3.select("#presetSelect").append("div").text(i).attr("class", "presetItems");
-			});
+			self.controller.getPresets();
+
 			//self.controller.loadFromText(data);
 		})
 		$("#presetSelect").on('click', '.presetItems', function(){
@@ -149,6 +147,11 @@ viewBase.prototype.loadMain = function(dataHeadings){
 		});
 
 	}
+viewBase.prototype.setupPresets = function(data){
+	data.forEach(function(i){
+		d3.select("#presetSelect").append("div").text(i).attr("class", "presetItems");
+	});
+}
 
 viewBase.prototype.noVisAvail = function(){
 		var svg = d3.select(".svg");

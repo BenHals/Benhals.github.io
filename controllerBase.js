@@ -8,7 +8,7 @@ var controllerBase = function(){
 	this.fadeOn = false;
 }
 controllerBase.prototype.getPresets = function(){
-		return this.model.getPresets();
+		this.model.getPresets(this.view.setupPresets);
 	}
 controllerBase.prototype.loadFromPreset = function(filename){
 	this.model.loadFromPreset(filename);
