@@ -101,7 +101,7 @@ viewBase.prototype.loadMain = function(dataHeadings){
 		var textInput = tab1.append("textarea").attr("name", "textInput").attr("type", "text").attr("placeholder","paste csv data here...").attr("id","textInput");
 		var importFromText = tab1.append("input").attr("name", "importText").attr("type", "button").attr("value","Data from Text").attr("id","importText").attr("class","bluebutton").attr("disabled", "true");
 
-		var importFromPreset = tab1.append("input").attr("name", "importPreset").attr("type", "button").attr("value","import Preset").attr("id","importPreset").attr("class","bluebutton");
+		var importFromPreset = tab1.append("input").attr("name", "importPreset").attr("type", "button").attr("value","Example Data").attr("id","importPreset").attr("class","bluebutton");
 		var presetSelect = tab1.append("div").attr("id","presetSelect");
 
 		var usePreset = tab1.append("input").attr("class","bluebutton").attr("name", "dataPreset").attr("type", "button").attr("value","Use test data").attr("id","dataPreset").attr("onClick","mainControl.loadTestData()");
