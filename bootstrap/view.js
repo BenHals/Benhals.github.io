@@ -1,5 +1,7 @@
 function view(controller){
 	viewBase.call(this, "sv", controller);
+	d3.select("#module").text("module: Bootstrapping"+"; ");
+	d3.select("#banner").text("Bootstrapping");
 }
 view.prototype = Object.create(viewBase.prototype);
 view.prototype.constructor = view;

@@ -3,8 +3,6 @@ var viewBase = function(tabOwner, controller){
 	this.dataScreen = null;
 	this.controller = controller;
 	this.windowHelper = setUpWindow(5);
-	d3.select("#module").text("module: Sampling Variation"+"; ");
-	d3.select("#banner").text("Sampling Variation");
 }
 
 viewBase.prototype.visPreveiw = function(disp){

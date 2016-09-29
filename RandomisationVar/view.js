@@ -1,5 +1,7 @@
 function view(controller){
 	viewBase.call(this, "sv", controller);
+	d3.select("#module").text("module: Randomisation Variation"+"; ");
+	d3.select("#banner").text("Randomisation Varaition");
 }
 view.prototype = Object.create(viewBase.prototype);
 view.prototype.constructor = view;
