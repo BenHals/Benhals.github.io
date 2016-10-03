@@ -60,6 +60,7 @@ function oneProportion(inputData, heading, focus){
 	}
 
 	this.setUpSamples = function(sSize){
+		this.sampleSize = sSize;
 		if(sSize >= this.population.length){
 			alert("Sample size is too large for the poplation");
 			return;
