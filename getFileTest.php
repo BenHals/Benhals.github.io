@@ -3,7 +3,7 @@
  	$file = $_GET["fn"];
  	//$file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $file);
 	//$file = mb_ereg_replace("([\.]{2,})", '', $file);
-	$basepath = './data';
+	$basepath = './data/';
 	$realBase = realpath($basepath);
 
 	$userpath = $basepath . $_GET['fn'];

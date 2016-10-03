@@ -51,12 +51,17 @@ function oneMean(inputData, heading, statistic){
 	}
 
 	this.setUpSamples = function(sSize){
+		this.statsDone = false;
+		if(this.population.length > 50){
+			alert("population too large to analyse, use data with less rows");
+			return;
+		}
 		this.sampleSize = sSize;
 		var statList = [];
 		var oldSampNum = this.numSamples;
 		//this.numSamples = 10000;
 		this.samples = this.makeSamples(this.population, this.numSamples, sSize);
-		this.tenKSamples = this.makeSamples(this.population, 10000, sSize);
+		//this.tenKSamples = this.makeSamples(this.population, 10000, sSize);
 		for(var k = 0; k < this.numSamples;k++){
 			var stat = getStatistic(this.statistic, this.samples[k])
 			statList.push(stat);
@@ -81,20 +86,20 @@ function oneMean(inputData, heading, statistic){
 		heapYValues3(this.preCalculatedTStat, this.xScale, this.radius, 0, this.windowHelper.section3.top,this.windowHelper.section3.bottom);
 
 		statList = [];
-		var higherNum = 100000;
-		this.tenKSamples = this.makeSamples(this.population, higherNum, sSize);
+		// var higherNum = 100000;
+		// this.tenKSamples = this.makeSamples(this.population, higherNum, sSize);
 
-		for(var k = 0; k < higherNum;k++){
-			var stat = getStatistic(this.statistic, this.tenKSamples[k])
-			statList.push(stat);
-		}
-		statList.sort(function(a,b){
-			if(Math.abs(self.populationStatistic - a ) < Math.abs(self.populationStatistic - b)) return -1;
-			if(Math.abs(self.populationStatistic - a ) > Math.abs(self.populationStatistic - b)) return 1;
-			return 0;
-		})
-		CISplit = Math.abs(this.populationStatistic - statList[higherNum*0.95]);
-		this.CISplitTenK = CISplit;
+		// for(var k = 0; k < higherNum;k++){
+		// 	var stat = getStatistic(this.statistic, this.tenKSamples[k])
+		// 	statList.push(stat);
+		// }
+		// statList.sort(function(a,b){
+		// 	if(Math.abs(self.populationStatistic - a ) < Math.abs(self.populationStatistic - b)) return -1;
+		// 	if(Math.abs(self.populationStatistic - a ) > Math.abs(self.populationStatistic - b)) return 1;
+		// 	return 0;
+		// })
+		// CISplit = Math.abs(this.populationStatistic - statList[higherNum*0.95]);
+		// this.CISplitTenK = CISplit;
 
 		this.statsDone = true;
 		this.sampSetup = true;
@@ -119,7 +124,9 @@ function oneMean(inputData, heading, statistic){
 
 	this.draw = function(){
 		this.drawPop();
-		this.drawSamples();
+		if(this.statsDone){
+			this.drawSamples();
+		}
 	}
 
 	this.drawPop = function(){

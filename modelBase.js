@@ -44,6 +44,7 @@ var modelBase = function(controller){
 }
 modelBase.prototype.getPresets = function(cB){
 	var xhr = createCORSRequest('GET', "https://www.stat.auckland.ac.nz/~wild/VITonline/filegetTest.php");
+	//var xhr = createCORSRequest('GET', "http://localhost:8080/filegetTest.php");
 	if (!xhr) {
   		throw new Error('CORS not supported');
 	}
@@ -213,10 +214,16 @@ modelBase.prototype.switchFocus = function(newFocus){
 		var curCategory2 = this.display.category2;
 		this.display.destroy();
 		if(this.currentDisplayType == 2){
-			this.display = new oneProportion(this.inputData, curCategory, newFocus)
+			this.display = new oneProportion(this.inputData.filter(function(d){
+			var test = d[curCategory] != "NA";
+			return test;
+		}), curCategory, newFocus)
 		}
 		if(this.currentDisplayType == 3){
-			this.display = new twoProportion(this.inputData, curCategory, curCategory2, newFocus)
+			this.display = new twoProportion(this.inputData.filter(function(d){
+			var test = d[curCategory] != "NA" && d[curCategory2] != "NA";
+			return test;
+		}), curCategory, curCategory2, newFocus)
 		}
 	}
 modelBase.prototype.switchVar = function(changeTo){

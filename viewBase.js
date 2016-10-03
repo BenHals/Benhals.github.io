@@ -179,7 +179,9 @@ viewBase.prototype.focusSelector = function(headings, curCategory){
 		focusContainer.append("label").attr("for","focusController").text("Choose Category to focus on.")
 		var focusController = focusContainer.append("select").attr("size",headings.length).attr("id","focusController");
 			headings.forEach(function(e){
-			focusController.append("option").attr("value",e).text(e);
+			if(e != "NA"){
+				focusController.append("option").attr("value",e).text(e);
+			}
 		});
 		var SM = document.getElementById("focusController");
 		SM.onchange = function(e){

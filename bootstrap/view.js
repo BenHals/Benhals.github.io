@@ -40,8 +40,8 @@ view.prototype.makeButtons = function(){
 			.style("height","15%");
 		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButton").attr("disabled",true).attr("onClick","mainControl.showCI()")
 			.style("height","15%");
-		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI for 10,000").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButtonTenK").attr("disabled",true).attr("onClick","mainControl.showCITenk()")
-			.style("height","15%");
+		// tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Show CI for 10,000").attr("class","bluebutton").classed("CIButton",true).attr("id","CIButtonTenK").attr("disabled",true).attr("onClick","mainControl.showCITenk()")
+		// 	.style("height","15%");
 		tab2.select("#tab2Bot").append("input").attr("type","button").attr("value","Fade On/Off").attr("class","bluebutton").classed("fadeButton",true).attr("id","fadeButton").attr("disabled",null).attr("onClick","mainControl.fadeToggle()")
 			.style("height","15%");
 }
