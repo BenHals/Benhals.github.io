@@ -56,11 +56,11 @@ function oneMean(inputData, heading, statistic){
 			alert("population too large to analyse, use data with less rows");
 			return;
 		}
-		this.sampleSize = sSize;
+		this.sampleSize = this.population.length;
 		var statList = [];
 		var oldSampNum = this.numSamples;
 		//this.numSamples = 10000;
-		this.samples = this.makeSamples(this.population, this.numSamples, sSize);
+		this.samples = this.makeSamples(this.population, this.numSamples, this.sampleSize);
 		//this.tenKSamples = this.makeSamples(this.population, 10000, sSize);
 		for(var k = 0; k < this.numSamples;k++){
 			var stat = getStatistic(this.statistic, this.samples[k])
@@ -114,7 +114,11 @@ function oneMean(inputData, heading, statistic){
 		for(var k = 0; k<sampleSize;k++){
 			var index =	Math.ceil(Math.random()*sampleSize) - 1;
 			var itemSelected = population[index];
+			if(!itemSelected){
+				alert('wat');
+			}
 			var nItem = new item(itemSelected.value, itemSelected.id);
+
 			nItem.sampId = k;
 			samples[i].push(nItem);
 		}
