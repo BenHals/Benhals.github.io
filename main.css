@@ -17,10 +17,25 @@ body {
 	transition: background 11s linear;
 	-webkit-perspective: 1600px;
 	perspective: 1600px;
+	margin:0px;
+	padding:0px;
 	
+}
+canvas {
+	position: fixed;
+	top:0px;
+	left:0px;
+	z-index: -1;
 }
 h1{
 	font-size:200px;
+	margin:0px;
+	padding:0px;
+	color:black;
+   -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: black;
+   pointer-events: none;
 }
 
 ul{
@@ -40,7 +55,7 @@ li {
 	height:50px;
 	margin:auto;
 	background:green;
-	opacity: 0.9;
+	opacity: 1;
 	-webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   -webkit-transform-origin: 50%;
@@ -60,6 +75,8 @@ li:hover .container{
 	transition: background 11s linear;
 	 -webkit-transform:translateZ(0px);
 	!outline: solid 4px black;
+	opacity: 1;
+	background-color: rgba(255,255,255,1);
 	
 	
 }
