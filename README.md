@@ -1,1 +1,1 @@
-iNZightVIT done in JavaScript (originally R)  github
+Basic Home page, leads to (some of) my other projects
