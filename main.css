@@ -82,7 +82,7 @@ li {
   margin-bottom:50px;
   
 }
-#container {
+#content_container {
 	width: 60%;
 	height: auto;
 	margin-left: 20%;
@@ -97,7 +97,7 @@ li {
 	display:block;
 	width:600px;
 	height:50px;
-	margin:0;
+	margin:auto;
 	background:green;
 	opacity: 1;
 	-webkit-transform-style: preserve-3d;
@@ -124,7 +124,7 @@ li:hover .container{
 	
 	
 }
-span {
+.front,.top,.bottom,.left,.right {
 	visibility: visible;
   display: block;
   position: absolute;
