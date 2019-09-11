@@ -20,12 +20,7 @@
 
 // });
 
-var W = window.innerWidth, H = window.innerHeight;
-var pixel_size = 30;
-var update_time = 1;
-var pixel_fade_in = 1000;
-var p_row_size = W/pixel_size;
-var p_col_size = H/pixel_size;
+
 
 class Pixel {
 	constructor(size, x, y, ctx){
@@ -185,8 +180,24 @@ function update_screen(timestamp){
 	window.requestAnimationFrame(update_screen);
 }
 
+var W = window.innerWidth, H = window.innerHeight;
+var pixel_size = 30;
+var update_time = 1;
+var pixel_fade_in = 1000;
+var p_row_size = W/pixel_size;
+var p_col_size = H/pixel_size;
+
 window.onload = function(){
 
+	W = window.innerWidth, H = window.innerHeight;
+	let body = document.body,
+    html = document.documentElement;
+	W = body.scrollWidth;
+	H = Math.max( body.scrollHeight, body.offsetHeight, 
+						html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+	p_row_size = W/pixel_size;
+	p_col_size = H/pixel_size;
 	// Setup Canvas
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");

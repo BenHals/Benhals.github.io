@@ -13,6 +13,7 @@
 body {
 	text-align:center;
 	font-family:franchiseregular;
+	/* font-family: 'Montserrat', sans-serif; */
 	background:white;
 	transition: background 11s linear;
 	-webkit-perspective: 1600px;
@@ -28,18 +29,52 @@ canvas {
 	z-index: -1;
 }
 h1{
+
+}
+.titleOld{
 	font-size:200px;
 	margin:0px;
 	padding:0px;
+	font-family: 'Montserrat', sans-serif;
 	color:black;
    -webkit-text-fill-color: white; /* Will override color (regardless of order) */
    -webkit-text-stroke-width: 1px;
    -webkit-text-stroke-color: black;
    pointer-events: none;
 }
-
+.title{
+	font-size:150px;
+	color: #343a40;
+	margin:0px;
+	padding:0px;
+	font-family: 'Montserrat', sans-serif;
+  pointer-events: none;
+}
+a {
+	text-decoration: none;
+}
+.subtitle{
+	/* font-size:150px; */
+	color: #343a40;
+	margin:0px;
+	padding:0px;
+	font-family: 'Montserrat', sans-serif;
+  text-decoration: none;
+}
+.colorB {
+	color: #0984e3;
+	display: inline;
+}
+.colorR {
+	color: #d63031;
+	display: inline;
+}
 ul{
 	list-style:none;
+	padding: 0px;
+	margin-left: 10%;
+	margin-right: 10%;
+	width: 80%;
 }
 li {
 
@@ -47,13 +82,22 @@ li {
   margin-bottom:50px;
   
 }
+#container {
+	width: 60%;
+	height: auto;
+	margin-left: 20%;
+	margin-right: 20%;
+	padding: 0%;
+	background-color: rgba(255,255,255,.8);
+	box-shadow: 0px 0px 25px 25px rgba(255,255,255, 0.8);
+}
 .container {
 	visibility: hidden;
 	position:relative;
 	display:block;
 	width:600px;
 	height:50px;
-	margin:auto;
+	margin:0;
 	background:green;
 	opacity: 1;
 	-webkit-transform-style: preserve-3d;
