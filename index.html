@@ -2,114 +2,113 @@
 	<head>
 		<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
 		<link rel = "stylesheet" href="main.css">
-		<script src="shared/jquery-3.1.1.min.js"></script>
 		<script src="main.js"></script>
 	</head>
 	<body>
-		<canvas id ="canvas"></canvas>
-		<!-- <h1>Hello!</h1> -->
-		<div id = "content_container">
-				<h1 class = "title"><span class = "colorB">Ben</span> <span class = "colorR">Hals</span>tead</h1>
-				<a href = "http://github.com/benhals" target="_blank"><h2 class = "subtitle">github.com/<span class = "colorB">Ben</span><span class = "colorR">Hals</span></h2></a>
-				<ul>
-					<li>
-						<a href="https://benhals.github.io/VIT/" class = "container" >
-						<span class = "front"> VIT Online </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/XAINeural/" class = "container" >
-						<span class = "front"> Neural Net XAI </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/probabilityVis/" class = "container" >
-						<span class = "front"> Probability Visualisation </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/Camera_projection/" class = "container" >
-						<span class = "front"> Camera Projection 3D </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					
-					<li>
-						<a href="https://benhals.github.io/KNNCanvas/" class = "container" >
-						<span class = "front"> Nearest Neighbor Visualisation </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/Simple-Neural-Net-Visualisation/" class = "container" >
-						<span class = "front"> Neural Network </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/Bitcoin_simulator" class = "container" >
-						<span class = "front"> CryptoCurrency Sim </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://stormy-anchorage-65356.herokuapp.com/" class = "container" >
-						<span class = "front"> CryptoCurrency Portfolio </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/pixelFire/" class = "container" >
-						<span class = "front"> Pixel Fireplace </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-					<li>
-						<a href="https://benhals.github.io/WebGLFireplace/" class = "container" >
-						<span class = "front"> Pixel Fireplace (WebGL) </span>
-						<span class="top"></span>
-						<span class="bottom"></span>
-						<span class="left"></span>
-						<span class="right"></span>
-						</a> 
-					</li>
-		
-					
-				</ul>
+		<div id="bg">
+			<div id="title-cssanim">
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+				<div class="title-datapoint"></div>
+
+				<div class="title-touchline"></div>
+				<div class="title-node node1"></div>
+				<div class="title-node node2" style="--dataanim-classifier-rotation-offset: 5deg"></div>
+				<div class="title-node node2"></div>
+				<div class="title-node node2"style="--dataanim-classifier-rotation-offset: -5deg"></div>
+
+				<div class="title-node node3" style="--dataanim-classifier-rotation-offset: 10deg"></div>
+				<div class="title-node node3" style="--dataanim-classifier-rotation-offset: 5deg"></div>
+				<div class="title-node node3"></div>
+				<div class="title-node node3" style="--dataanim-classifier-rotation-offset: -10deg"></div>
+				<div class="title-node node3" style="--dataanim-classifier-rotation-offset: -5deg"></div>
+				
+				<div class="title-node node4" style="--dataanim-classifier-rotation-offset: 15deg"></div>
+				<div class="title-node node4" style="--dataanim-classifier-rotation-offset: 10deg"></div>
+				<div class="title-node node4" style="--dataanim-classifier-rotation-offset: 5deg"></div>
+				<div class="title-node node4"></div>
+				<div class="title-node node4" style="--dataanim-classifier-rotation-offset: -5deg"></div>
+				<div class="title-node node4" style="--dataanim-classifier-rotation-offset: -10deg"></div>
+				<div class="title-node node4" style="--dataanim-classifier-rotation-offset: -15deg"></div>
+
+				<div class="title-node node5" style="--dataanim-classifier-rotation-offset: 10deg"></div>
+				<div class="title-node node5" style="--dataanim-classifier-rotation-offset: 5deg"></div>
+				<div class="title-node node5"></div>
+				<div class="title-node node5" style="--dataanim-classifier-rotation-offset: -5deg"></div>
+				<div class="title-node node5" style="--dataanim-classifier-rotation-offset: -10deg"></div>
+
+				<div class="title-node node6" style="--dataanim-classifier-rotation-offset: 5deg"></div>
+				<div class="title-node node6"></div>
+				<div class="title-node node6" style="--dataanim-classifier-rotation-offset: -5deg"></div>
+
+				<div class="title-node node7"></div>
+			</div>
 		</div>
-		
-		
+		<div id=fg>
+			<div id = "title-block">
+				<div id="title-wrapper">
+					<h1>Ben Halstead</h1>
+					<h2>Machine Learning Researcher and Engineer</h2>
+				</div>
+			</div>
+			<div id="content-block">
+					<div class="content-container" id="about-me"><h3>About Me</h3>
+						<div id="aboutme-content">
+							<p><a href = "http://github.com/benhals" target="_blank">GitHub</a> <a href = "https://www.linkedin.com/in/ben-halstead-ml/" target="_blank">LinkedIn</a> <a href = "https://scholar.google.com/citations?user=lM1QKJEAAAAJ&hl=en" target="_blank">Google Scholar</a></p>
+							<p>
+								I am currently a final year PhD student at the University of Auckland School of Computer Science, New Zealand. My research focus is on machine learning for online (streaming) systems, specifically, investigating how we can adapt machine learning algorithms to changing conditions faced in the real world.
+								
+							</p>
+							<p>
+								The internet is allowing a growing number of streaming datasets, where new data is collected and added in real time. For example, one government agency I have worked with collects air quality data in real-time from a network of sensors. Other examples include nearly all online businesses which collect information. Traditional machine learning methods are designed around static datasets, making the assumtion that data will stay similar over time.
+								If data changes, for example, shifting weather patterns or consumer behaviour, these static methods can become disastrously out of date. 
+							</p>
+							<p>
+								My research aims to allow machine learning methods to detect changes, identify the new emerging patterns, and adapt themselves to retain performance. In particular, I am interested in identifying recurring patterns, which can be reused for performance benefits, and also tracked over time to trace changes in hidden context.
+							</p>
+						</div>
+					</div>
+					<div class="content-container" id="research"><h3>Published Research</h3>
+						<div id="research-content">
+							<div class="research-block">
+								<h4>Classifier Valuation</h4>
+								<div class="block-img"><img src="assets/ADVANTAGE - ECML202.svg"></div>
+								<p><em>Journal of Data Mining and Knowledge Discovery, 2021. European Conference on Machine Learning (ECML PKDD) 2021.</em></p>
+								<p><a href="https://rdcu.be/cfd26" target="_blank">Paper</a> <a href="https://youtu.be/ShXSot65EyQ" target="_blank">Presentation</a> <a href="https://drive.google.com/file/d/14EsysFhWRJDvP13gQBu78YDe1VYnCLgq/view?usp=sharing" target="_blank">Poster</a></p>
+							</div>
+							<div class="research-block">
+								<h4>Adaptation Error Repair</h4>
+								<div class="block-img"><img src="assets/AiRStream - DSAA2021.svg"></div>
+								<p><em>Journal of Machine Learning, 2021. International Conference on Data Science and Advanced Analytics (DSAA) 2021.</em></p>
+								<p><a href="https://rdcu.be/clfjn" target="_blank">Paper</a> <a href="https://youtu.be/z44Digjp8ac" target="_blank">Presentation</a></p>
+							</div>
+							<div class="research-block">								
+								<h4>Concept Fingerprinting</h4>
+								<div class="block-img"><img src="assets/Short ICDM - FiCSUM.svg"></div>
+								<p><em>International Conference on Data Engineering (ICDE) 2021.</em></p>
+								<p><a href="https://doi.org/10.1109/ICDE51399.2021.00096" target="_blank">Paper</a> <a href="https://youtu.be/CPmgL6rDCZ0" target="_blank">Presentation</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="content-container" id="projects"><h3>Projects</h3></div>
+
+			</div>
+			<div id="footer">
+				<a href = "http://github.com/benhals" target="_blank">github.com/BenHals</a>
+			</div>
+		</div>
 	</body>
-
-
 <html>
