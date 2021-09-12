@@ -198,7 +198,10 @@ a {
 	}
 }
 /* Medium screens */
-@media all and (max-width: 500px) {
+@media all and (max-width: 812px) {
+	p {
+		font-size: 1.5rem;
+	}
 	#research-content {
 		flex-direction: column;
 	}
